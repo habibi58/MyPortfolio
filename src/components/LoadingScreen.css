@@ -1,4 +1,3 @@
-/* ── Loading Screen ── */
 .loading-screen {
   position: fixed;
   inset: 0;
@@ -11,7 +10,6 @@
   overflow: hidden;
 }
 
-/* ── Ambient background glow ── */
 .loading-screen::before {
   content: '';
   position: absolute;
@@ -31,7 +29,6 @@
   50%      { opacity: 1;   transform: translate(-50%, -50%) scale(1.15); }
 }
 
-/* ── Floating particles (pure CSS) ── */
 .ls-particles {
   position: absolute;
   inset: 0;
@@ -48,15 +45,15 @@
   animation: ls-float-up linear infinite;
 }
 
-.ls-particle:nth-child(1)  { left:  8%; animation-duration: 6s; animation-delay: 0s;    width: 2px; height: 2px; }
-.ls-particle:nth-child(2)  { left: 18%; animation-duration: 8s; animation-delay: 1s;    width: 4px; height: 4px; opacity: 0.3; }
-.ls-particle:nth-child(3)  { left: 30%; animation-duration: 7s; animation-delay: 0.5s;  }
-.ls-particle:nth-child(4)  { left: 42%; animation-duration: 5s; animation-delay: 2s;    width: 2px; height: 2px; }
-.ls-particle:nth-child(5)  { left: 55%; animation-duration: 9s; animation-delay: 0.3s;  width: 4px; height: 4px; opacity: 0.4; }
-.ls-particle:nth-child(6)  { left: 65%; animation-duration: 6s; animation-delay: 1.5s;  }
-.ls-particle:nth-child(7)  { left: 75%; animation-duration: 7s; animation-delay: 0.8s;  width: 2px; height: 2px; }
-.ls-particle:nth-child(8)  { left: 85%; animation-duration: 8s; animation-delay: 2.5s;  width: 4px; height: 4px; opacity: 0.25; }
-.ls-particle:nth-child(9)  { left: 92%; animation-duration: 6s; animation-delay: 0.2s;  }
+.ls-particle:nth-child(1)  { left:  8%; animation-duration: 6s;  animation-delay: 0s;   width: 2px; height: 2px; }
+.ls-particle:nth-child(2)  { left: 18%; animation-duration: 8s;  animation-delay: 1s;   width: 4px; height: 4px; opacity: 0.3; }
+.ls-particle:nth-child(3)  { left: 30%; animation-duration: 7s;  animation-delay: 0.5s; }
+.ls-particle:nth-child(4)  { left: 42%; animation-duration: 5s;  animation-delay: 2s;   width: 2px; height: 2px; }
+.ls-particle:nth-child(5)  { left: 55%; animation-duration: 9s;  animation-delay: 0.3s; width: 4px; height: 4px; opacity: 0.4; }
+.ls-particle:nth-child(6)  { left: 65%; animation-duration: 6s;  animation-delay: 1.5s; }
+.ls-particle:nth-child(7)  { left: 75%; animation-duration: 7s;  animation-delay: 0.8s; width: 2px; height: 2px; }
+.ls-particle:nth-child(8)  { left: 85%; animation-duration: 8s;  animation-delay: 2.5s; width: 4px; height: 4px; opacity: 0.25; }
+.ls-particle:nth-child(9)  { left: 92%; animation-duration: 6s;  animation-delay: 0.2s; }
 .ls-particle:nth-child(10) { left: 50%; animation-duration: 10s; animation-delay: 1.8s; width: 2px; height: 2px; }
 
 @keyframes ls-float-up {
@@ -66,47 +63,71 @@
   100% { transform: translateY(-10vh) scale(1); opacity: 0; }
 }
 
-/* ── Name container ── */
+.ls-greeting {
+  font-family: 'Inter', sans-serif;
+  font-size: clamp(0.65rem, 1.8vw, 0.85rem);
+  font-weight: 400;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: #191970;  margin-bottom: 10px;
+  opacity: 0;
+  transform: translateY(12px);
+  transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.ls-greeting.revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+
 .ls-name-container {
   position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 0;
-  margin-bottom: 48px;
+  margin-bottom: 6px;
 }
 
-/* ── Individual letter ── */
+.ls-last-name-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  margin-bottom: 16px;
+}
+
 .ls-letter {
   font-family: 'Syne', 'Inter', sans-serif;
   font-weight: 800;
-  font-size: clamp(3.5rem, 12vw, 8rem);
-  letter-spacing: 0.08em;
+  font-size: clamp(2rem, 6.5vw, 4.5rem);
+  letter-spacing: 0.06em;
   text-transform: uppercase;
   display: inline-block;
   opacity: 0;
   transform: translateY(60px) rotateX(90deg);
-  background: linear-gradient(
-    135deg,
-    #e0e7ff 0%,
-    #a5b4fc 25%,
-    #818cf8 50%,
-    #6366f1 75%,
-    #a5b4fc 100%
-  );
-  background-size: 200% 200%;
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  animation: ls-gradient-flow 4s ease infinite;
-  filter: drop-shadow(0 0 30px rgba(99, 102, 241, 0.3));
+  background: none;
+  -webkit-text-fill-color: #ffffff;
+  color: #ffffff;
+  filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.15));
   will-change: transform, opacity;
+}
+
+.ls-letter--last {
+  font-size: clamp(1.2rem, 4vw, 2.8rem);
+  letter-spacing: 0.25em;
+  opacity: 0;
+}
+
+.ls-letter--gap {
+  display: inline-block;
+  width: 0.3em;
 }
 
 .ls-letter.revealed {
   opacity: 1;
   transform: translateY(0) rotateX(0deg);
-  transition: all 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: all 1s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 @keyframes ls-gradient-flow {
@@ -115,7 +136,6 @@
   100% { background-position: 0% 50%; }
 }
 
-/* ── Decorative line accent ── */
 .ls-line-accent {
   position: absolute;
   bottom: -12px;
@@ -132,14 +152,14 @@
   width: 110%;
 }
 
-/* ── Subtitle / tagline ── */
 .ls-subtitle {
   font-family: 'Inter', sans-serif;
   font-size: clamp(0.75rem, 2vw, 1rem);
   font-weight: 400;
   letter-spacing: 0.35em;
   text-transform: uppercase;
-  color: rgba(165, 180, 252, 0.6);
+  color: #191970;
+  margin-top: 18px;
   margin-bottom: 48px;
   opacity: 0;
   transform: translateY(15px);
@@ -151,7 +171,6 @@
   transform: translateY(0);
 }
 
-/* ── Progress bar ── */
 .ls-progress-container {
   position: relative;
   width: clamp(200px, 40vw, 320px);
@@ -173,7 +192,6 @@
   transition: width 0.15s linear;
 }
 
-/* ── Progress percentage ── */
 .ls-progress-text {
   font-family: 'Inter', sans-serif;
   font-size: 0.7rem;
@@ -190,13 +208,13 @@
   opacity: 1;
 }
 
-/* ── Exit animation ── */
 .loading-screen.exit {
   animation: ls-exit 1.2s cubic-bezier(0.25, 1, 0.5, 1) forwards;
 }
 
-/* Children fade out faster with a slight lift */
+.loading-screen.exit .ls-greeting,
 .loading-screen.exit .ls-name-container,
+.loading-screen.exit .ls-last-name-container,
 .loading-screen.exit .ls-subtitle,
 .loading-screen.exit .ls-progress-container,
 .loading-screen.exit .ls-progress-text,
@@ -206,7 +224,6 @@
   transition: all 0.5s cubic-bezier(0.25, 1, 0.5, 1) !important;
 }
 
-/* Separate transition for particles */
 .loading-screen.exit .ls-particles {
   opacity: 0;
   transition: opacity 0.6s ease;
@@ -218,8 +235,6 @@
   100% { opacity: 0; filter: blur(8px); pointer-events: none; }
 }
 
-
-/* ── Corner decorations ── */
 .ls-corner {
   position: absolute;
   width: 30px;

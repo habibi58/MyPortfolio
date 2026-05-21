@@ -6,15 +6,20 @@ interface LoadingScreenProps {
   onFinished: () => void;
 }
 
-const LETTERS = ['J', 'A', 'S', 'O', 'N'];
-const TOTAL_DURATION = 3200; // total loading time in ms
+const GREETING = "Hi, I'm";
+const FIRST_LETTERS = ['M', 'O', 'H', 'A', 'M', 'A', 'D', ' ', 'J', 'A', 'S', 'O', 'N'];
+const LAST_LETTERS = ['C', 'E', 'L', 'O', 'Z', 'A'];
+const ALL_LETTERS = [...FIRST_LETTERS, ...LAST_LETTERS];
+const SUBTITLE = 'Welcome To My Portfolio';
+const TOTAL_DURATION = 5000;
 
 export default function LoadingScreen({ onFinished }: LoadingScreenProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const progressBarRef = useRef<HTMLDivElement>(null);
   const [progress, setProgress] = useState(0);
+  const [greetingRevealed, setGreetingRevealed] = useState(false);
   const [lettersRevealed, setLettersRevealed] = useState<boolean[]>(
-    LETTERS.map(() => false),
+    ALL_LETTERS.map(() => false),
   );
   const [subtitleRevealed, setSubtitleRevealed] = useState(false);
   const [lineActive, setLineActive] = useState(false);
@@ -26,16 +31,18 @@ export default function LoadingScreen({ onFinished }: LoadingScreenProps) {
     setExiting(true);
     setTimeout(() => {
       onFinished();
-    }, 1200); // matches ls-exit animation duration
+    }, 1200);
   }, [onFinished]);
 
   useEffect(() => {
-    // Lock scroll during loading
     document.body.style.overflow = 'hidden';
 
-    // ── 1. Letter reveal stagger ──
+    const greetingTimer = setTimeout(() => {
+      setGreetingRevealed(true);
+    }, 200);
+
     const letterTimers: ReturnType<typeof setTimeout>[] = [];
-    LETTERS.forEach((_, i) => {
+    ALL_LETTERS.forEach((_, i) => {
       letterTimers.push(
         setTimeout(() => {
           setLettersRevealed((prev) => {
@@ -43,19 +50,19 @@ export default function LoadingScreen({ onFinished }: LoadingScreenProps) {
             next[i] = true;
             return next;
           });
-        }, 300 + i * 150),
+        }, 400 + i * 180),
       );
     });
 
-    // ── 2. Subtitle + line accent after letters ──
+    const afterLetters = 400 + ALL_LETTERS.length * 180 + 300;
+
     const subtitleTimer = setTimeout(() => {
       setSubtitleRevealed(true);
       setLineActive(true);
       setCornersRevealed(true);
       setProgressTextRevealed(true);
-    }, 300 + LETTERS.length * 150 + 200);
+    }, afterLetters);
 
-    // ── 3. Progress bar animation ──
     const startTime = Date.now();
     let rafId: number;
 
@@ -63,20 +70,16 @@ export default function LoadingScreen({ onFinished }: LoadingScreenProps) {
       const elapsed = Date.now() - startTime;
       const pct = Math.min((elapsed / TOTAL_DURATION) * 100, 100);
       setProgress(Math.round(pct));
-
       if (progressBarRef.current) {
         progressBarRef.current.style.width = `${pct}%`;
       }
-
       if (pct < 100) {
         rafId = requestAnimationFrame(updateProgress);
       }
     };
     rafId = requestAnimationFrame(updateProgress);
 
-    // ── 4. GSAP subtle float animation on letters ──
     const gsapCtx = gsap.context(() => {
-      // We'll start this after letters are revealed
       setTimeout(() => {
         gsap.to('.ls-letter.revealed', {
           y: -6,
@@ -84,20 +87,17 @@ export default function LoadingScreen({ onFinished }: LoadingScreenProps) {
           ease: 'sine.inOut',
           yoyo: true,
           repeat: -1,
-          stagger: {
-            each: 0.15,
-            from: 'center',
-          },
+          stagger: { each: 0.15, from: 'center' },
         });
-      }, 300 + LETTERS.length * 150 + 400);
+      }, afterLetters + 200);
     }, containerRef);
 
-    // ── 5. Trigger exit ──
     const exitTimer = setTimeout(() => {
       startExit();
     }, TOTAL_DURATION + 300);
 
     return () => {
+      clearTimeout(greetingTimer);
       letterTimers.forEach(clearTimeout);
       clearTimeout(subtitleTimer);
       clearTimeout(exitTimer);
@@ -107,7 +107,6 @@ export default function LoadingScreen({ onFinished }: LoadingScreenProps) {
     };
   }, [startExit]);
 
-  // Restore scroll when exiting
   useEffect(() => {
     if (exiting) {
       document.body.style.overflow = '';
@@ -119,44 +118,61 @@ export default function LoadingScreen({ onFinished }: LoadingScreenProps) {
       ref={containerRef}
       className={`loading-screen${exiting ? ' exit' : ''}`}
     >
-      {/* Floating particles */}
       <div className="ls-particles">
         {Array.from({ length: 10 }).map((_, i) => (
           <div key={i} className="ls-particle" />
         ))}
       </div>
 
-      {/* Corner decorations */}
       <div className={`ls-corner ls-corner--tl${cornersRevealed ? ' revealed' : ''}`} />
       <div className={`ls-corner ls-corner--tr${cornersRevealed ? ' revealed' : ''}`} />
       <div className={`ls-corner ls-corner--bl${cornersRevealed ? ' revealed' : ''}`} />
       <div className={`ls-corner ls-corner--br${cornersRevealed ? ' revealed' : ''}`} />
 
-      {/* Name */}
+      <div className={`ls-greeting${greetingRevealed ? ' revealed' : ''}`}>
+        {GREETING}
+      </div>
+
+      {/* First row: MOHAMAD JASON */}
       <div className="ls-name-container">
-        {LETTERS.map((letter, i) => (
-          <span
-            key={i}
-            className={`ls-letter${lettersRevealed[i] ? ' revealed' : ''}`}
-            style={{ transitionDelay: `${i * 60}ms` }}
-          >
-            {letter}
-          </span>
+        {FIRST_LETTERS.map((letter, i) => (
+          letter === ' '
+            ? <span key={i} className="ls-letter--gap" />
+            : <span
+                key={i}
+                className={`ls-letter${lettersRevealed[i] ? ' revealed' : ''}`}
+                style={{ transitionDelay: `${i * 60}ms` }}
+              >
+                {letter}
+              </span>
         ))}
         <div className={`ls-line-accent${lineActive ? ' active' : ''}`} />
       </div>
 
-      {/* Subtitle */}
-      <div className={`ls-subtitle${subtitleRevealed ? ' revealed' : ''}`}>
-        IT Support Professional
+      {/* Second row: CELOZA */}
+      <div className="ls-last-name-container">
+        {LAST_LETTERS.map((letter, i) => {
+          const globalIndex = FIRST_LETTERS.length + i;
+          return (
+            <span
+              key={i}
+              className={`ls-letter ls-letter--last${lettersRevealed[globalIndex] ? ' revealed' : ''}`}
+              style={{ transitionDelay: `${globalIndex * 60}ms` }}
+            >
+              {letter}
+            </span>
+          );
+        })}
       </div>
 
-      {/* Progress bar */}
+      <div className={`ls-subtitle${subtitleRevealed ? ' revealed' : ''}`}>
+        {SUBTITLE}
+      </div>
+
       <div className="ls-progress-container">
         <div ref={progressBarRef} className="ls-progress-bar" />
       </div>
 
-      {/* Progress text */}
       <div className={`ls-progress-text${progressTextRevealed ? ' revealed' : ''}`}>
         {progress}%
       </div>
