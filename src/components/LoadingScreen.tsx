@@ -119,7 +119,7 @@ export default function LoadingScreen({ onFinished }: LoadingScreenProps) {
       className={`loading-screen${exiting ? ' exit' : ''}`}
     >
       <div className="ls-particles">
-        {Array.from({ length: 10 }).map((_, i) => (
+        {Array.from({ length: 80 }).map((_, i) => (
           <div key={i} className="ls-particle" />
         ))}
       </div>
