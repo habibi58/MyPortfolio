@@ -1,0 +1,76 @@
+%PDF-1.4
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [3 0 R] /Count 1 >>
+endobj
+3 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources 4 0 R /Contents 5 0 R >>
+endobj
+4 0 obj
+<< /Font << /F1 << /Type /Font /Subtype /Type1 /BaseFont /Helvetica >> /F2 << /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold >> >> >>
+endobj
+5 0 obj
+<< /Length 450 >>
+stream
+BT
+/F2 22 Tf
+72 720 Td
+(MOHAMAD JASON LABIS CELOZA) Tj
+0 -24 Td
+/F1 12 Tf
+(IT Graduate & Technical Support Specialist) Tj
+0 -18 Td
+(Email: jason.support@example.com | Phone: +63 (912) 345-6789 | Location: Rizal, Philippines) Tj
+0 -30 Td
+/F2 14 Tf
+(PROFESSIONAL SUMMARY) Tj
+0 -18 Td
+/F1 10 Tf
+(Passionate about technology and problem-solving, with a strong interest in building modern) Tj
+0 -12 Td
+(digital solutions. Expansive knowledge of desktop support, troubleshooting, system installations,) Tj
+0 -12 Td
+(and user support, combined with modern web development expertise.) Tj
+0 -30 Td
+/F2 14 Tf
+(EDUCATION & EXPERIENCE) Tj
+0 -18 Td
+/F2 11 Tf
+(Desktop Support Intern | Tech Solutions Ltd.) Tj
+0 -12 Td
+/F1 10 Tf
+(Resolved computer systems and network issues, installed software, and handled support requests.) Tj
+0 -18 Td
+/F2 11 Tf
+(IT Graduate) Tj
+0 -12 Td
+/F1 10 Tf
+(Completed detailed coursework in hardware systems, database management, and computer networks.) Tj
+0 -30 Td
+/F2 14 Tf
+(TECHNICAL SKILLS) Tj
+0 -18 Td
+/F1 10 Tf
+(- Desktop Support & Troubleshooting | System Configuration | Network Management) Tj
+0 -12 Td
+(- HTML5, CSS3, JavaScript, React, Tailwind CSS | Basic Programming & Cloud Tech) Tj
+0 -12 Td
+(- Excellent Customer Support & Communication) Tj
+ET
+endstream
+endobj
+xref
+0 6
+0000000000 65535 f 
+0000000009 00000 n 
+0000000058 00000 n 
+0000000115 00000 n 
+0000000222 00000 n 
+0000000329 00000 n 
+trailer
+<< /Size 6 /Root 1 0 R >>
+startxref
+829
+%%EOF
