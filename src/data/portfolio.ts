@@ -28,6 +28,8 @@ export const portfolioOwner = {
     linkedin: 'https://linkedin.com',
     facebook: 'https://facebook.com',
     twitter: 'https://twitter.com',
+    instagram: 'https://instagram.com',
+    youtube: 'https://youtube.com',
     email: 'jason.support@example.com',
   },
 };

@@ -16,4 +16,5 @@ export { default as Particles } from './Particles';
 export { ParticlesBackground } from './ParticlesBackground';
 export { default as GooeyNav } from './GooeyNav/GooeyNav';
 export { default as LoadingScreen } from './LoadingScreen';
+export { SocialIcons } from './SocialIcons';
 

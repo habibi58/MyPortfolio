@@ -1,13 +1,14 @@
 // Hero Section Component
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { ArrowDown, Code2, Download, Globe, Mail } from 'lucide-react';
+import { ArrowDown, Download } from 'lucide-react';
 import { portfolioOwner, heroContent } from '../data';
 import { useDarkMode } from '../hooks';
 import { Button } from './Button';
 import { ParticlesBackground } from './ParticlesBackground';
 import { fadeInUp } from '../animations/variants';
 import BlurText from './BlurText';
+import { SocialIcons } from './SocialIcons';
 
 const particleColors = ['#ffffff'];
 
@@ -148,24 +149,9 @@ export const HeroSection = () => {
               initial="hidden"
               animate="visible"
               transition={{ delay: 1 }}
-              className="mb-12 flex gap-4"
+              className="mb-12"
             >
-              {[
-                { label: 'GitHub', url: portfolioOwner.social.github, Icon: Code2 },
-                { label: 'LinkedIn', url: portfolioOwner.social.linkedin, Icon: Globe },
-                { label: 'Email', url: `mailto:${portfolioOwner.email}`, Icon: Mail },
-              ].map(({ label, url, Icon }) => (
-                <a
-                  key={label}
-                  href={url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="group relative rounded-xl border border-slate-200/80 dark:border-slate-700/60 bg-white/60 dark:bg-slate-800/50 p-3.5 backdrop-blur-sm transition-all duration-300 hover:scale-110 hover:border-blue-400/50 dark:hover:border-blue-500/40 hover:shadow-lg hover:shadow-blue-500/10"
-                  aria-label={label}
-                >
-                  <Icon size={20} className="text-slate-500 dark:text-slate-400 transition-colors group-hover:text-blue-600 dark:group-hover:text-blue-400" />
-                </a>
-              ))}
+              <SocialIcons />
             </motion.div>
           </motion.div>
 

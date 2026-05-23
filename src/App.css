@@ -174,20 +174,23 @@
   align-items: center;
   justify-content: center;
   gap: 12px;
-  padding: 16px 32px;
+  padding: 16px 36px;
   font-family: 'Inter', sans-serif;
   font-size: 1.125rem;
   font-weight: 600;
   color: #fff;
-  background: rgba(30, 41, 59, 0.4);
-  border: 1px solid rgba(99, 102, 241, 0.3);
-  border-radius: 12px;
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(99, 102, 241, 0.2));
+  border: 2px solid rgba(96, 165, 250, 0.5);
+  border-radius: 16px;
   cursor: pointer;
   overflow: hidden;
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.15);
+  box-shadow:
+    0 4px 20px rgba(59, 130, 246, 0.15),
+    0 0 40px rgba(59, 130, 246, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
   text-decoration: none;
   z-index: 10;
 }
@@ -202,9 +205,9 @@
   background: linear-gradient(
     90deg,
     transparent,
-    rgba(255, 255, 255, 0.05),
-    rgba(255, 255, 255, 0.25),
-    rgba(255, 255, 255, 0.05),
+    rgba(96, 165, 250, 0.1),
+    rgba(96, 165, 250, 0.3),
+    rgba(96, 165, 250, 0.1),
     transparent
   );
   transition: none;
@@ -212,18 +215,24 @@
 
 .btn-premium-resume:hover::before {
   left: 100%;
-  transition: left 1s cubic-bezier(0.25, 1, 0.5, 1);
+  transition: left 0.8s cubic-bezier(0.25, 1, 0.5, 1);
 }
 
 .btn-premium-resume:hover {
-  background: rgba(30, 41, 59, 0.7);
-  border-color: rgba(99, 102, 241, 0.7);
-  box-shadow: 0 0 30px rgba(99, 102, 241, 0.4);
-  transform: translateY(-2px);
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.4), rgba(99, 102, 241, 0.4));
+  border-color: rgba(96, 165, 250, 0.8);
+  box-shadow:
+    0 8px 35px rgba(59, 130, 246, 0.35),
+    0 0 50px rgba(59, 130, 246, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  transform: translateY(-3px) scale(1.02);
 }
 
 .btn-premium-resume:active {
-  transform: translateY(0);
+  transform: translateY(-1px) scale(0.98);
+  box-shadow:
+    0 4px 20px rgba(59, 130, 246, 0.25),
+    0 0 30px rgba(59, 130, 246, 0.15);
 }
 
 /* Moving colored border effect */
@@ -234,20 +243,22 @@
   left: 0;
   width: 100%;
   height: 3px;
-  background: linear-gradient(90deg, #3b82f6, #6366f1, #a5b4fc, #3b82f6);
-  background-size: 200% auto;
-  opacity: 0.5;
+  background: linear-gradient(90deg, #3b82f6, #60a5fa, #93c5fd, #60a5fa, #3b82f6);
+  background-size: 300% auto;
+  opacity: 0.7;
   transition: opacity 0.3s ease;
+  border-radius: 0 0 14px 14px;
 }
 
 .btn-premium-resume:hover::after {
   opacity: 1;
-  animation: resume-gradient-shift 1.5s linear infinite;
+  animation: resume-gradient-shift 2s linear infinite;
+  height: 4px;
 }
 
 @keyframes resume-gradient-shift {
   0% { background-position: 0% center; }
-  100% { background-position: 200% center; }
+  100% { background-position: 300% center; }
 }
 
 /* Icon download arrow animation */
@@ -256,10 +267,14 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: transform 0.3s ease;
+  transition: all 0.3s ease;
 }
 
 .btn-premium-resume:hover .download-icon-wrapper {
-  transform: translateY(2px);
+  transform: translateY(3px);
+}
+
+.btn-premium-resume:active .download-icon-wrapper {
+  transform: translateY(1px);
 }
 
