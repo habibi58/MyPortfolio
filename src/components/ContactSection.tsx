@@ -77,9 +77,9 @@ export const ContactSection = () => {
   return (
     <section id="contact" className="relative py-24 overflow-hidden">
       {/* Background */}
-      <div className="absolute inset-0 dot-pattern opacity-20 dark:opacity-10" />
-      <div className="absolute top-0 right-1/4 w-[500px] h-[500px] rounded-full bg-blue-500/10 dark:bg-blue-500/[0.03] blur-[120px]" />
-      <div className="absolute bottom-0 left-1/4 w-[400px] h-[400px] rounded-full bg-blue-500/10 dark:bg-blue-500/[0.03] blur-[100px]" />
+      <div className="absolute inset-0 dot-pattern opacity-10" />
+      <div className="absolute top-0 right-1/4 w-[500px] h-[500px] rounded-full bg-blue-500/[0.03] blur-[120px]" />
+      <div className="absolute bottom-0 left-1/4 w-[400px] h-[400px] rounded-full bg-blue-500/[0.03] blur-[100px]" />
 
       <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <SectionHeading
@@ -106,10 +106,10 @@ export const ContactSection = () => {
                     <div className={`inline-flex p-4 rounded-2xl bg-gradient-to-br ${method.color} mb-4 shadow-lg group-hover:shadow-xl group-hover:scale-105 transition-all duration-300`}>
                       <Icon className="w-6 h-6 text-white" />
                     </div>
-                    <h4 className="font-display font-bold text-slate-900 dark:text-white mb-2">
+                    <h4 className="font-display font-bold text-white mb-2">
                       {method.label}
                     </h4>
-                    <p className="text-slate-500 dark:text-slate-400 text-sm break-all">
+                    <p className="text-slate-400 text-sm break-all">
                       {method.value}
                     </p>
                   </Card>
@@ -133,13 +133,13 @@ export const ContactSection = () => {
               {/* Top gradient accent */}
               <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-600 via-blue-500 to-blue-700" />
 
-              <h3 className="font-display text-2xl font-bold text-slate-900 dark:text-white mb-8 pt-2">
+              <h3 className="font-display text-2xl font-bold text-white mb-8 pt-2">
                 Send me a Message
               </h3>
               <form onSubmit={handleSubmit} className="space-y-5">
                 {/* Name Field */}
                 <div className="group">
-                  <label className="block text-sm font-semibold text-slate-600 dark:text-slate-400 mb-2">
+                  <label className="block text-sm font-semibold text-slate-400 mb-2">
                     Your Name
                   </label>
                   <input
@@ -147,7 +147,7 @@ export const ContactSection = () => {
                     name="name"
                     value={formData.name}
                     onChange={handleChange}
-                    className="w-full px-4 py-3.5 rounded-xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700/60 focus:outline-none focus:ring-2 focus:ring-blue-600/40 focus:border-blue-600/40 transition-all duration-300 text-slate-900 dark:text-white placeholder:text-slate-400"
+                    className="w-full px-4 py-3.5 rounded-xl bg-slate-800/80 border border-slate-700/60 focus:outline-none focus:ring-2 focus:ring-blue-600/40 focus:border-blue-600/40 transition-all duration-300 text-white placeholder:text-slate-400"
                     placeholder="John Doe"
                     required
                   />
@@ -155,7 +155,7 @@ export const ContactSection = () => {
 
                 {/* Email Field */}
                 <div className="group">
-                  <label className="block text-sm font-semibold text-slate-600 dark:text-slate-400 mb-2">
+                  <label className="block text-sm font-semibold text-slate-400 mb-2">
                     Your Email
                   </label>
                   <input
@@ -163,7 +163,7 @@ export const ContactSection = () => {
                     name="email"
                     value={formData.email}
                     onChange={handleChange}
-                    className="w-full px-4 py-3.5 rounded-xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700/60 focus:outline-none focus:ring-2 focus:ring-blue-600/40 focus:border-blue-600/40 transition-all duration-300 text-slate-900 dark:text-white placeholder:text-slate-400"
+                    className="w-full px-4 py-3.5 rounded-xl bg-slate-800/80 border border-slate-700/60 focus:outline-none focus:ring-2 focus:ring-blue-600/40 focus:border-blue-600/40 transition-all duration-300 text-white placeholder:text-slate-400"
                     placeholder="john@example.com"
                     required
                   />
@@ -171,7 +171,7 @@ export const ContactSection = () => {
 
                 {/* Message Field */}
                 <div className="group">
-                  <label className="block text-sm font-semibold text-slate-600 dark:text-slate-400 mb-2">
+                  <label className="block text-sm font-semibold text-slate-400 mb-2">
                     Message
                   </label>
                   <textarea
@@ -179,7 +179,7 @@ export const ContactSection = () => {
                     value={formData.message}
                     onChange={handleChange}
                     rows={5}
-                    className="w-full px-4 py-3.5 rounded-xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700/60 focus:outline-none focus:ring-2 focus:ring-blue-600/40 focus:border-blue-600/40 transition-all duration-300 resize-none text-slate-900 dark:text-white placeholder:text-slate-400"
+                    className="w-full px-4 py-3.5 rounded-xl bg-slate-800/80 border border-slate-700/60 focus:outline-none focus:ring-2 focus:ring-blue-600/40 focus:border-blue-600/40 transition-all duration-300 resize-none text-white placeholder:text-slate-400"
                     placeholder="Your message here..."
                     required
                   ></textarea>
@@ -203,10 +203,10 @@ export const ContactSection = () => {
           <motion.div variants={itemVariants} className="space-y-6">
             <Card gradient className="relative overflow-hidden">
               <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-600 via-blue-500 to-blue-700" />
-              <h3 className="font-display text-2xl font-bold text-slate-900 dark:text-white mb-5 pt-2">
+              <h3 className="font-display text-2xl font-bold text-white mb-5 pt-2">
                 Quick Response
               </h3>
-              <p className="text-slate-500 dark:text-slate-400 mb-6 leading-relaxed">
+              <p className="text-slate-400 mb-6 leading-relaxed">
                 I usually respond to messages within 24 hours. Whether you have a question about
                 IT support, web development, or collaboration opportunities, I'd love to hear from
                 you!
@@ -218,10 +218,10 @@ export const ContactSection = () => {
                   { icon: Handshake, text: 'Ready for collaboration' },
                 ].map(({ icon: Icon, text }, i) => (
                   <div key={i} className="flex gap-3 items-center">
-                    <div className="p-1.5 rounded-lg bg-blue-100 dark:bg-blue-900/30">
-                      <Icon size={14} className="text-blue-600 dark:text-blue-400" />
+                    <div className="p-1.5 rounded-lg bg-blue-900/30">
+                      <Icon size={14} className="text-blue-400" />
                     </div>
-                    <span className="text-sm font-medium text-slate-600 dark:text-slate-300">
+                    <span className="text-sm font-medium text-slate-300">
                       {text}
                     </span>
                   </div>
@@ -230,7 +230,7 @@ export const ContactSection = () => {
             </Card>
 
             <Card glass>
-              <h4 className="font-display font-bold text-slate-900 dark:text-white mb-4">
+              <h4 className="font-display font-bold text-white mb-4">
                 Business Hours
               </h4>
               <ul className="space-y-3">
@@ -240,8 +240,8 @@ export const ContactSection = () => {
                   { day: 'Sunday', time: 'Available for urgent matters' },
                 ].map(({ day, time }, i) => (
                   <li key={i} className="flex justify-between items-center text-sm">
-                    <span className="font-medium text-slate-600 dark:text-slate-400">{day}</span>
-                    <span className="text-slate-500 dark:text-slate-500">{time}</span>
+                    <span className="font-medium text-slate-400">{day}</span>
+                    <span className="text-slate-500">{time}</span>
                   </li>
                 ))}
               </ul>

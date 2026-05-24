@@ -29,11 +29,11 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       primary:
         'bg-gradient-to-r from-blue-600 via-blue-500 to-blue-700 text-white hover:shadow-lg hover:shadow-blue-600/30 hover:-translate-y-0.5 active:translate-y-0 disabled:opacity-50 animate-gradient-shift bg-[length:200%_200%]',
       secondary:
-        'bg-gradient-to-r from-slate-800 to-slate-700 text-white hover:shadow-lg hover:shadow-slate-800/30 hover:-translate-y-0.5 dark:from-slate-700 dark:to-slate-600 disabled:opacity-50',
+        'bg-gradient-to-r from-slate-700 to-slate-600 text-white hover:shadow-lg hover:shadow-slate-800/30 hover:-translate-y-0.5 disabled:opacity-50',
       outline:
-        'border-2 border-blue-600/50 text-blue-700 hover:bg-blue-600/10 hover:border-blue-600 hover:-translate-y-0.5 disabled:opacity-50 dark:border-blue-400/50 dark:text-blue-400 dark:hover:border-blue-400',
+        'border-2 border-blue-400/50 text-blue-400 hover:bg-blue-600/10 hover:border-blue-400 hover:-translate-y-0.5 disabled:opacity-50',
       ghost:
-        'text-blue-700 hover:bg-blue-600/10 dark:text-blue-400 dark:hover:bg-blue-600/15 disabled:opacity-50',
+        'text-blue-400 hover:bg-blue-600/15 disabled:opacity-50',
     };
 
     const sizes = {

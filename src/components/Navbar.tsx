@@ -59,7 +59,7 @@ export const Navbar = () => {
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 1.5, ease: [0.22, 1, 0.36, 1] }}
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${hasScrolled
-        ? 'bg-white/10 backdrop-blur-md dark:bg-slate-900/10'
+        ? 'bg-slate-900/10 backdrop-blur-md'
         : 'bg-transparent'
         }`}
     >
@@ -78,7 +78,7 @@ export const Navbar = () => {
               e.preventDefault();
               handleNavClick('#home');
             }}
-            className="font-display text-2xl font-extrabold text-slate-900 dark:text-white"
+            className="font-display text-2xl font-extrabold text-white"
           >
             Jason
           </a>
@@ -91,7 +91,7 @@ export const Navbar = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
           >
-            <div className="rounded-2xl bg-slate-900/90 px-1.5 py-1.5 shadow-xl shadow-slate-900/20 ring-1 ring-white/10 backdrop-blur-xl dark:bg-slate-950/90">
+            <div className="rounded-2xl bg-slate-950/90 px-1.5 py-1.5 shadow-xl shadow-slate-900/20 ring-1 ring-white/10 backdrop-blur-xl">
               <GooeyNav
                 items={gooeyItems}
                 activeIndex={activeGooeyIndex}
@@ -107,7 +107,7 @@ export const Navbar = () => {
         <motion.div className="flex items-center gap-2 justify-self-end sm:gap-3">
           <button
             onClick={() => setIsOpen(!isOpen)}
-            className="rounded-xl p-2.5 hover:bg-slate-100 dark:hover:bg-slate-800 lg:hidden transition-colors"
+            className="rounded-xl p-2.5 hover:bg-slate-800 lg:hidden transition-colors"
             aria-label={isOpen ? 'Close menu' : 'Open menu'}
           >
             {isOpen ? <X size={22} /> : <Menu size={22} />}
@@ -122,7 +122,7 @@ export const Navbar = () => {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
-            className="border-t border-slate-200/50 dark:border-slate-700/30 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl lg:hidden"
+            className="border-t border-slate-700/30 bg-slate-900/80 backdrop-blur-xl lg:hidden"
           >
             <motion.div className="space-y-1 px-4 py-4">
               {navItems.map((item, index) => (
@@ -133,8 +133,8 @@ export const Navbar = () => {
                   transition={{ delay: index * 0.05 }}
                   onClick={() => handleNavClick(item.href)}
                   className={`block w-full rounded-xl px-4 py-3 text-left font-medium transition-all duration-300 ${activeSection === item.id
-                    ? 'bg-gradient-to-r from-blue-600/10 to-blue-700/10 text-blue-700 dark:text-blue-400 border border-blue-600/20'
-                    : 'text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800'
+                    ? 'bg-gradient-to-r from-blue-600/10 to-blue-700/10 text-blue-400 border border-blue-600/20'
+                    : 'text-slate-300 hover:bg-slate-800'
                     }`}
                 >
                   {item.label}

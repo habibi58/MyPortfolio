@@ -1,10 +1,8 @@
 // Hero Section Component
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { ArrowDown, Download } from 'lucide-react';
-import { portfolioOwner, heroContent } from '../data';
-import { useDarkMode } from '../hooks';
-import { Button } from './Button';
+import { Download } from 'lucide-react';
+import { heroContent } from '../data';
 import { ParticlesBackground } from './ParticlesBackground';
 import { fadeInUp } from '../animations/variants';
 import BlurText from './BlurText';
@@ -15,7 +13,6 @@ const particleColors = ['#ffffff'];
 export const HeroSection = () => {
   const [displayedText, setDisplayedText] = useState('');
   const [cursorVisible, setCursorVisible] = useState(true);
-  const { isDark } = useDarkMode();
 
 
 
@@ -53,7 +50,7 @@ export const HeroSection = () => {
       {/* Particles Background - Moved outside section to prevent clipping */}
       <div className="fixed inset-0 z-0">
         <ParticlesBackground
-          key={isDark ? 'particles-dark' : 'particles-light'}
+          key="particles-dark"
           particleColors={particleColors}
           particleCount={500}
           particleSpread={20}
@@ -99,9 +96,9 @@ export const HeroSection = () => {
               transition={{ delay: 0.4 }}
               className="mb-6 min-h-20"
             >
-              <h2 className="font-display bg-gradient-to-r from-blue-600 via-blue-500 to-blue-700 dark:from-blue-400 dark:via-blue-400 dark:to-blue-500 bg-clip-text text-2xl font-bold text-transparent md:text-4xl">
+              <h2 className="font-display bg-gradient-to-r from-blue-400 via-blue-400 to-blue-500 bg-clip-text text-2xl font-bold text-transparent md:text-4xl">
                 {displayedText}
-                <span className={`text-blue-700 dark:text-blue-400 ${cursorVisible ? 'opacity-100' : 'opacity-0'}`}>|</span>
+                <span className={`text-blue-400 ${cursorVisible ? 'opacity-100' : 'opacity-0'}`}>|</span>
               </h2>
             </motion.div>
 
@@ -124,25 +121,49 @@ export const HeroSection = () => {
               transition={{ delay: 0.8 }}
               className="mb-14 flex flex-col gap-4 sm:flex-row"
             >
-              <Button size="lg" onClick={scrollToProjects} className="group">
-                {heroContent.ctaPrimary}
-                <ArrowDown
-                  size={20}
-                  className="transition-transform group-hover:translate-y-1"
-                />
-              </Button>
-              <a
+              <motion.button
+                onClick={scrollToProjects}
+                className="btn-view-work"
+                initial={{ opacity: 0, scale: 0.65 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{
+                  delay: 1.2,
+                  duration: 0.9,
+                  type: 'spring',
+                  stiffness: 80,
+                  damping: 14,
+                }}
+              >
+                <span className="vw-label">{heroContent.ctaPrimary}</span>
+                <span className="vw-icon">
+                  <i className="ti ti-arrow-right" aria-hidden="true" />
+                </span>
+              </motion.button>
+
+              <motion.a
                 href="/Mohamad_Jason_Resume.pdf"
                 download="Mohamad_Jason_Resume.pdf"
-                className="btn-premium-resume group"
+                className="btn-premium-resume"
+                initial={{ opacity: 0, scale: 0.65 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{
+                  delay: 1.5,
+                  duration: 0.9,
+                  type: 'spring',
+                  stiffness: 80,
+                  damping: 14,
+                }}
               >
                 <span className="download-icon-wrapper">
-                  <Download size={20} className="text-blue-400 group-hover:text-indigo-300 transition-colors" />
+                  <span className="icon-stack">
+                    <Download size={18} />
+                    <Download size={18} />
+                  </span>
                 </span>
+                <span className="bottom-bar" />
                 {heroContent.ctaSecondary}
-              </a>
-            </motion.div>
-
+              </motion.a>
+</motion.div>
             {/* Social Links */}
             <motion.div
               variants={fadeInUp}

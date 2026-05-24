@@ -41,8 +41,8 @@ export const AboutSection = () => {
   return (
     <section id="about" style={{ marginBottom: '200px' }} className="relative min-h-screen py-24 overflow-visible flex flex-col justify-center">
       {/* Decorative elements */}
-      <div className="absolute top-0 right-0 w-96 h-96 rounded-full bg-blue-500/5 dark:bg-blue-500/[0.02] blur-[100px]" />
-      <div className="absolute bottom-0 left-0 w-80 h-80 rounded-full bg-blue-400/5 dark:bg-blue-400/[0.02] blur-[100px]" />
+      <div className="absolute top-0 right-0 w-96 h-96 rounded-full bg-blue-500/[0.02] blur-[100px]" />
+      <div className="absolute bottom-0 left-0 w-80 h-80 rounded-full bg-blue-400/[0.02] blur-[100px]" />
 
       <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <SectionHeading
@@ -78,7 +78,7 @@ export const AboutSection = () => {
                 },
               ].map((item, i) => (
                 <motion.div key={i} variants={itemVariants} className="group">
-                  <h3 className="font-display text-xl font-bold mb-3 text-slate-900 dark:text-white flex items-center gap-3">
+                  <h3 className="font-display text-xl font-bold mb-3 text-white flex items-center gap-3">
                     <span className="h-8 w-1 rounded-full bg-gradient-to-b from-blue-600 to-blue-700" />
                     {item.title}
                   </h3>
@@ -88,7 +88,7 @@ export const AboutSection = () => {
                     baseRotation={3}
                     blurStrength={4}
                     containerClassName="!text-base !font-normal"
-                    textClassName="text-sm text-slate-500 dark:text-slate-400 leading-relaxed pl-4">
+                    textClassName="text-sm text-slate-400 leading-relaxed pl-4">
                     {item.text}
                   </ScrollReveal>
                 </motion.div>
@@ -127,7 +127,7 @@ export const AboutSection = () => {
                 <h3 className="font-display text-4xl md:text-5xl font-extrabold bg-gradient-to-r from-blue-600 via-blue-500 to-blue-700 bg-clip-text text-transparent mb-2">
                   <AnimatedCounter value={stat.value} />
                 </h3>
-                <p className="text-sm font-medium text-slate-500 dark:text-slate-400">{stat.label}</p>
+                <p className="text-sm font-medium text-slate-400">{stat.label}</p>
               </Card>
             </motion.div>
           ))}

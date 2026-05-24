@@ -20,8 +20,8 @@ export const CertificationsSection = () => {
   return (
     <section id="certifications" className="relative py-24 overflow-hidden">
       {/* Decorative */}
-      <div className="absolute top-0 right-0 w-[500px] h-[500px] rounded-full bg-blue-400/5 dark:bg-blue-400/[0.02] blur-[120px]" />
-      <div className="absolute bottom-0 left-0 w-[400px] h-[400px] rounded-full bg-blue-500/5 dark:bg-blue-500/[0.02] blur-[100px]" />
+      <div className="absolute top-0 right-0 w-[500px] h-[500px] rounded-full bg-blue-400/[0.02] blur-[120px]" />
+      <div className="absolute bottom-0 left-0 w-[400px] h-[400px] rounded-full bg-blue-500/[0.02] blur-[100px]" />
 
       <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <SectionHeading
@@ -75,12 +75,12 @@ const CertificationCard = ({ cert, index }: CertificationCardProps) => {
             <Award className="w-5 h-5 text-white" />
           </div>
           <div className="flex-1 min-w-0">
-            <h3 className="font-display text-lg font-bold text-slate-900 dark:text-white leading-tight mb-1">
+            <h3 className="font-display text-lg font-bold text-white leading-tight mb-1">
               {cert.title}
             </h3>
             <div className="flex items-center gap-1.5">
               <BadgeCheck size={14} className="text-blue-600 flex-shrink-0" />
-              <p className="text-blue-700 dark:text-blue-400 font-semibold text-sm truncate">
+              <p className="text-blue-400 font-semibold text-sm truncate">
                 {cert.issuer}
               </p>
             </div>
@@ -89,20 +89,20 @@ const CertificationCard = ({ cert, index }: CertificationCardProps) => {
 
         {/* Description */}
         {cert.description && (
-          <p className="text-sm text-slate-500 dark:text-slate-400 mb-4 leading-relaxed">
+          <p className="text-sm text-slate-400 mb-4 leading-relaxed">
             {cert.description}
           </p>
         )}
 
         {/* Date */}
-        <div className="flex items-center gap-2 text-sm text-slate-400 dark:text-slate-500 mb-4">
+        <div className="flex items-center gap-2 text-sm text-slate-500 mb-4">
           <Calendar size={14} />
           {cert.date}
         </div>
 
         {/* Credential ID */}
         {cert.credentialId && (
-          <p className="text-xs text-slate-400 dark:text-slate-600 mb-5 font-mono">
+          <p className="text-xs text-slate-600 mb-5 font-mono">
             ID: {cert.credentialId}
           </p>
         )}

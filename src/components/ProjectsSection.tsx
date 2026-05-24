@@ -15,7 +15,7 @@ export const ProjectsSection = () => {
     <section id="projects" className="relative py-24 overflow-hidden">
       {/* Background */}
       <div className="absolute inset-0 mesh-gradient-2" />
-      <div className="absolute inset-0 dot-pattern opacity-20 dark:opacity-10" />
+      <div className="absolute inset-0 dot-pattern opacity-10" />
 
       <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <SectionHeading
@@ -48,10 +48,10 @@ export const ProjectsSection = () => {
               viewport={{ once: true }}
               className="flex items-center gap-4 mb-10"
             >
-              <h3 className="font-display text-2xl font-bold text-slate-900 dark:text-white">
+              <h3 className="font-display text-2xl font-bold text-white">
                 Other Projects
               </h3>
-              <div className="flex-1 h-px bg-gradient-to-r from-slate-200 dark:from-slate-700 to-transparent" />
+              <div className="flex-1 h-px bg-gradient-to-r from-slate-700 to-transparent" />
             </motion.div>
             <motion.div
               variants={containerVariants}
@@ -119,12 +119,12 @@ const ProjectCard = ({ project, featured = false }: ProjectCardProps) => {
       </div>
 
       {/* Content */}
-      <h3 className="font-display text-xl font-bold text-slate-900 dark:text-white mb-3 flex items-center gap-2 group">
+      <h3 className="font-display text-xl font-bold text-white mb-3 flex items-center gap-2 group">
         {project.title}
-        <ArrowUpRight size={18} className="text-slate-300 dark:text-slate-600 group-hover:text-blue-600 transition-colors" />
+        <ArrowUpRight size={18} className="text-slate-600 group-hover:text-blue-600 transition-colors" />
       </h3>
 
-      <p className="text-slate-500 dark:text-slate-400 mb-5 leading-relaxed text-sm">
+      <p className="text-slate-400 mb-5 leading-relaxed text-sm">
         {featured ? project.fullDescription : project.description}
       </p>
 
@@ -139,7 +139,7 @@ const ProjectCard = ({ project, featured = false }: ProjectCardProps) => {
           </span>
         ))}
         {project.technologies.length > 4 && (
-          <span className="px-3 py-1 text-xs font-medium bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 rounded-full">
+          <span className="px-3 py-1 text-xs font-medium bg-slate-800 text-slate-400 rounded-full">
             +{project.technologies.length - 4} more
           </span>
         )}

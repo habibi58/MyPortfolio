@@ -25,20 +25,20 @@ export const SectionHeading = ({
     >
       {subtitle && (
         <div className={`flex items-center gap-4 mb-4 ${align === 'center' ? 'justify-center' : 'justify-start'}`}>
-          <span className="h-1 w-12 md:w-16 rounded-full bg-slate-300 dark:bg-slate-600" />
-          <p className="text-4xl md:text-5xl lg:text-6xl font-extrabold uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400">
+          <span className="h-1 w-12 md:w-16 rounded-full bg-slate-600" />
+          <p className="text-4xl md:text-5xl lg:text-6xl font-extrabold uppercase tracking-[0.2em] text-slate-400">
             {subtitle}
           </p>
-          <span className="h-1 w-12 md:w-16 rounded-full bg-slate-300 dark:bg-slate-600" />
+          <span className="h-1 w-12 md:w-16 rounded-full bg-slate-600" />
         </div>
       )}
       {title && (
-        <h2 className="font-display text-4xl md:text-5xl lg:text-6xl font-extrabold text-slate-900 dark:text-white mb-5 tracking-tight">
+        <h2 className="font-display text-4xl md:text-5xl lg:text-6xl font-extrabold text-white mb-5 tracking-tight">
           {title}
         </h2>
       )}
       {description && (
-        <p className={`text-lg text-slate-500 dark:text-slate-400 max-w-2xl leading-relaxed ${align === 'center' ? 'mx-auto text-center' : 'mx-0'}`}>
+        <p className={`text-lg text-slate-400 max-w-2xl leading-relaxed ${align === 'center' ? 'mx-auto text-center' : 'mx-0'}`}>
           {description}
         </p>
       )}

@@ -10,7 +10,7 @@ export const ExperienceSection = () => {
   return (
     <section id="experience" className="relative py-24 overflow-hidden">
       {/* Decorative */}
-      <div className="absolute top-0 left-1/2 w-[600px] h-[600px] rounded-full bg-blue-400/5 dark:bg-blue-400/[0.02] blur-[120px] -translate-x-1/2" />
+      <div className="absolute top-0 left-1/2 w-[600px] h-[600px] rounded-full bg-blue-400/[0.02] blur-[120px] -translate-x-1/2" />
 
       <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <SectionHeading
@@ -54,26 +54,26 @@ export const ExperienceSection = () => {
                         <Briefcase className="w-5 h-5 text-white" />
                       </div>
                       <div className="flex-1">
-                        <h3 className="font-display text-xl font-bold text-slate-900 dark:text-white">
+                        <h3 className="font-display text-xl font-bold text-white">
                           {exp.position}
                         </h3>
-                        <p className="text-blue-700 dark:text-blue-400 font-semibold text-sm">
+                        <p className="text-blue-400 font-semibold text-sm">
                           {exp.company}
                         </p>
                       </div>
                       {exp.isCurrentRole && (
-                        <span className="px-3 py-1 text-xs font-bold bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 rounded-full border border-blue-200 dark:border-blue-800/40">
+                        <span className="px-3 py-1 text-xs font-bold bg-blue-900/30 text-blue-400 rounded-full border border-blue-800/40">
                           Current
                         </span>
                       )}
                     </div>
 
                     <div className="space-y-2 mb-5">
-                      <div className="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400">
+                      <div className="flex items-center gap-2 text-sm text-slate-400">
                         <Calendar size={14} className="text-slate-400" />
                         {exp.duration}
                       </div>
-                      <div className="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400">
+                      <div className="flex items-center gap-2 text-sm text-slate-400">
                         <MapPin size={14} className="text-slate-400" />
                         {exp.location}
                       </div>
@@ -81,7 +81,7 @@ export const ExperienceSection = () => {
 
                     <ul className="space-y-3 mb-5">
                       {exp.description.map((desc, i) => (
-                        <li key={i} className="flex gap-3 text-sm text-slate-600 dark:text-slate-300">
+                        <li key={i} className="flex gap-3 text-sm text-slate-300">
                           <span className="mt-1.5 h-1.5 w-1.5 rounded-full bg-gradient-to-r from-blue-600 to-blue-700 shrink-0" />
                           {desc}
                         </li>
@@ -111,7 +111,7 @@ export const ExperienceSection = () => {
                     viewport={{ once: true }}
                     className="relative"
                   >
-                    <div className="w-5 h-5 rounded-full bg-gradient-to-r from-blue-600 to-blue-700 border-4 border-white dark:border-slate-900 relative z-10 shadow-lg shadow-blue-600/30" />
+                    <div className="w-5 h-5 rounded-full bg-gradient-to-r from-blue-600 to-blue-700 border-4 border-black relative z-10 shadow-lg shadow-blue-600/30" />
                     <motion.div
                       animate={{ scale: [1, 2, 1], opacity: [0.4, 0, 0.4] }}
                       transition={{ duration: 2.5, repeat: Infinity }}
