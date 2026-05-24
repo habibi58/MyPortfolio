@@ -38,7 +38,7 @@ export const heroContent = {
   mainHeading: `Hi, I'm Jason`,
   subHeading: 'IT Graduate & Technical Support Specialist',
   description:
-    'Passionate about providing excellent technical support and solving IT challenges. Dedicated to helping users and optimizing systems.',
+    'Passionate about cloud technologies, web development, and solving real-world problems through clean and efficient solutions.',
   ctaPrimary: 'View My Work',
   ctaSecondary: 'Download Resume',
 };
