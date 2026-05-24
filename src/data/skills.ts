@@ -9,90 +9,32 @@ export interface Skill {
 }
 
 export const skillsData: Skill[] = [
-  // Technical Support
   {
-    id: 'tech-support',
-    name: 'Technical Support',
-    category: 'IT Support',
-    proficiency: 90,
-  },
-  {
-    id: 'hardware-troubleshoot',
-    name: 'Hardware Troubleshooting',
-    category: 'IT Support',
-    proficiency: 85,
-  },
-  {
-    id: 'software-install',
-    name: 'Software Installation',
-    category: 'IT Support',
+    id: 'problem-solving',
+    name: 'Problem Solving',
+    category: 'Skills',
     proficiency: 88,
   },
   {
-    id: 'networking-basics',
-    name: 'Networking Basics',
-    category: 'IT Support',
-    proficiency: 75,
+    id: 'typing-speed',
+    name: 'Typing Speed',
+    category: 'Skills',
+    proficiency: 50,
   },
   {
-    id: 'windows-os',
-    name: 'Windows OS',
-    category: 'Operating Systems',
-    proficiency: 92,
-  },
-  {
-    id: 'microsoft-office',
-    name: 'Microsoft Office',
-    category: 'Office Suite',
-    proficiency: 90,
-  },
-
-  // Web Development
-  {
-    id: 'html',
-    name: 'HTML',
-    category: 'Web Development',
-    proficiency: 90,
-  },
-  {
-    id: 'css',
-    name: 'CSS',
-    category: 'Web Development',
-    proficiency: 88,
-  },
-  {
-    id: 'javascript',
-    name: 'JavaScript',
-    category: 'Web Development',
+    id: 'communication',
+    name: 'Communication',
+    category: 'Skills',
     proficiency: 85,
   },
   {
-    id: 'react',
-    name: 'React.js',
-    category: 'Web Development',
-    proficiency: 82,
-  },
-
-  // Other Skills
-  {
-    id: 'database',
-    name: 'Basic Database Knowledge',
-    category: 'Database',
-    proficiency: 70,
-  },
-  {
-    id: 'customer-service',
-    name: 'Customer Service',
-    category: 'Soft Skills',
-    proficiency: 92,
+    id: 'team-collaboration',
+    name: 'Team Collaboration',
+    category: 'Skills',
+    proficiency: 90,
   },
 ];
 
 export const skillCategories = [
-  'IT Support',
-  'Operating Systems',
-  'Office Suite',
-  'Web Development',
-  'Database',
-  'Soft Skills',
+  'Skills',
 ];

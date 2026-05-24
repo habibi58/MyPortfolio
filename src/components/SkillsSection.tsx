@@ -1,7 +1,7 @@
 // Skills Section Component
-import { useState, useMemo } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { skillsData, skillCategories } from '../data';
+import { motion, useInView, animate } from 'framer-motion';
+import { useRef, useEffect, useState } from 'react';
+import { skillsData } from '../data';
 import { SectionHeading } from './SectionHeading';
 import { Card } from './Card';
 import { containerVariants, itemVariants } from '../animations/variants';
@@ -12,15 +12,9 @@ import {
   Network,
   Headphones,
 } from 'lucide-react';
-import { ClaudeCode, Antigravity, Cursor, Windsurf, Microsoft  } from '@lobehub/icons';
+import { ClaudeCode, Antigravity, Cursor, Windsurf, Microsoft, Github  } from '@lobehub/icons';
 
 export const SkillsSection = () => {
-  const [selectedCategory, setSelectedCategory] = useState(skillCategories[0]);
-
-  const filteredSkills = useMemo(() => {
-    return skillsData.filter((skill) => skill.category === selectedCategory);
-  }, [selectedCategory]);
-
   return (
     <section id="skills" style={{ marginBottom: '200px' }} className="relative py-32 my-20 overflow-hidden">
       {/* Background decoration */}
@@ -35,47 +29,23 @@ export const SkillsSection = () => {
           description="Technical and professional skills developed through experience and continuous learning"
         />
 
-        {/* Category Filter */}
+        {/* Skills Grid */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
+          variants={containerVariants}
+          initial="hidden"
+          whileInView="visible"
           viewport={{ once: true }}
-          className="flex flex-wrap justify-center gap-3 mb-14"
+          className="grid grid-cols-1 md:grid-cols-2 gap-6"
         >
-          {skillCategories.map((category) => (
-            <button
-              key={category}
-              onClick={() => setSelectedCategory(category)}
-              className={`relative px-6 py-2.5 rounded-xl font-semibold text-sm transition-all duration-300 ${selectedCategory === category
-                  ? 'bg-gradient-to-r from-blue-600 via-blue-500 to-blue-700 text-white shadow-lg shadow-blue-600/25 -translate-y-0.5'
-                  : 'bg-slate-800/80 text-slate-400 hover:bg-slate-700 hover:-translate-y-0.5'
-                }`}
+          {skillsData.map((skill, index) => (
+            <motion.div
+              key={skill.id}
+              variants={itemVariants}
             >
-              {category}
-            </button>
+              <SkillCard skill={skill} index={index} />
+            </motion.div>
           ))}
         </motion.div>
-
-        {/* Skills Grid */}
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={selectedCategory}
-            variants={containerVariants}
-            initial="hidden"
-            animate="visible"
-            exit={{ opacity: 0, y: -10, transition: { duration: 0.2 } }}
-            className="grid grid-cols-1 md:grid-cols-2 gap-6"
-          >
-            {filteredSkills.map((skill, index) => (
-              <motion.div
-                key={skill.id}
-                variants={itemVariants}
-              >
-                <SkillCard skill={skill} index={index} />
-              </motion.div>
-            ))}
-          </motion.div>
-        </AnimatePresence>
 
         {/* All Skills Overview */}
         <motion.div
@@ -161,6 +131,12 @@ export const SkillsSection = () => {
                       <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/vscode/vscode-original.svg" alt="VS Code" className="w-10 h-10" />
                     </div>
                     <span className="text-sm font-bold text-slate-300 text-center whitespace-normal leading-tight">VS Code</span>
+                  </span>
+                  <span className="flex flex-col items-center justify-center gap-3 w-32">
+                    <div className="w-16 h-16 rounded-2xl bg-slate-800/80 shadow-lg flex items-center justify-center border border-slate-700/50 backdrop-blur-sm">
+                      <Github size={40} />
+                    </div>
+                    <span className="text-sm font-bold text-slate-300 text-center whitespace-normal leading-tight">GitHub</span>
                   </span>
                 </span>,
                 <span className="flex items-center gap-12 px-6 py-4" key="row2">
@@ -253,12 +229,46 @@ interface SkillCardProps {
 }
 
 const SkillCard = ({ skill, index }: SkillCardProps) => {
+  const isTypingSpeed = skill.id === 'typing-speed';
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true });
+  const [count, setCount] = useState(0);
+
+  useEffect(() => {
+    if (isInView) {
+      const targetValue = isTypingSpeed ? 50 : skill.proficiency;
+      const controls = animate(0, targetValue, {
+        duration: 2.5,
+        delay: index * 0.1,
+        ease: 'easeOut',
+        onUpdate: (latest) => setCount(Math.round(latest)),
+      });
+      return controls.stop;
+    }
+  }, [isInView, skill.proficiency, index, isTypingSpeed]);
+
   return (
-    <Card hover glass className="text-center">
+    <Card hover glass className="text-center" ref={ref}>
       <div className="flex flex-col items-center mb-5">
         <h4 className="font-display text-lg font-bold text-white mb-2">{skill.name}</h4>
         <span className="text-sm font-bold bg-gradient-to-r from-blue-600 to-blue-700 bg-clip-text text-transparent">
-          {skill.proficiency}%
+          {isTypingSpeed ? (
+            <motion.span
+              initial={{ opacity: 0, y: 10 }}
+              animate={isInView ? { opacity: 1, y: 0 } : {}}
+              transition={{ duration: 0.5, delay: index * 0.1 }}
+            >
+              {count}wpm
+            </motion.span>
+          ) : (
+            <motion.span
+              initial={{ opacity: 0, y: 10 }}
+              animate={isInView ? { opacity: 1, y: 0 } : {}}
+              transition={{ duration: 0.5, delay: index * 0.1 }}
+            >
+              {count}%
+            </motion.span>
+          )}
         </span>
       </div>
 
