@@ -5,7 +5,7 @@ export const experienceData = [
     company:       'TTEC',
     duration:      'November 2025 – March 2026',
     location:      'Cainta, Rizal, Philippines',
-    isCurrentRole: true,
+    isCurrentRole: false,
     description: [
       'Provided Tier 1–2 technical support to 200+ end users across hardware and software.',
       'Reduced average ticket resolution time by 40% through knowledge base improvements.',
@@ -46,33 +46,4 @@ export const experienceData = [
     ],
   },
 
-  // ── second experience (add more the same way) ──
-  {
-    id:            2,
-    position:      'Technical Support Engineer',
-    company:       'Second Company',
-    duration:      'Mar 2022 – Dec 2023',
-    location:      'Quezon City, Philippines',
-    isCurrentRole: false,
-    description: [
-      'Managed 500+ monthly support tickets with 60% resolved within SLA targets.',
-      'Deployed and maintained VPN, firewall configs, and endpoint security tools.',
-      'Trained 15 junior technicians reducing escalations by 35%.',
-    ],
-    technologies: ['Cisco', 'VPN', 'Jira', 'Windows 11', 'Linux'],
-    stats: [
-      { count: 500, label: 'Tickets Resolved' },
-      { count: 60,  label: '% SLA Met'        },
-      { count: 35,  label: '% Less Escalation'},
-    ],
-    bars: [
-      { label: 'Network Troubleshooting', value: 88 },
-      { label: 'System Administration',   value: 82 },
-    ],
-    gallery: [
-      { img: null, emoji: '🔧', title: 'Network Config',  desc: 'Cisco switch and VLAN config for the company LAN upgrade.' },
-      { img: '/certificates/itil.jpg', emoji: '📋', title: 'ITIL Foundation', desc: 'ITIL v4 certification in IT service management.' },
-      { img: null, emoji: '🏅', title: 'Top Performer',   desc: 'Awarded Top Performer Q4 2023 for highest CSAT score.' },
-    ],
-  },
 ];
