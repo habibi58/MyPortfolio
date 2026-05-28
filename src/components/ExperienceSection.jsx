@@ -154,13 +154,6 @@ export const ExperienceSection = () => {
         .exp-gal-item:hover .exp-gal-over   { opacity: 1 !important; }
       `}</style>
 
-      {/* ── ambient orbs ── */}
-      <div className="pointer-events-none absolute inset-0 overflow-hidden">
-        <div style={{ position:'absolute', width:700, height:700, top:-200, left:-200, borderRadius:'50%', background:'radial-gradient(circle,#1d4ed820 0%,transparent 65%)' }} />
-        <div style={{ position:'absolute', width:500, height:500, bottom:-100, right:-100, borderRadius:'50%', background:'radial-gradient(circle,#7c3aed18 0%,transparent 65%)' }} />
-        <div style={{ position:'absolute', width:300, height:300, top:'45%', left:'45%', transform:'translate(-50%,-50%)', borderRadius:'50%', background:'radial-gradient(circle,#0d948015 0%,transparent 65%)' }} />
-      </div>
-
       {/* ── subtle grid ── */}
       <div className="pointer-events-none absolute inset-0"
         style={{ backgroundImage:'linear-gradient(rgba(255,255,255,0.01) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.01) 1px,transparent 1px)', backgroundSize:'60px 60px' }} />
@@ -242,11 +235,13 @@ export const ExperienceSection = () => {
 
       {/* ── SECTION BODY ── */}
       <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        <SectionHeading
-          subtitle="CAREER PATH"
-          title="Experience"
-          description="My professional journey and roles in IT support"
-        />
+        <div style={{ marginBottom: '60px' }}>
+          <SectionHeading
+            subtitle="CAREER PATH"
+            title="Experience"
+            description="My professional journey and roles in IT support"
+          />
+        </div>
 
         <div className="relative">
           {/* spine */}
@@ -527,10 +522,7 @@ const ExperienceCard = ({ exp, index, t, gallery, stats, bars, skills, openLight
                     overflow:'hidden',
                   }}
                 >
-                  {g.img
-                    ? <img src={g.img} alt={g.title} style={{ width:'100%', height:'100%', objectFit:'cover' }} />
-                    : <span style={{ fontSize:26 }}>{g.emoji}</span>
-                  }
+                  <span style={{ fontSize:26 }}>{g.emoji}</span>
                 </div>
 
                 {/* hover overlay */}
