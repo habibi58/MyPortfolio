@@ -11,7 +11,7 @@ export const experienceData = [
       'Reduced average ticket resolution time by 40% through knowledge base improvements.',
       'Configured and maintained Windows Active Directory, DNS, and DHCP services.',
     ],
-    technologies: ['Windows OS', 'IGEL OS', '', 'Azure AD', 'PowerShell'],
+    technologies: ['Windows OS', 'IGEL OS', 'Microsoft Office 365', 'Azure AD', 'PowerShell'],
 
     /* ── new fields ── */
     stats: [

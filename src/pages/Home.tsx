@@ -38,8 +38,11 @@ export const Home = () => {
       <SkillsSection />
       <ExperienceSection />
       <ProjectsSection />
+      <div className="h-34" />
       <CertificationsSection />
+      <div className="h-34" />
       <ContactSection />
+      <div className="h-32" />
 
     </main>
   );

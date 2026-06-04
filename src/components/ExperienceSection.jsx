@@ -346,7 +346,7 @@ export const ExperienceSection = () => {
               background:'linear-gradient(135deg,#3b82f6,#8b5cf6)',
               boxShadow:'0 0 18px #3b82f640',
             }} />
-            <p style={{ fontSize:10, letterSpacing:3, textTransform:'uppercase', color:'rgba(255,255,255,0.2)', marginTop:12 }}>
+            <p style={{ fontSize:10, letterSpacing:3, textTransform:'uppercase', color:'#ffffff', marginTop:12 }}>
               The journey continues
             </p>
           </motion.div>

@@ -15,12 +15,12 @@ export interface Project {
 export const projectsData: Project[] = [
   {
     id: 'helpdesk-ticketing',
-    title: 'IT Helpdesk Ticketing System',
+    title: 'Student Records Evaluation System',
     description: 'A comprehensive ticket management system for IT support teams',
     fullDescription:
       'A full-stack helpdesk ticketing system designed to manage IT support requests efficiently. Users can create tickets, track their status, and receive updates. Support staff can manage, prioritize, and resolve issues.',
-    image: '/assets/projects/helpdesk.png',
-    technologies: ['React.js', 'Node.js', 'MongoDB', 'Express', 'Socket.io'],
+    image: '/projectimages/project1.png',
+    technologies: ['HTML', 'CSS', 'JavaScript', 'PHP', 'MySQL'],
     liveLink: '#',
     githubLink: '#',
     featured: true,

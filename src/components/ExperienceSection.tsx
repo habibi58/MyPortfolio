@@ -1,425 +1,619 @@
 // Experience Section Component
-import { useEffect, useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { experienceData } from '../data';
 import { SectionHeading } from './SectionHeading';
 
-const GLOW_COLORS = ['#3b82f6', '#8b5cf6', '#14b8a6'];
-const NODE_ICONS  = ['☁', '⚡', '⚙'];
+interface GalleryItem {
+  emoji?: string;
+  img?: string | null;
+  title: string;
+  desc: string;
+}
 
+interface StatItem {
+  count: number;
+  label: string;
+}
+
+interface BarItem {
+  label: string;
+  value: number;
+}
+
+interface ExperienceItem {
+  id: number;
+  position: string;
+  company: string;
+  duration: string;
+  location: string;
+  isCurrentRole: boolean;
+  description: string[];
+  technologies?: string[];
+  skills?: string[];
+  stats?: StatItem[];
+  bars?: BarItem[];
+  gallery?: GalleryItem[];
+}
+
+interface Theme {
+  accent: string;
+  accent2: string;
+  glow: string;
+  border: string;
+  bg: string;
+  text: string;
+  icon?: string;
+  node?: string;
+}
+
+/* ─── colour theme per card index ─── */
+const THEMES: Theme[] = [
+  {
+    accent:   '#3b82f6',
+    accent2:  '#6366f1',
+    glow:     'rgba(59, 130, 246, 0.1)',
+    border:   'rgba(59, 130, 246, 0.2)',
+    bg:       'rgba(59, 130, 246, 0.03)',
+    text:     '#93c5fd',
+    icon:     '/Logos/ttec-logo.svg',
+    node:     '☁',
+  },
+  {
+    accent:   '#8b5cf6',
+    accent2:  '#ec4899',
+    glow:     'rgba(139, 92, 246, 0.1)',
+    border:   'rgba(139, 92, 246, 0.2)',
+    bg:       'rgba(139, 92, 246, 0.03)',
+    text:     '#c4b5fd',
+    node:     '⚡',
+  },
+  {
+    accent:   '#14b8a6',
+    accent2:  '#3b82f6',
+    glow:     'rgba(20, 184, 166, 0.1)',
+    border:   'rgba(20, 184, 166, 0.2)',
+    bg:       'rgba(20, 184, 166, 0.03)',
+    text:     '#5eead4',
+    node:     '⚙️',
+  },
+];
+
+/* ─── tiny helpers ─── */
+const getTheme = (i: number): Theme => THEMES[i % THEMES.length];
+
+function animateCount(el: HTMLElement, target: number) {
+  let cur = 0;
+  const step = target / 45;
+  const id = setInterval(() => {
+    cur = Math.min(cur + step, target);
+    el.textContent = String(Math.round(cur));
+    if (cur >= target) clearInterval(id);
+  }, 28);
+}
+
+/* ══════════════════════════════════════
+   ExperienceSection
+   ══════════════════════════════════════ */
 export const ExperienceSection = () => {
-  const cardRefs  = useRef([]);
-  const countRefs = useRef([]);
+  const rowRefs = useRef<(HTMLDivElement | null)[]>([]);
 
-  /* ── scroll reveal + counter animation ── */
   useEffect(() => {
-    const observers = [];
+    const observers: IntersectionObserver[] = [];
 
-    cardRefs.current.forEach((el, i) => {
-      if (!el) return;
-      const color = GLOW_COLORS[i % GLOW_COLORS.length];
+    rowRefs.current.forEach((row, i) => {
+      if (!row) return;
+      const t = getTheme(i);
 
+      /* scroll reveal */
       const io = new IntersectionObserver(
         ([entry]) => {
           if (!entry.isIntersecting) return;
+          row.style.opacity   = '1';
+          row.style.transform = 'translateY(0)';
 
-          // reveal card
-          el.style.opacity  = '1';
-          el.style.transform = 'translateY(0)';
-
-          // animate progress bars
-          el.querySelectorAll('[data-width]').forEach((bar) => {
-            setTimeout(() => { bar.style.width = bar.dataset.width + '%'; }, 250);
+          row.querySelectorAll('[data-count]').forEach((el) => {
+            const htmlEl = el as HTMLElement;
+            if (htmlEl.dataset.count) {
+              animateCount(htmlEl, parseInt(htmlEl.dataset.count, 10));
+            }
           });
-
-          // animate counters
-          el.querySelectorAll('[data-count]').forEach((counter) => {
-            const target = parseInt(counter.dataset.count, 10);
-            let cur = 0;
-            const step = target / 40;
-            const id = setInterval(() => {
-              cur = Math.min(cur + step, target);
-              counter.textContent = Math.round(cur);
-              if (cur >= target) clearInterval(id);
-            }, 30);
+          row.querySelectorAll('[data-w]').forEach((el) => {
+            const htmlEl = el as HTMLElement;
+            setTimeout(() => { 
+              if (htmlEl.dataset.w) {
+                htmlEl.style.width = htmlEl.dataset.w + '%'; 
+              }
+            }, 300);
           });
-
           io.disconnect();
         },
-        { threshold: 0.15 }
+        { threshold: 0.1 }
       );
-
-      io.observe(el);
+      io.observe(row);
       observers.push(io);
 
-      // hover glow
-      el.addEventListener('mouseenter', () => {
-        el.style.boxShadow    = `0 0 40px ${color}20, 0 20px 60px rgba(0,0,0,0.4)`;
-        el.style.borderColor  = color + '40';
-        el.style.transform    = 'translateY(-4px)';
-      });
-      el.addEventListener('mouseleave', () => {
-        el.style.boxShadow   = 'none';
-        el.style.borderColor = 'rgba(255,255,255,0.1)';
-        el.style.transform   = 'translateY(0)';
-      });
+      /* hover glow on the card inside this row */
+      const card = row.querySelector('.exp-inner-card') as HTMLElement;
+      if (card) {
+        const mouseEnterHandler = () => {
+          card.style.boxShadow  = `0 0 0 1px ${t.border}, 0 24px 60px ${t.glow}, 0 8px 32px rgba(0,0,0,0.5)`;
+          card.style.borderColor = t.border;
+          card.style.transform   = 'translateY(-6px)';
+        };
+        const mouseLeaveHandler = () => {
+          card.style.boxShadow  = 'none';
+          card.style.borderColor = 'rgba(255,255,255,0.07)';
+          card.style.transform   = 'translateY(0)';
+        };
+        card.addEventListener('mouseenter', mouseEnterHandler);
+        card.addEventListener('mouseleave', mouseLeaveHandler);
+      }
     });
 
     return () => observers.forEach((o) => o.disconnect());
   }, []);
 
-  /* ── lightbox ── */
-  const openLightbox = (emoji, title, desc) => {
-    const lb = document.getElementById('exp-lightbox');
-    document.getElementById('lb-emoji').textContent  = emoji;
-    document.getElementById('lb-title').textContent  = title;
-    document.getElementById('lb-desc').textContent   = desc;
-    lb.style.opacity        = '1';
-    lb.style.pointerEvents  = 'all';
-    lb.querySelector('.lb-inner').style.transform = 'scale(1)';
+  /* lightbox helpers */
+  const openLightbox = (imgSrc: string | null, emoji: string, title: string, desc: string) => {
+    const lb = document.getElementById('exp-lb');
+    const preview = document.getElementById('exp-lb-img');
+    if (!lb || !preview) return;
+
+    if (imgSrc) {
+      preview.innerHTML = `<img src="${imgSrc}" alt="${title}"
+        style="width:100%;height:100%;object-fit:contain;border-radius:10px;"/>`;
+      preview.style.background = 'transparent';
+    } else {
+      preview.innerHTML         = emoji;
+      preview.style.fontSize    = '72px';
+      preview.style.display     = 'flex';
+      preview.style.alignItems  = 'center';
+      preview.style.justifyContent = 'center';
+      preview.style.background  = 'linear-gradient(135deg,#0a0f1a,#141c2e)';
+    }
+
+    const titleEl = document.getElementById('exp-lb-title');
+    const descEl = document.getElementById('exp-lb-desc');
+    if (titleEl) titleEl.textContent = title;
+    if (descEl) descEl.textContent  = desc;
+
+    lb.style.opacity       = '1';
+    lb.style.pointerEvents = 'all';
+    
+    const box = lb.querySelector('.exp-lb-box') as HTMLElement;
+    if (box) box.style.transform = 'scale(1) translateY(0)';
   };
+
   const closeLightbox = () => {
-    const lb = document.getElementById('exp-lightbox');
+    const lb = document.getElementById('exp-lb');
+    if (!lb) return;
     lb.style.opacity       = '0';
     lb.style.pointerEvents = 'none';
-    lb.querySelector('.lb-inner').style.transform = 'scale(0.92)';
+    
+    const box = lb.querySelector('.exp-lb-box') as HTMLElement;
+    if (box) box.style.transform = 'scale(0.9) translateY(20px)';
   };
 
   return (
     <section id="experience" className="relative py-24 overflow-hidden">
 
-      {/* ── ambient glow ── */}
-      <div className="absolute top-0 left-1/2 w-[600px] h-[600px] rounded-full bg-blue-400/[0.02] blur-[120px] -translate-x-1/2 pointer-events-none" />
-      <div className="absolute bottom-0 right-0 w-[400px] h-[400px] rounded-full bg-purple-500/[0.02] blur-[100px] pointer-events-none" />
+      {/* ── keyframes injected once ── */}
+      <style>{`
+        @keyframes exp-node-ping {
+          0%   { transform: scale(1); opacity: 0.5; }
+          100% { transform: scale(2.4); opacity: 0; }
+        }
+        @keyframes exp-live-blink {
+          0%, 100% { opacity: 1; }
+          50%       { opacity: 0.25; }
+        }
+        .exp-inner-card {
+          transition: transform .35s cubic-bezier(.22,1,.36,1),
+                      border-color .3s ease,
+                      box-shadow .3s ease;
+        }
+        .exp-gal-item:hover .exp-gal-thumb  { transform: scale(1.1); }
+        .exp-gal-item:hover .exp-gal-over   { opacity: 1 !important; }
+      `}</style>
+
+      {/* ── subtle grid ── */}
+      <div className="pointer-events-none absolute inset-0"
+        style={{ backgroundImage:'linear-gradient(rgba(255,255,255,0.01) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.01) 1px,transparent 1px)', backgroundSize:'60px 60px' }} />
 
       {/* ── floating particles ── */}
-      <div className="absolute inset-0 pointer-events-none overflow-hidden">
-        {Array.from({ length: 20 }).map((_, i) => (
-          <div
-            key={i}
-            className="absolute rounded-full bg-white"
-            style={{
-              width:  `${Math.random() * 2 + 1}px`,
-              height: `${Math.random() * 2 + 1}px`,
-              left:   `${Math.random() * 100}%`,
-              bottom: '-4px',
-              opacity: Math.random() * 0.15 + 0.03,
-              animation: `float-up ${Math.random() * 15 + 10}s ${Math.random() * 10}s linear infinite`,
-            }}
-          />
+      <div className="pointer-events-none absolute inset-0 overflow-hidden">
+        {Array.from({ length: 18 }).map((_, i) => (
+          <div key={i} style={{
+            position:  'absolute',
+            width:     `${Math.random() * 2 + 1}px`,
+            height:    `${Math.random() * 2 + 1}px`,
+            left:      `${Math.random() * 100}%`,
+            bottom:    '-4px',
+            borderRadius: '50%',
+            background:   '#fff',
+            opacity:   Math.random() * 0.12 + 0.03,
+            animation: `float-up ${Math.random() * 14 + 10}s ${Math.random() * 8}s linear infinite`,
+          }} />
         ))}
+        <style>{`
+          @keyframes float-up {
+            0%   { transform:translateY(0) translateX(0);    opacity:0;   }
+            15%  { opacity:1; }
+            85%  { opacity:0.3; }
+            100% { transform:translateY(-100vh) translateX(25px); opacity:0; }
+          }
+        `}</style>
       </div>
 
-      {/* ── lightbox ── */}
+      {/* ── LIGHTBOX ── */}
       <div
-        id="exp-lightbox"
+        id="exp-lb"
         onClick={(e) => e.target === e.currentTarget && closeLightbox()}
         style={{
-          position:       'fixed', inset: 0, zIndex: 9999,
-          display:        'flex', alignItems: 'center', justifyContent: 'center',
-          background:     'rgba(0,0,0,0.88)',
-          backdropFilter: 'blur(10px)',
-          opacity:        0, pointerEvents: 'none',
-          transition:     'opacity 0.3s ease',
+          position:'fixed', inset:0, zIndex:9999,
+          display:'flex', alignItems:'center', justifyContent:'center',
+          background:'rgba(0,0,0,0.92)', backdropFilter:'blur(14px)',
+          opacity:0, pointerEvents:'none',
+          transition:'opacity .3s ease',
         }}
       >
-        <div
-          className="lb-inner"
-          style={{
-            background:   '#0d1220', border: '0.5px solid rgba(255,255,255,0.12)',
-            borderRadius: '20px',    padding: '28px',
-            maxWidth:     '560px',   width: '90%',
-            transform:    'scale(0.92)',
-            transition:   'transform 0.4s cubic-bezier(0.22,1,0.36,1)',
-            position:     'relative',
-          }}
-        >
+        <div className="exp-lb-box" style={{
+          background:   '#08101e',
+          border:       '0.5px solid rgba(255,255,255,0.12)',
+          borderRadius: '22px',
+          padding:      '28px',
+          maxWidth:     '620px',
+          width:        '92%',
+          position:     'relative',
+          transform:    'scale(0.9) translateY(20px)',
+          transition:   'transform .4s cubic-bezier(.22,1,.36,1)',
+          fontFamily:   'inherit',
+        }}>
           <button
             onClick={closeLightbox}
             style={{
-              position:     'absolute', top: '14px', right: '14px',
-              width:        '30px',     height: '30px', borderRadius: '50%',
-              background:   'rgba(255,255,255,0.07)',
-              border:       '0.5px solid rgba(255,255,255,0.15)',
-              color:        '#94a3b8',  fontSize: '16px',
-              cursor:       'pointer',  display: 'flex',
-              alignItems:   'center',   justifyContent: 'center',
+              position:'absolute', top:14, right:14,
+              width:32, height:32, borderRadius:'50%',
+              background:'rgba(255,255,255,0.06)',
+              border:'0.5px solid rgba(255,255,255,0.12)',
+              color:'rgba(255,255,255,0.5)', fontSize:15,
+              cursor:'pointer', display:'flex',
+              alignItems:'center', justifyContent:'center',
+              transition:'all .2s',
             }}
           >✕</button>
 
-          <div
-            id="lb-emoji"
-            style={{
-              width: '100%', aspectRatio: '16/9', borderRadius: '12px',
-              background:   'linear-gradient(135deg,#0d1220,#1a1f35)',
-              border:       '0.5px solid rgba(255,255,255,0.08)',
-              display:      'flex', alignItems: 'center', justifyContent: 'center',
-              fontSize:     '64px', marginBottom: '16px',
-            }}
-          />
-          <p id="lb-title" style={{ fontSize: '16px', fontWeight: 600, color: '#fff',     marginBottom: '6px' }} />
-          <p id="lb-desc"  style={{ fontSize: '13px', color: '#94a3b8', lineHeight: 1.7 }} />
+          <div id="exp-lb-img" style={{
+            width:'100%', aspectRatio:'16/9', borderRadius:14,
+            marginBottom:16, border:'0.5px solid rgba(255,255,255,0.08)',
+            overflow:'hidden',
+          }} />
+          <div id="exp-lb-title" style={{ fontSize:17, fontWeight:600, color:'#fff', marginBottom:6 }} />
+          <div id="exp-lb-desc"  style={{ fontSize:13, color:'rgba(255,255,255,0.5)', lineHeight:1.7 }} />
         </div>
       </div>
 
-      {/* ── section body ── */}
+      {/* ── SECTION BODY ── */}
       <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        <SectionHeading
-          subtitle="CAREER PATH"
-          title="Experience"
-          description="My professional journey and roles in IT support"
-        />
+        <div style={{ marginBottom: '60px' }}>
+          <SectionHeading
+            subtitle="CAREER PATH"
+            title="Experience"
+            description="My professional journey and roles in IT support"
+          />
+        </div>
 
         <div className="relative">
-          {/* timeline line */}
-          <div className="hidden md:block absolute left-1/2 -translate-x-1/2 w-px h-full">
-            <div className="w-full h-full bg-gradient-to-b from-transparent via-blue-500/20 to-transparent rounded-full" />
-          </div>
+          {/* spine */}
+          <div className="hidden md:block absolute left-1/2 -translate-x-1/2 w-px h-full pointer-events-none"
+            style={{ background:'linear-gradient(180deg,transparent,rgba(59,130,246,0.15) 12%,rgba(59,130,246,0.15) 88%,transparent)' }} />
 
           <div className="space-y-20">
-            {experienceData.map((exp, index) => {
-              const color    = GLOW_COLORS[index % GLOW_COLORS.length];
-              const nodeIcon = NODE_ICONS[index % NODE_ICONS.length];
-              const isRight  = index % 2 === 0;
-
-              /* per-experience gallery — customise or pull from exp.gallery */
+            {experienceData.map((exp: ExperienceItem, index) => {
+              const t       = getTheme(index);
+              const isLeft  = index % 2 === 0;
               const gallery = exp.gallery ?? [
-                { emoji: '📄', title: 'Project Screenshot',   desc: 'Work sample from this role.'            },
-                { emoji: '📜', title: 'Certificate',          desc: 'Professional certification earned.'     },
-                { emoji: '🏆', title: 'Achievement',          desc: 'Award or recognition received.'         },
+                { emoji:'📄', title:'Work Sample',   desc:'A key deliverable from this role.' },
+                { emoji:'📜', title:'Certificate',   desc:'Professional certification earned.' },
+                { emoji:'🏆', title:'Achievement',   desc:'Award or recognition received.'    },
               ];
-
-              /* per-experience stats — customise or pull from exp.stats */
               const stats = exp.stats ?? [
-                { count: 10, label: 'Projects'   },
-                { count: 95, label: '% Uptime'   },
-                { count: 30, label: '% Improved' },
+                { count:10,  label:'Projects'    },
+                { count:95,  label:'% Uptime'    },
+                { count:30,  label:'% Improved'  },
               ];
-
-              /* per-experience skills — falls back to exp.technologies */
+              const bars   = exp.bars   ?? [];
               const skills = exp.skills ?? exp.technologies ?? [];
 
-              /* per-experience progress bars */
-              const bars = exp.bars ?? [];
-
               return (
-                <div key={exp.id} className="grid grid-cols-1 md:grid-cols-[1fr_60px_1fr] gap-0">
-
+                <div
+                  key={exp.id}
+                  ref={(el) => { rowRefs.current[index] = el; }}
+                  className="grid grid-cols-1 md:grid-cols-[1fr_80px_1fr]"
+                  style={{
+                    opacity:          0,
+                    transform:        'translateY(48px)',
+                    transition:       `opacity .75s cubic-bezier(.22,1,.36,1) ${index * 0.12}s,
+                                       transform .75s cubic-bezier(.22,1,.36,1) ${index * 0.12}s`,
+                  }}
+                >
                   {/* ── left slot ── */}
-                  {isRight ? (
-                    <ExperienceCard
-                      exp={exp} index={index} color={color}
-                      gallery={gallery} stats={stats} skills={skills} bars={bars}
-                      cardRefs={cardRefs}
-                      openLightbox={openLightbox}
-                      style={{ gridColumn: 1 }}
-                    />
-                  ) : (
-                    <div />
-                  )}
+                  {isLeft
+                    ? <ExperienceCard exp={exp} t={t} gallery={gallery} stats={stats} bars={bars} skills={skills} openLightbox={openLightbox} col={1} />
+                    : <div />
+                  }
 
-                  {/* ── timeline node ── */}
+                  {/* ── node ── */}
                   <div className="hidden md:flex flex-col items-center">
                     <motion.div
-                      initial={{ scale: 0, opacity: 0 }}
-                      whileInView={{ scale: 1, opacity: 1 }}
-                      viewport={{ once: true }}
-                      transition={{ delay: index * 0.15, type: 'spring', stiffness: 200 }}
-                      className="relative mt-7 flex-shrink-0"
+                      className="relative flex-shrink-0 mt-6"
+                      initial={{ scale:0, opacity:0 }}
+                      whileInView={{ scale:1, opacity:1 }}
+                      viewport={{ once:true }}
+                      transition={{ delay: index * 0.15, type:'spring', stiffness:200 }}
                     >
-                      <div
-                        className="w-12 h-12 rounded-full flex items-center justify-center text-xl border-2 relative z-10"
-                        style={{
-                          background:   `linear-gradient(135deg,${color}20,${color}08)`,
-                          borderColor:  color + '50',
-                          boxShadow:    `0 0 20px ${color}25`,
-                        }}
-                      >
-                        {nodeIcon}
+                      <div style={{
+                        width:52, height:52, borderRadius:'50%',
+                        display:'flex', alignItems:'center', justifyContent:'center',
+                        fontSize:22, position:'relative', zIndex:2,
+                        background: `linear-gradient(135deg,${t.glow},${t.bg})`,
+                        border: `1.5px solid ${t.border}`,
+                        boxShadow: `0 0 24px ${t.glow}`,
+                      }}>
+                        {t.icon ? (
+                          <img src={t.icon} alt="Company logo" style={{ width:'100%', height:'100%', objectFit:'contain', padding:8, borderRadius:'50%' }} />
+                        ) : (
+                          t.node
+                        )}
+                        {/* ring */}
+                        <div style={{
+                          position:'absolute', inset:-4, borderRadius:'50%',
+                          border:`1px solid ${t.accent}`, opacity:0.35,
+                        }} />
+                        {/* pulse */}
+                        <div style={{
+                          position:'absolute', inset:0, borderRadius:'50%',
+                          background: `radial-gradient(circle,${t.accent}35,transparent)`,
+                          animation: 'exp-node-ping 2.5s ease-out infinite',
+                        }} />
                       </div>
-                      <motion.div
-                        animate={{ scale: [1, 1.8, 1], opacity: [0.3, 0, 0.3] }}
-                        transition={{ duration: 2.5, repeat: Infinity }}
-                        className="absolute inset-0 rounded-full"
-                        style={{ background: `radial-gradient(circle,${color}40,transparent)` }}
-                      />
                     </motion.div>
-                    <div className="flex-1 w-px mt-2" style={{ background: `linear-gradient(180deg,${color}30,transparent)` }} />
+                    {/* stem */}
+                    <div className="flex-1 w-px mt-2"
+                       style={{ background:`linear-gradient(180deg,${t.accent}30,transparent)` }} />
                   </div>
 
                   {/* ── right slot ── */}
-                  {!isRight ? (
-                    <ExperienceCard
-                      exp={exp} index={index} color={color}
-                      gallery={gallery} stats={stats} skills={skills} bars={bars}
-                      cardRefs={cardRefs}
-                      openLightbox={openLightbox}
-                      style={{ gridColumn: 3 }}
-                    />
-                  ) : (
-                    <div />
-                  )}
-
+                  {!isLeft
+                    ? <ExperienceCard exp={exp} t={t} gallery={gallery} stats={stats} bars={bars} skills={skills} openLightbox={openLightbox} col={3} />
+                    : <div />
+                  }
                 </div>
               );
             })}
           </div>
+
+          {/* end dot */}
+          <motion.div
+            className="flex flex-col items-center mt-16"
+            initial={{ opacity:0, y:20 }}
+            whileInView={{ opacity:1, y:0 }}
+            viewport={{ once:true }}
+            transition={{ delay:0.3 }}
+          >
+            <div style={{
+              width:10, height:10, borderRadius:'50%',
+              background:'linear-gradient(135deg,#3b82f6,#8b5cf6)',
+              boxShadow:'0 0 18px #3b82f640',
+            }} />
+            <p style={{ fontSize:10, letterSpacing:3, textTransform:'uppercase', color:'#ffffff', marginTop:12 }}>
+              The journey continues
+            </p>
+          </motion.div>
         </div>
       </div>
-
-      {/* float-up keyframe */}
-      <style>{`
-        @keyframes float-up {
-          0%   { transform: translateY(0)    translateX(0);  opacity: 0;   }
-          20%  { opacity: 1; }
-          80%  { opacity: 0.4; }
-          100% { transform: translateY(-100vh) translateX(30px); opacity: 0; }
-        }
-      `}</style>
     </section>
   );
 };
 
-/* ─────────────────────────────────────────
-   Sub-component: ExperienceCard
-───────────────────────────────────────── */
-const ExperienceCard = ({
-  exp, index, color,
-  gallery, stats, skills, bars,
-  cardRefs, openLightbox, style,
-}) => (
-  <div
-    ref={(el) => (cardRefs.current[index] = el)}
-    style={{
-      opacity: 0, transform: 'translateY(40px)',
-      transition: 'opacity 0.7s cubic-bezier(0.22,1,0.36,1), transform 0.7s cubic-bezier(0.22,1,0.36,1), box-shadow 0.3s ease, border-color 0.3s ease',
-      transitionDelay: `${index * 0.1}s`,
-      background:   'rgba(255,255,255,0.03)',
-      border:       '0.5px solid rgba(255,255,255,0.1)',
-      borderRadius: '20px', padding: '28px',
-      cursor: 'pointer', position: 'relative', overflow: 'hidden',
-      ...style,
-    }}
-  >
-    {/* top gradient accent */}
-    <div style={{
-      position:   'absolute', top: 0, left: '24px', right: '24px',
-      height:     '1px',
-      background: `linear-gradient(90deg,transparent,${color}60,transparent)`,
-    }} />
+/* ══════════════════════════════════════
+   ExperienceCard  (sub-component)
+   ══════════════════════════════════════ */
+interface ExperienceCardProps {
+  exp: ExperienceItem;
+  t: Theme;
+  gallery: GalleryItem[];
+  stats: StatItem[];
+  bars: BarItem[];
+  skills: string[];
+  openLightbox: (imgSrc: string | null, emoji: string, title: string, desc: string) => void;
+  col: number;
+}
 
-    {/* header */}
-    <div className="flex items-start gap-4 mb-4">
-      <div className="flex-shrink-0 w-11 h-11 rounded-xl flex items-center justify-content-center"
-        style={{ background: `linear-gradient(135deg,${color}25,${color}08)`, border: `0.5px solid ${color}30`, display:'flex', alignItems:'center', justifyContent:'center' }}>
-        <span style={{ fontSize: '20px' }}>
-          {index === 0 ? '☁' : index === 1 ? '⚡' : '⚙'}
-        </span>
+const ExperienceCard: React.FC<ExperienceCardProps> = ({ exp, t, gallery, stats, bars, skills, openLightbox, col }) => (
+  <div style={{ gridColumn: col, padding: '4px' }}>
+    <div
+      className="exp-inner-card"
+      style={{
+        background:   'rgba(255,255,255,0.028)',
+        border:       '1px solid rgba(255,255,255,0.07)',
+        borderRadius: '22px',
+        padding:      '26px 24px',
+        position:     'relative',
+        overflow:     'hidden',
+      }}
+    >
+      {/* top gradient accent line */}
+      <div style={{
+        position:'absolute', top:0, left:'10%', right:'10%',
+        height:1,
+        background:`linear-gradient(90deg,transparent,${t.accent}65,transparent)`,
+      }} />
+
+      {/* ── header ── */}
+      <div style={{ display:'flex', alignItems:'flex-start', gap:14, marginBottom:16 }}>
+        <div style={{
+          width:46, height:46, borderRadius:'50%', flexShrink:0,
+          display:'flex', alignItems:'center', justifyContent:'center',
+          fontSize:22,
+          background:`linear-gradient(135deg,${t.glow},${t.bg})`,
+          border:`0.5px solid ${t.border}`,
+        }}>
+          {t.icon ? (
+            <img src={t.icon} alt="Company logo" style={{ width:'100%', height:'100%', objectFit:'contain', padding:6, borderRadius:'50%' }} />
+          ) : (
+            t.node
+          )}
+        </div>
+
+        <div style={{ flex:1, minWidth:0 }}>
+          <div style={{ fontSize:17, fontWeight:700, color:'#fff', letterSpacing:'-0.3px', lineHeight:1.25 }}>
+            {exp.position}
+          </div>
+          <div style={{ fontSize:13, fontWeight:500, color:t.accent, marginTop:2 }}>
+            {exp.company}
+          </div>
+        </div>
+
+        {exp.isCurrentRole && (
+          <div style={{
+            padding:'4px 12px', borderRadius:30, flexShrink:0,
+            fontSize:10, fontWeight:600, letterSpacing:'1.5px', textTransform:'uppercase',
+            background:`${t.accent}12`, color:t.text, border:`0.5px solid ${t.border}`,
+          }}>
+            CURRENT
+          </div>
+        )}
       </div>
-      <div className="flex-1 min-w-0">
-        <h3 className="text-white font-bold text-base leading-tight mb-1">{exp.position}</h3>
-        <p className="text-sm font-medium" style={{ color }}>{exp.company}</p>
+
+      {/* ── meta ── */}
+      <div style={{ display:'flex', flexWrap:'wrap', gap:'6px 18px', marginBottom:16 }}>
+        {exp.duration && (
+          <span style={{ display:'flex', alignItems:'center', gap:5, fontSize:12, color:'rgba(255,255,255,0.4)' }}>
+            <span>📅</span> {exp.duration}
+          </span>
+        )}
+        {exp.location && (
+          <span style={{ display:'flex', alignItems:'center', gap:5, fontSize:12, color:'rgba(255,255,255,0.4)' }}>
+            <span>📍</span> {exp.location}
+          </span>
+        )}
       </div>
-      {exp.isCurrentRole && (
-        <span className="flex-shrink-0 text-xs font-semibold px-2.5 py-1 rounded-full"
-          style={{ background: `${color}15`, color, border: `0.5px solid ${color}30` }}>
-          Current
-        </span>
-      )}
-    </div>
 
-    {/* meta */}
-    <div className="flex flex-wrap gap-x-5 gap-y-1 mb-4">
-      {exp.duration && (
-        <span className="flex items-center gap-1.5 text-xs text-slate-400">
-          <span style={{ color }}>📅</span> {exp.duration}
-        </span>
-      )}
-      {exp.location && (
-        <span className="flex items-center gap-1.5 text-xs text-slate-400">
-          <span style={{ color }}>📍</span> {exp.location}
-        </span>
-      )}
-    </div>
+      {/* ── animated stat counters ── */}
+      <div style={{ display:'grid', gridTemplateColumns:'repeat(3,1fr)', gap:8, marginBottom:16 }}>
+        {stats.map((s, i) => (
+          <div key={i} style={{
+            background:'rgba(255,255,255,0.032)', border:'0.5px solid rgba(255,255,255,0.06)',
+            borderRadius:12, padding:'10px 8px', textAlign:'center',
+          }}>
+            <div data-count={s.count} style={{ fontSize:22, fontWeight:700, letterSpacing:'-1px', color:t.accent, lineHeight:1 }}>
+              0
+            </div>
+            <div style={{ fontSize:'9px', color:'rgba(255,255,255,0.32)', marginTop:3, letterSpacing:'0.8px', textTransform:'uppercase' }}>
+              {s.label}
+            </div>
+          </div>
+        ))}
+      </div>
 
-    {/* stats */}
-    <div className="grid grid-cols-3 gap-2 mb-4">
-      {stats.map((s, i) => (
-        <div key={i} className="text-center rounded-xl py-2 px-1"
-          style={{ background: 'rgba(255,255,255,0.03)', border: '0.5px solid rgba(255,255,255,0.06)' }}>
-          <div className="text-lg font-bold leading-none mb-1" style={{ color }} data-count={s.count}>0</div>
-          <div className="text-xs text-slate-500" style={{ fontSize: '10px', letterSpacing: '0.5px' }}>{s.label}</div>
+      {/* ── progress bars ── */}
+      {bars.map((b, i) => (
+        <div key={i} style={{ marginBottom:10 }}>
+          <div style={{ display:'flex', justifyContent:'space-between', marginBottom:4 }}>
+            <span style={{ fontSize:11, color:'rgba(255,255,255,0.42)' }}>{b.label}</span>
+            <span style={{ fontSize:11, fontWeight:600, color:t.accent }}>{b.value}%</span>
+          </div>
+          <div style={{ height:2, background:'rgba(255,255,255,0.05)', borderRadius:2, overflow:'hidden' }}>
+            <div
+              data-w={b.value}
+              style={{
+                height:'100%', width:'0%', borderRadius:2,
+                background:`linear-gradient(90deg,${t.accent},${t.accent2})`,
+                transition:'width 1.3s cubic-bezier(.22,1,.36,1)',
+              }}
+            />
+          </div>
         </div>
       ))}
-    </div>
 
-    {/* progress bars */}
-    {bars.map((b, i) => (
-      <div key={i} className="mb-3">
-        <div className="flex justify-between mb-1">
-          <span className="text-xs text-slate-400">{b.label}</span>
-          <span className="text-xs font-semibold" style={{ color }}>{b.value}%</span>
-        </div>
-        <div className="h-0.5 rounded-full" style={{ background: 'rgba(255,255,255,0.06)' }}>
-          <div className="h-full rounded-full" data-width={b.value}
-            style={{ width: '0%', background: `linear-gradient(90deg,${color},${color}80)`, transition: 'width 1.2s cubic-bezier(0.22,1,0.36,1)' }} />
-        </div>
-      </div>
-    ))}
+      {/* ── description bullets ── */}
+      {exp.description?.length > 0 && (
+        <ul style={{ listStyle:'none', margin:'14px 0' }}>
+          {exp.description.map((d, i) => (
+            <li key={i} style={{ display:'flex', gap:8, fontSize:12, color:'rgba(255,255,255,0.52)', lineHeight:1.7, marginBottom:7 }}>
+              <span style={{ width:4, height:4, borderRadius:'50%', background:t.accent, flexShrink:0, marginTop:6, display:'block' }} />
+              {d}
+            </li>
+          ))}
+        </ul>
+      )}
 
-    {/* description bullets */}
-    {exp.description?.length > 0 && (
-      <ul className="space-y-2 mb-4">
-        {exp.description.map((d, i) => (
-          <li key={i} className="flex gap-2.5 text-xs text-slate-300 leading-relaxed">
-            <span className="mt-1.5 w-1 h-1 rounded-full flex-shrink-0" style={{ background: color }} />
-            {d}
-          </li>
-        ))}
-      </ul>
-    )}
-
-    {/* skills */}
-    {skills.length > 0 && (
-      <div className="flex flex-wrap gap-1.5 mb-4">
-        {skills.map((sk) => (
-          <span key={sk} className="text-xs px-2.5 py-1 rounded-full"
-            style={{ color, background: `${color}10`, border: `0.5px solid ${color}25` }}>
-            {sk}
-          </span>
-        ))}
-      </div>
-    )}
-
-    {/* gallery */}
-    {gallery.length > 0 && (
-      <>
-        <p className="text-xs uppercase tracking-widest text-slate-500 mb-2">Work Samples</p>
-        <div className="grid grid-cols-3 gap-2">
-          {gallery.map((g, i) => (
-            <div
-              key={i}
-              onClick={(e) => { e.stopPropagation(); openLightbox(g.emoji, g.title, g.desc); }}
-              className="relative rounded-xl overflow-hidden cursor-pointer group"
-              style={{
-                aspectRatio: '16/10',
-                background:  `linear-gradient(135deg,${color}15,${color}05)`,
-                border:      `0.5px solid rgba(255,255,255,0.08)`,
-              }}
-            >
-              <div className="w-full h-full flex items-center justify-center text-2xl
-                              transition-transform duration-500 group-hover:scale-110">
-                {g.emoji}
-              </div>
-              <div className="absolute inset-0 flex items-center justify-center opacity-0
-                              group-hover:opacity-100 transition-opacity duration-300"
-                style={{ background: `${color}40`, backdropFilter: 'blur(2px)' }}>
-                <span className="text-white text-sm">🔍</span>
-              </div>
-            </div>
+      {/* ── skill tags ── */}
+      {skills.length > 0 && (
+        <div style={{ display:'flex', flexWrap:'wrap', gap:6, marginBottom:18 }}>
+          {skills.map((sk) => (
+            <span key={sk} style={{
+              padding:'4px 11px', borderRadius:30, fontSize:11, fontWeight:500,
+              color:t.text, background:`${t.accent}0a`, border:`0.5px solid ${t.border}`,
+              letterSpacing:'0.3px',
+            }}>
+              {sk}
+            </span>
           ))}
         </div>
-      </>
-    )}
+      )}
+
+      {/* ── gallery ── */}
+      {gallery.length > 0 && (
+        <>
+          <p style={{ fontSize:'9px', letterSpacing:'3px', textTransform:'uppercase', color:'rgba(255,255,255,0.22)', marginBottom:8 }}>
+            Work Samples &amp; Certificates
+          </p>
+          <div style={{ display:'grid', gridTemplateColumns:'repeat(3,1fr)', gap:8 }}>
+            {gallery.map((g, i) => (
+              <div
+                key={i}
+                className="exp-gal-item"
+                onClick={(e) => { e.stopPropagation(); openLightbox(g.img ?? null, g.emoji ?? '📄', g.title, g.desc); }}
+                style={{
+                  aspectRatio:'16/10', borderRadius:12, overflow:'hidden',
+                  position:'relative', cursor:'pointer',
+                  border:'0.5px solid rgba(255,255,255,0.08)',
+                  background:`linear-gradient(135deg,${t.glow},${t.bg})`,
+                }}
+              >
+                {/* thumb — real image OR emoji */}
+                <div
+                  className="exp-gal-thumb"
+                  style={{
+                    width:'100%', height:'100%',
+                    display:'flex', alignItems:'center', justifyContent:'center',
+                    transition:'transform .5s ease',
+                    overflow:'hidden',
+                  }}
+                >
+                  <span style={{ fontSize:26 }}>{g.emoji}</span>
+                </div>
+
+                {/* hover overlay */}
+                <div
+                  className="exp-gal-over"
+                  style={{
+                    position:'absolute', inset:0,
+                    display:'flex', alignItems:'center', justifyContent:'center',
+                    background:`${t.accent}40`, backdropFilter:'blur(3px)',
+                    opacity:0, transition:'opacity .3s', fontSize:18,
+                  }}
+                >
+                  🔍
+                </div>
+              </div>
+            ))}
+          </div>
+        </>
+      )}
+    </div>
   </div>
 );

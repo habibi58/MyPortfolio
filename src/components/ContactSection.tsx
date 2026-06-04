@@ -1,251 +1,338 @@
 // Contact Section Component
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Mail, Phone, MapPin, Send, ArrowRight, Clock, CheckCircle2, Handshake } from 'lucide-react';
+import { Mail, Phone, MapPin, Send, Clock, CheckCircle2, Handshake, Upload } from 'lucide-react';
 import { portfolioOwner } from '../data';
-import { SectionHeading } from './SectionHeading';
-import { Card } from './Card';
-import { Button } from './Button';
-import { containerVariants, itemVariants } from '../animations/variants';
 import toast from 'react-hot-toast';
 
 export const ContactSection = () => {
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    message: '',
-  });
+  const [formData, setFormData] = useState({ name: '', email: '', message: '', certificate: null as File | null });
   const [isLoading, setIsLoading] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0] || null;
+    setFormData((prev) => ({ ...prev, certificate: file }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
     if (!formData.name || !formData.email || !formData.message) {
       toast.error('Please fill in all fields');
       return;
     }
-
     setIsLoading(true);
-
-    // Simulate form submission
     setTimeout(() => {
-      console.log('Form submitted:', formData);
       toast.success('Message sent successfully! I will get back to you soon.');
-      setFormData({
-        name: '',
-        email: '',
-        message: '',
-      });
+      setFormData({ name: '', email: '', message: '', certificate: null });
       setIsLoading(false);
     }, 1500);
-
-    // In production, you would send this to a backend or use EmailJS
   };
 
   const contactMethods = [
-    {
-      icon: Mail,
-      label: 'Email',
-      value: portfolioOwner.email,
-      link: `mailto:${portfolioOwner.email}`,
-      color: 'from-blue-400 to-blue-500',
-    },
-    {
-      icon: Phone,
-      label: 'Phone',
-      value: portfolioOwner.phone,
-      link: `tel:${portfolioOwner.phone}`,
-      color: 'from-blue-600 to-blue-700',
-    },
-    {
-      icon: MapPin,
-      label: 'Location',
-      value: portfolioOwner.location,
-      link: '#',
-      color: 'from-blue-500 to-blue-600',
-    },
+    { icon: Mail,   label: 'Email',    value: portfolioOwner.email    },
+    { icon: Phone,  label: 'Phone',    value: portfolioOwner.phone    },
+    { icon: MapPin, label: 'Location', value: portfolioOwner.location },
   ];
 
+  const sectionVariants = {
+    hidden:  { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: { staggerChildren: 0.15, delayChildren: 0.05 },
+    },
+  };
+
+  const leftColVariants = {
+    hidden:  { opacity: 0, x: -50 },
+    visible: {
+      opacity: 1,
+      x: 0,
+      transition: { duration: 0.7, ease: [0.22, 1, 0.36, 1] },
+    },
+  };
+
+  const rightColVariants = {
+    hidden:  { opacity: 0, x: 50 },
+    visible: {
+      opacity: 1,
+      x: 0,
+      transition: { duration: 0.7, ease: [0.22, 1, 0.36, 1] },
+    },
+  };
+
+  const colChildrenVariants = {
+    hidden:  { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: { staggerChildren: 0.1, delayChildren: 0.25 },
+    },
+  };
+
+  const fadeUpVariants = {
+    hidden:  { opacity: 0, y: 18 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] },
+    },
+  };
+
+  const cardSurface: React.CSSProperties = {
+    background: 'rgba(255,255,255,0.08)',
+    border: '1px solid rgba(255,255,255,0.14)',
+    padding: '8px',
+  };
+
+  const inputSurface: React.CSSProperties = {
+    background: 'rgba(255,255,255,0.08)',
+    border: '1px solid rgba(255,255,255,0.14)',
+  };
+
   return (
-    <section id="contact" className="relative py-24 overflow-hidden">
-      {/* Background */}
-      <div className="absolute inset-0 dot-pattern opacity-10" />
-      <div className="absolute top-0 right-1/4 w-[500px] h-[500px] rounded-full bg-blue-500/[0.03] blur-[120px]" />
-      <div className="absolute bottom-0 left-1/4 w-[400px] h-[400px] rounded-full bg-blue-500/[0.03] blur-[100px]" />
+    <section id="contact" className="relative py-24 mt-16 mb-16 overflow-hidden bg-black">
+      {/* ↓ gradient orbs removed ↓ */}
 
       <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        <SectionHeading
-          subtitle="GET IN TOUCH"
-          title="Contact Me"
-          description="Have a question or want to discuss an opportunity? Feel free to reach out!"
-        />
-
-        {/* Contact Methods */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-16">
-          {contactMethods.map((method, index) => {
-            const Icon = method.icon;
-            return (
-              <motion.div
-                key={index}
-                variants={itemVariants}
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.1 }}
-              >
-                <a href={method.link} className="block group">
-                  <Card hover glass className="text-center">
-                    <div className={`inline-flex p-4 rounded-2xl bg-gradient-to-br ${method.color} mb-4 shadow-lg group-hover:shadow-xl group-hover:scale-105 transition-all duration-300`}>
-                      <Icon className="w-6 h-6 text-white" />
-                    </div>
-                    <h4 className="font-display font-bold text-white mb-2">
-                      {method.label}
-                    </h4>
-                    <p className="text-slate-400 text-sm break-all">
-                      {method.value}
-                    </p>
-                  </Card>
-                </a>
-              </motion.div>
-            );
-          })}
-        </div>
-
-        {/* Contact Form & Info */}
         <motion.div
-          variants={containerVariants}
+          variants={sectionVariants}
           initial="hidden"
           whileInView="visible"
-          viewport={{ once: true }}
-          className="grid grid-cols-1 lg:grid-cols-2 gap-10"
+          viewport={{ once: true, amount: 0.15 }}
+          className="grid grid-cols-1 lg:grid-cols-2 gap-10 px-4"
         >
-          {/* Form */}
-          <motion.div variants={itemVariants}>
-            <Card glass className="relative overflow-hidden">
-              {/* Top gradient accent */}
-              <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-600 via-blue-500 to-blue-700" />
+          {/* ── LEFT column ── */}
+          <motion.div variants={leftColVariants} className="flex flex-col gap-10 p-16">
+            <motion.div variants={colChildrenVariants} className="flex flex-col gap-10">
 
-              <h3 className="font-display text-2xl font-bold text-white mb-8 pt-2">
-                Send me a Message
-              </h3>
-              <form onSubmit={handleSubmit} className="space-y-5">
-                {/* Name Field */}
-                <div className="group">
-                  <label className="block text-sm font-semibold text-slate-400 mb-2">
-                    Your Name
-                  </label>
-                  <input
-                    type="text"
-                    name="name"
-                    value={formData.name}
-                    onChange={handleChange}
-                    className="w-full px-4 py-3.5 rounded-xl bg-slate-800/80 border border-slate-700/60 focus:outline-none focus:ring-2 focus:ring-blue-600/40 focus:border-blue-600/40 transition-all duration-300 text-white placeholder:text-slate-400"
-                    placeholder="John Doe"
-                    required
-                  />
-                </div>
+              {/* Available for work badge */}
+             <motion.div variants={fadeUpVariants}>
+            <div
+              className="inline-flex items-center gap-4 px-8 py-3.5 rounded-full w-fit"
+              style={{
+                background: 'rgba(34,197,94,0.12)',
+                border: '1px solid rgba(34,197,94,0.3)',
+                minWidth: '150px',
+                minHeight: '30px',
+                paddingLeft: '10px',
+                paddingRight: '10px',
+              }}
+              >
+            <span className="relative flex h-3.5 w-3.5">
+              <span
+                className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75"
+                style={{ background: '#22c55e' }}
+              />
+              <span
+                className="relative inline-flex rounded-full h-3.5 w-3.5"
+                style={{ background: '#22c55e' }}
+              />
+            </span>
+              <span className="text-xs font-semibold" style={{ color: '#4ade80' }}>
+            Available for work
+          </span>
+          </div>
+        </motion.div>
 
-                {/* Email Field */}
-                <div className="group">
-                  <label className="block text-sm font-semibold text-slate-400 mb-2">
-                    Your Email
-                  </label>
-                  <input
-                    type="email"
-                    name="email"
-                    value={formData.email}
-                    onChange={handleChange}
-                    className="w-full px-4 py-3.5 rounded-xl bg-slate-800/80 border border-slate-700/60 focus:outline-none focus:ring-2 focus:ring-blue-600/40 focus:border-blue-600/40 transition-all duration-300 text-white placeholder:text-slate-400"
-                    placeholder="john@example.com"
-                    required
-                  />
-                </div>
+              {/* Headline */}
+              <motion.div variants={fadeUpVariants}>
+                <h2 className="text-4xl font-bold text-white leading-tight mb-4">
+                  Let's work<br />together.
+                </h2>
+                <p className="text-sm leading-relaxed" style={{ color: 'rgba(255,255,255,0.5)' }}>
+                  Have a project in mind, a role to fill, or just want to say hello?
+                  My inbox is always open — I'll get back to you within 24 hours.
+                </p>
+              </motion.div>
 
-                {/* Message Field */}
-                <div className="group">
-                  <label className="block text-sm font-semibold text-slate-400 mb-2">
-                    Message
-                  </label>
-                  <textarea
-                    name="message"
-                    value={formData.message}
-                    onChange={handleChange}
-                    rows={5}
-                    className="w-full px-4 py-3.5 rounded-xl bg-slate-800/80 border border-slate-700/60 focus:outline-none focus:ring-2 focus:ring-blue-600/40 focus:border-blue-600/40 transition-all duration-300 resize-none text-white placeholder:text-slate-400"
-                    placeholder="Your message here..."
-                    required
-                  ></textarea>
-                </div>
+              {/* Contact rows */}
+              <motion.div variants={fadeUpVariants} className="flex flex-col gap-3">
+                {contactMethods.map((method, index) => {
+                  const Icon = method.icon;
+                  return (
+                    <motion.div
+                      key={index}
+                      whileHover={{ x: 4 }}
+                      transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+                      className="flex items-center gap-4 p-4 rounded-xl transition-all duration-300"
+                      style={cardSurface}
+                    >
+                      <div
+                        className="flex items-center justify-center w-10 h-10 rounded-lg flex-shrink-0"
+                        style={{
+                          background: 'rgba(91,141,238,0.15)',
+                          border: '1px solid rgba(91,141,238,0.3)',
+                        }}
+                      >
+                        <Icon size={17} style={{ color: '#5b8dee' }} />
+                      </div>
+                      <div className="flex flex-col gap-0.5">
+                        <span
+                          className="text-xs font-medium"
+                          style={{ color: 'rgba(255,255,255,0.35)', letterSpacing: '0.1em' }}
+                        >
+                          {method.label.toUpperCase()}
+                        </span>
+                        <span className="text-base font-medium" style={{ color: 'rgba(255,255,255,0.75)' }}>
+                          {method.value}
+                        </span>
+                      </div>
+                    </motion.div>
+                  );
+                })}
+              </motion.div>
 
-                {/* Submit Button */}
-                <Button
-                  type="submit"
-                  isLoading={isLoading}
-                  className="w-full group"
-                >
-                  <Send size={18} />
-                  Send Message
-                  <ArrowRight size={16} className="opacity-0 -ml-4 group-hover:opacity-100 group-hover:ml-0 transition-all duration-300" />
-                </Button>
-              </form>
-            </Card>
-          </motion.div>
-
-          {/* Info Boxes */}
-          <motion.div variants={itemVariants} className="space-y-6">
-            <Card gradient className="relative overflow-hidden">
-              <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-600 via-blue-500 to-blue-700" />
-              <h3 className="font-display text-2xl font-bold text-white mb-5 pt-2">
-                Quick Response
-              </h3>
-              <p className="text-slate-400 mb-6 leading-relaxed">
-                I usually respond to messages within 24 hours. Whether you have a question about
-                IT support, web development, or collaboration opportunities, I'd love to hear from
-                you!
-              </p>
-              <div className="space-y-4">
+              {/* Quick facts */}
+              <motion.div variants={fadeUpVariants} className="grid grid-cols-3 gap-3">
                 {[
-                  { icon: Clock, text: 'Quick response time' },
-                  { icon: CheckCircle2, text: 'Professional approach' },
-                  { icon: Handshake, text: 'Ready for collaboration' },
+                  { icon: Clock,        text: '24h response'  },
+                  { icon: CheckCircle2, text: 'Professional'  },
+                  { icon: Handshake,    text: 'Open to collab' },
                 ].map(({ icon: Icon, text }, i) => (
-                  <div key={i} className="flex gap-3 items-center">
-                    <div className="p-1.5 rounded-lg bg-blue-900/30">
-                      <Icon size={14} className="text-blue-400" />
-                    </div>
-                    <span className="text-sm font-medium text-slate-300">
+                  <div
+                    key={i}
+                    className="flex flex-col items-center gap-2.5 py-5 px-3 rounded-xl text-center"
+                    style={cardSurface}
+                  >
+                    <Icon size={16} style={{ color: '#5b8dee' }} />
+                    <span className="text-xs font-medium" style={{ color: 'rgba(255,255,255,0.5)' }}>
                       {text}
                     </span>
                   </div>
                 ))}
-              </div>
-            </Card>
+              </motion.div>
 
-            <Card glass>
-              <h4 className="font-display font-bold text-white mb-4">
-                Business Hours
-              </h4>
-              <ul className="space-y-3">
-                {[
-                  { day: 'Monday - Friday', time: '9:00 AM - 6:00 PM' },
-                  { day: 'Saturday', time: '10:00 AM - 4:00 PM' },
-                  { day: 'Sunday', time: 'Available for urgent matters' },
-                ].map(({ day, time }, i) => (
-                  <li key={i} className="flex justify-between items-center text-sm">
-                    <span className="font-medium text-slate-400">{day}</span>
-                    <span className="text-slate-500">{time}</span>
-                  </li>
-                ))}
-              </ul>
-            </Card>
+            </motion.div>
+          </motion.div>
+
+          {/* ── RIGHT column ── */}
+          <motion.div variants={rightColVariants} className="flex flex-col gap-8">
+            <motion.div variants={colChildrenVariants} className="flex flex-col gap-8">
+
+              {/* Form card */}
+              <motion.div
+                variants={fadeUpVariants}
+                className="rounded-lg flex flex-col"
+                style={{ ...cardSurface, padding: '20px' }}
+              >
+                <h3 className="text-3xl font-bold text-white mb-7">Send a message</h3>
+
+                <form id="contact-form" onSubmit={handleSubmit} className="flex flex-col gap-5">
+                  <div className="grid grid-cols-1 gap-4">
+                    {[
+                      { label: 'YOUR NAME',     name: 'name',  type: 'text',  placeholder: 'John Doe'         },
+                      { label: 'EMAIL ADDRESS', name: 'email', type: 'email', placeholder: 'john@example.com' },
+                    ].map((field) => (
+                      <div key={field.name}>
+                        <label
+                          className="block text-xs font-medium mb-2"
+                          style={{ color: 'rgba(255,255,255,0.4)', letterSpacing: '0.08em' }}
+                        >
+                          {field.label}
+                        </label>
+                        <input
+                          type={field.type}
+                          name={field.name}
+                          value={field.name === 'name' ? formData.name : field.name === 'email' ? formData.email : ''}
+                          onChange={handleChange}
+                          placeholder={field.placeholder}
+                          required
+                          className="w-full rounded-md text-sm outline-none text-white placeholder:text-slate-500 transition-all duration-200"
+                          style={{ ...inputSurface, paddingLeft: '8px', paddingRight: '16px', paddingTop: '12px', paddingBottom: '12px' }}
+                          onFocus={(e) => { e.currentTarget.style.borderColor = 'rgba(91,141,238,0.6)'; }}
+                          onBlur={(e)  => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.14)'; }}
+                        />
+                      </div>
+                    ))}
+                  </div>
+
+                  <div>
+                    <label
+                      className="block text-xs font-medium mb-2"
+                      style={{ color: 'rgba(255,255,255,0.4)', letterSpacing: '0.08em' }}
+                    >
+                      MESSAGE
+                    </label>
+                    <textarea
+                      name="message"
+                      value={formData.message}
+                      onChange={handleChange}
+                      placeholder="Tell me about your project or opportunity..."
+                      required
+                      rows={5}
+                      className="w-full rounded-md text-sm outline-none resize-none text-white placeholder:text-slate-500 transition-all duration-200"
+                      style={{ ...inputSurface, paddingLeft: '8px', paddingRight: '16px', paddingTop: '12px', paddingBottom: '12px' }}
+                      onFocus={(e) => { e.currentTarget.style.borderColor = 'rgba(91,141,238,0.6)'; }}
+                      onBlur={(e)  => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.14)'; }}
+                    />
+                  </div>
+
+                  <div>
+                    <label
+                      className="block text-xs font-medium mb-2"
+                      style={{ color: 'rgba(255,255,255,0.4)', letterSpacing: '0.08em' }}
+                    >
+                      CERTIFICATE (OPTIONAL)
+                    </label>
+                    <div className="relative">
+                      <input
+                        type="file"
+                        name="certificate"
+                        onChange={handleFileChange}
+                        accept="image/*,.pdf"
+                        className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                      />
+                      <div
+                        className="flex items-center gap-3 p-4 rounded-md transition-all duration-200"
+                        style={{ ...inputSurface }}
+                        onFocus={(e) => { e.currentTarget.style.borderColor = 'rgba(91,141,238,0.6)'; }}
+                        onBlur={(e)  => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.14)'; }}
+                      >
+                        <Upload size={16} style={{ color: '#5b8dee' }} />
+                        <span className="text-sm" style={{ color: formData.certificate ? 'rgba(255,255,255,0.75)' : 'rgba(255,255,255,0.4)' }}>
+                          {formData.certificate ? formData.certificate.name : 'Upload certificate or document...'}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <p className="text-xs" style={{ color: 'rgba(255,255,255,0.3)' }}>
+                    Mon–Fri 9am–6pm · Sat 10am–4pm · Sun urgent only
+                  </p>
+                </form>
+              </motion.div>
+
+              {/* Submit button */}
+              <motion.button
+               className="w-full rounded-md text-xl font-bold flex items-center justify-center gap-3 transition-all duration-300 disabled:opacity-50"
+                style={{
+                  background: 'rgba(91,141,238,0.18)',
+                  border: '1px solid rgba(91,141,238,0.45)',
+                  color: '#7aabff',
+                  height: '50px',
+                }}
+                onClick={handleSubmit}
+                disabled={isLoading}
+                onMouseEnter={(e) => {
+                  if (!isLoading) {
+                    e.currentTarget.style.background = 'rgba(91,141,238,0.3)';
+                    e.currentTarget.style.boxShadow = '0 0 28px rgba(91,141,238,0.25)';
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = 'rgba(91,141,238,0.18)';
+                  e.currentTarget.style.boxShadow = 'none';
+                }}
+              >
+                <Send size={24} />
+                {isLoading ? 'Sending...' : 'Send Message'}
+              </motion.button>
+
+            </motion.div>
           </motion.div>
         </motion.div>
       </div>

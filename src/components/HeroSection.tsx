@@ -105,7 +105,7 @@ function useRoleAnimator() {
   function runNext() {
     if (busyRef.current) return;
     busyRef.current = true;
-    clearTimeout(holdTimer.current);
+    if (holdTimer.current) clearTimeout(holdTimer.current);
 
     const ni = (riRef.current + 1) % ROLES.length;
     const nc = COLORS[ni];
