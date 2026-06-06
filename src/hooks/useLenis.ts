@@ -7,14 +7,16 @@ gsap.registerPlugin(ScrollTrigger);
 
 export const useLenis = () => {
   useEffect(() => {
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    
     const lenis = new Lenis({
-      lerp: 0.015, // Extremely low lerp for maximum "ice skating" glide
-      duration: 3.5, // Very long braking duration
+      lerp: isMobile ? 0.25 : 0.015, // Much higher lerp on mobile to prevent locking
+      duration: isMobile ? 0.8 : 3.5, // Very short duration on mobile
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), 
       smoothWheel: true,
-      wheelMultiplier: 1.5, // Much stronger push per scroll tick
-      syncTouch: true,
-      syncTouchLerp: 0.015,
+      wheelMultiplier: isMobile ? 0.8 : 1.5, // Lower multiplier on mobile
+      syncTouch: !isMobile, // Disable touch sync on mobile to prevent locking
+      touchMultiplier: isMobile ? 1.2 : 1.5, // Moderate touch response on mobile
     });
 
     lenis.on('scroll', ScrollTrigger.update);
