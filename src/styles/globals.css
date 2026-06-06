@@ -521,7 +521,7 @@ body {
   transform: translateX(4px);
 }
 
-@media (max-width: 400px) {
+@media (max-width: 360px) {
   .btn-view-work {
     font-size: 10px;
     padding: 8px 14px;
@@ -653,7 +653,7 @@ body {
   color: #000;
 }
 
-@media (max-width: 400px) {
+@media (max-width: 360px) {
   .btn-premium-resume {
     font-size: 10px;
     padding: 8px 14px;

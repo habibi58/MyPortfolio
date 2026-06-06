@@ -92,13 +92,13 @@ export const ContactSection = () => {
     <section id="contact" className="relative py-24 mt-16 mb-16 overflow-hidden bg-black">
       {/* ↓ gradient orbs removed ↓ */}
 
-      <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="relative max-w-6xl mx-auto px-3 sm:px-4 sm:px-6 lg:px-8">
         <motion.div
           variants={sectionVariants}
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, amount: 0.15 }}
-          className="grid grid-cols-1 lg:grid-cols-2 gap-10 px-4"
+          className="grid grid-cols-1 lg:grid-cols-2 gap-10 px-2 md:px-4"
         >
           {/* ── LEFT column ── */}
           <motion.div variants={leftColVariants} className="flex flex-col gap-10 p-4 md:p-8 lg:p-16">

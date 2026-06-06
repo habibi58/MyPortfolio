@@ -22,7 +22,7 @@ export const CertificationsSection = () => {
       <div className="absolute top-0 right-0 w-[500px] h-[500px] rounded-full bg-blue-400/[0.02] blur-[120px]" />
       <div className="absolute bottom-0 left-0 w-[400px] h-[400px] rounded-full bg-blue-500/[0.02] blur-[100px]" />
 
-      <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="relative max-w-6xl mx-auto px-3 sm:px-4 sm:px-6 lg:px-8">
         <SectionHeading
           subtitle="CREDENTIALS"
           title="Certifications & Achievements"

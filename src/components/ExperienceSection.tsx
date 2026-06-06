@@ -295,7 +295,7 @@ export const ExperienceSection = () => {
       </div>
 
       {/* ── SECTION BODY ── */}
-      <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="relative max-w-6xl mx-auto px-3 sm:px-4 sm:px-6 lg:px-8">
         <div style={{ marginBottom: '60px' }}>
           <SectionHeading
             subtitle="CAREER PATH"

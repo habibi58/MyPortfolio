@@ -44,7 +44,7 @@ export const AboutSection = () => {
       <div className="absolute top-0 right-0 w-96 h-96 rounded-full bg-blue-500/[0.02] blur-[100px]" />
       <div className="absolute bottom-0 left-0 w-80 h-80 rounded-full bg-blue-400/[0.02] blur-[100px]" />
 
-      <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="relative max-w-6xl mx-auto px-3 sm:px-4 sm:px-6 lg:px-8">
         <SectionHeading
           subtitle="ABOUT ME"
           title=""

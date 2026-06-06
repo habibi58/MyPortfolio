@@ -98,7 +98,22 @@ const ScrollStackItem = ({
   const { Icon } = visual;
 
   return (
-    <motion.div className="w-full flex justify-end">
+    <motion.div className="w-full flex justify-end md:justify-end justify-center flex-col items-center">
+      {/* Mobile-only title - outside card */}
+      <div className="md:hidden px-4 pt-4 pb-4 text-center w-full">
+        <motion.span
+          className="block font-mono text-xs font-semibold tracking-wider mb-1"
+          style={{ color: '#3b82f6' }}
+        >
+          {String(index + 1).padStart(2, '0')}
+        </motion.span>
+        <motion.h3
+          className="font-display font-bold text-xl leading-snug"
+          style={{ color: '#ffffff' }}
+        >
+          {project.title}
+        </motion.h3>
+      </div>
       <motion.article
         className="rounded-[20px] overflow-hidden relative"
         style={{
@@ -191,7 +206,7 @@ const ScrollStackItem = ({
         </div>
 
         {/* ── Content ── */}
-        <div style={{ padding: '0px 40px 32px 40px' }}>
+        <div style={{ padding: '0px 20px 24px 20px' }}>
           <p
             className="text-[0.935rem] leading-[1.75] mb-6"
             style={{ color: '#636363' }}
@@ -288,7 +303,7 @@ export const ProjectsSection = () => {
     >
       {/* ── Section Header ── */}
       <div
-        className="px-4 sm:px-6 lg:px-8 pb-16 flex flex-col items-center text-center"
+        className="px-3 sm:px-4 sm:px-6 lg:px-8 pb-16 flex flex-col items-center text-center"
         style={{ maxWidth: '64rem', marginLeft: 'auto', marginRight: 'auto' }}
       >
         <motion.div
@@ -322,7 +337,7 @@ export const ProjectsSection = () => {
 
       {/* ── Two-Column Layout ── */}
       <div
-        className="px-4 sm:px-6 lg:px-8 pb-32"
+        className="px-3 sm:px-4 sm:px-6 lg:px-8 pb-32"
         style={{ maxWidth: '64rem', marginLeft: 'auto', marginRight: 'auto' }}
       >
         {projectsData.map((project, index) => (
@@ -339,7 +354,7 @@ export const ProjectsSection = () => {
               y: activeIndex === index ? 0 : 80,
             }}
             transition={{ duration: 0.75, ease: EASE }}
-            className="flex items-start gap-8"
+            className="flex items-start gap-8 md:items-start items-center flex-col md:flex-row"
             style={{
               minHeight: index === projectsData.length - 1 ? '65vh' : '80vh',
               paddingTop: index === 0 ? '0' : '2rem',
