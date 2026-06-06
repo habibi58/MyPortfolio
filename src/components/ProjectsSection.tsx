@@ -36,7 +36,7 @@ const projectVisuals: ProjectVisual[] = [
 ];
 
 /** Smooth deceleration curve — feels cinematic, not mechanical */
-const EASE: [number, number, number, number] = [0.16, 1, 0.3, 1];
+const EASE = [0.16, 1, 0.3, 1] as const;
 
 /* Technology icon mapping */
 const techIcons: Record<string, string> = {
@@ -74,7 +74,7 @@ const badgeVariants = {
     opacity: 1,
     y: 0,
     scale: 1,
-    transition: { duration: 1.2, ease: [0.16, 1, 0.3, 1], delay: i * 0.15 },
+    transition: { duration: 1.2, ease: [0.16, 1, 0.3, 1] as const, delay: i * 0.15 },
   }),
 };
 
