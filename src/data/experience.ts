@@ -1,7 +1,7 @@
 export const experienceData = [
   {
     id:            1,
-    position:      'IT Desk Support Intern',
+    position:      'Deskop Support Technician - Intern',
     company:       'TTEC',
     duration:      'November 2025 – March 2026',
     location:      'Cainta, Rizal, Philippines',

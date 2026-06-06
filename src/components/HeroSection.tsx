@@ -174,7 +174,7 @@ export const HeroSection = () => {
 
       <section
         id="home"
-        className="relative flex min-h-screen w-full items-center justify-center overflow-hidden pt-20"
+        className="relative flex min-h-screen w-full items-center justify-center overflow-visible pt-20"
       >
         <div className="relative z-10 mx-auto max-w-6xl w-full px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center min-h-full">
@@ -184,6 +184,7 @@ export const HeroSection = () => {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.6 }}
+              style={{ paddingLeft: '25px' }}
             >
               {/* Name */}
               <BlurText
@@ -276,6 +277,7 @@ export const HeroSection = () => {
                 animate="visible"
                 transition={{ delay: 0.8 }}
                 className="mt-12 mb-16 flex flex-col gap-6 sm:flex-row"
+                style={{ marginTop: '15px' }}
               >
                 <motion.button
                   onClick={scrollToProjects}

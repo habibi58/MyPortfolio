@@ -40,11 +40,42 @@ const EASE: [number, number, number, number] = [0.16, 1, 0.3, 1];
 
 /* Technology icon mapping */
 const techIcons: Record<string, string> = {
-  'HTML': 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/html5/html5-original.svg',
-  'CSS': 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/css3/css3-original.svg',
-  'JavaScript': 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/javascript/javascript-original.svg',
-  'PHP': 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/php/php-original.svg',
-  'MySQL': 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/mysql/mysql-original.svg',
+  HTML:       'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/html5/html5-original.svg',
+  CSS:        'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/css3/css3-original.svg',
+  JavaScript: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/javascript/javascript-original.svg',
+  PHP:        'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/php/php-original.svg',
+  MySQL:      'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/mysql/mysql-original.svg',
+};
+
+/* Technology badge color map */
+const techColorMap: Record<string, { bg: string; text: string; border: string }> = {
+  HTML:       { bg: 'rgba(228,77,38,0.12)',   text: '#f97060', border: 'rgba(228,77,38,0.25)'   },
+  CSS:        { bg: 'rgba(33,118,217,0.12)',  text: '#60a5fa', border: 'rgba(33,118,217,0.25)'  },
+  JavaScript: { bg: 'rgba(240,202,53,0.12)',  text: '#fbbf24', border: 'rgba(240,202,53,0.25)'  },
+  PHP:        { bg: 'rgba(119,123,180,0.12)', text: '#a78bfa', border: 'rgba(119,123,180,0.25)' },
+  MySQL:      { bg: 'rgba(0,116,156,0.12)',   text: '#22d3ee', border: 'rgba(0,116,156,0.25)'   },
+  React:      { bg: 'rgba(97,218,251,0.10)',  text: '#67e8f9', border: 'rgba(97,218,251,0.22)'  },
+  TypeScript: { bg: 'rgba(49,120,198,0.12)',  text: '#93c5fd', border: 'rgba(49,120,198,0.25)'  },
+  Python:     { bg: 'rgba(55,118,171,0.12)',  text: '#7dd3fc', border: 'rgba(55,118,171,0.25)'  },
+  Tailwind:   { bg: 'rgba(6,182,212,0.12)',   text: '#2dd4bf', border: 'rgba(6,182,212,0.25)'   },
+  Node:       { bg: 'rgba(83,158,69,0.12)',   text: '#86efac', border: 'rgba(83,158,69,0.25)'   },
+  'Node.js':  { bg: 'rgba(83,158,69,0.12)',   text: '#86efac', border: 'rgba(83,158,69,0.25)'   },
+  MongoDB:    { bg: 'rgba(71,162,72,0.12)',   text: '#4ade80', border: 'rgba(71,162,72,0.25)'   },
+  Firebase:   { bg: 'rgba(255,160,0,0.12)',   text: '#fcd34d', border: 'rgba(255,160,0,0.25)'   },
+  Vue:        { bg: 'rgba(66,184,131,0.12)',  text: '#6ee7b7', border: 'rgba(66,184,131,0.25)'  },
+  'Vue.js':   { bg: 'rgba(66,184,131,0.12)',  text: '#6ee7b7', border: 'rgba(66,184,131,0.25)'  },
+  Figma:      { bg: 'rgba(162,89,255,0.12)',  text: '#c084fc', border: 'rgba(162,89,255,0.25)'  },
+};
+
+/* Badge animation variants */
+const badgeVariants = {
+  hidden: { opacity: 0, y: 20, scale: 0.85 },
+  visible: (i: number) => ({
+    opacity: 1,
+    y: 0,
+    scale: 1,
+    transition: { duration: 1.2, ease: [0.16, 1, 0.3, 1], delay: i * 0.15 },
+  }),
 };
 
 /* ═══════════════════════════════════════════════════════════════════════
@@ -67,9 +98,7 @@ const ScrollStackItem = ({
   const { Icon } = visual;
 
   return (
-    <motion.div
-      className="w-full flex justify-end"
-    >
+    <motion.div className="w-full flex justify-end">
       <motion.article
         className="rounded-[20px] overflow-hidden relative"
         style={{
@@ -97,8 +126,7 @@ const ScrollStackItem = ({
 
         {/* ── Visual / Image Area ── */}
         <div
-
-className="relative h-[350px] flex items-center justify-center overflow-hidden"
+          className="relative h-[350px] flex items-center justify-center overflow-hidden"
           style={{ backgroundColor: '#000000', padding: '24px' }}
         >
           {project.image ? (
@@ -149,11 +177,7 @@ className="relative h-[350px] flex items-center justify-center overflow-hidden"
                   className="w-20 h-20 rounded-2xl flex items-center justify-center"
                   style={{ backgroundColor: `${visual.color}12` }}
                 >
-                  <Icon
-                    size={32}
-                    style={{ color: visual.color }}
-                    strokeWidth={1.5}
-                  />
+                  <Icon size={32} style={{ color: visual.color }} strokeWidth={1.5} />
                 </div>
                 <span
                   className="text-xs font-mono font-bold tracking-[0.2em] uppercase"
@@ -175,26 +199,44 @@ className="relative h-[350px] flex items-center justify-center overflow-hidden"
             {project.fullDescription}
           </p>
 
-          {/* Tech tags */}
-          <div className="flex flex-wrap gap-2 mb-7">
-            {project.technologies.map((tech) => {
+          {/* ── Tech badges ── */}
+          <motion.div
+            className="flex flex-wrap gap-2 mb-7"
+            initial="hidden"
+            animate={isActive ? 'visible' : 'hidden'}
+          >
+            {project.technologies.map((tech, i) => {
               const iconUrl = techIcons[tech];
+              const colors = techColorMap[tech] ?? {
+                bg: 'rgba(255,255,255,0.06)',
+                text: '#a3a3a3',
+                border: 'rgba(255,255,255,0.12)',
+              };
+
               return (
-                <span
+                <motion.span
                   key={tech}
-                  className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full text-xs font-medium transition-colors duration-200 hover:bg-[#e5e5e5] hover:text-[#171717]"
+                  custom={i}
+                  variants={badgeVariants}
+                  whileHover={{ y: -2, transition: { duration: 0.2 } }}
+                  className="inline-flex items-center rounded-full font-medium"
                   style={{
-                    backgroundColor: '#f5f5f5',
-                    color: '#525252',
-                    border: '1px solid #ebebeb',
+                    backgroundColor: colors.bg,
+                    color: colors.text,
+                    border: `1px solid ${colors.border}`,
+                    padding: '8px 16px',
+                    gap: '7px',
+                    fontSize: '13px',
                   }}
                 >
-                  {iconUrl && <img src={iconUrl} alt={tech} className="w-4 h-4" />}
+                  {iconUrl && (
+                    <img src={iconUrl} alt={tech} style={{ width: '18px', height: '18px', objectFit: 'contain' }} />
+                  )}
                   {tech}
-                </span>
+                </motion.span>
               );
             })}
-          </div>
+          </motion.div>
         </div>
       </motion.article>
     </motion.div>
@@ -245,7 +287,10 @@ export const ProjectsSection = () => {
       style={{ marginTop: '100px' }}
     >
       {/* ── Section Header ── */}
-      <div className="px-4 sm:px-6 lg:px-8 pb-16 flex flex-col items-center text-center" style={{ maxWidth: '64rem', marginLeft: 'auto', marginRight: 'auto' }}>
+      <div
+        className="px-4 sm:px-6 lg:px-8 pb-16 flex flex-col items-center text-center"
+        style={{ maxWidth: '64rem', marginLeft: 'auto', marginRight: 'auto' }}
+      >
         <motion.div
           initial={{ opacity: 0, y: 40, scale: 0.95 }}
           whileInView={{ opacity: 1, y: 0, scale: 1 }}
@@ -276,7 +321,10 @@ export const ProjectsSection = () => {
       </div>
 
       {/* ── Two-Column Layout ── */}
-      <div className="px-4 sm:px-6 lg:px-8 pb-32" style={{ maxWidth: '64rem', marginLeft: 'auto', marginRight: 'auto' }}>
+      <div
+        className="px-4 sm:px-6 lg:px-8 pb-32"
+        style={{ maxWidth: '64rem', marginLeft: 'auto', marginRight: 'auto' }}
+      >
         {projectsData.map((project, index) => (
           <motion.div
             key={project.id}
@@ -293,8 +341,7 @@ export const ProjectsSection = () => {
             transition={{ duration: 0.75, ease: EASE }}
             className="flex items-start gap-8"
             style={{
-              minHeight:
-                index === projectsData.length - 1 ? '65vh' : '80vh',
+              minHeight: index === projectsData.length - 1 ? '65vh' : '80vh',
               paddingTop: index === 0 ? '0' : '2rem',
               paddingBottom: '2rem',
             }}
@@ -330,7 +377,7 @@ export const ProjectsSection = () => {
                   animate={{
                     fontSize: activeIndex === index ? '1.25rem' : '0.925rem',
                     lineHeight: activeIndex === index ? '1.5rem' : '1.35rem',
-                    color: activeIndex === index ? '#ffffff' : '#ffffff',
+                    color: '#ffffff',
                     opacity: activeIndex === index ? 1 : 0.5,
                   }}
                   transition={{ duration: 0.5, ease: EASE }}

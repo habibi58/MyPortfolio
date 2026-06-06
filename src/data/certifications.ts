@@ -8,6 +8,7 @@ export interface Certification {
   credentialId?: string;
   credentialUrl?: string;
   description?: string;
+  image?: string;
 }
 
 export const certificationsData: Certification[] = [
@@ -18,6 +19,7 @@ export const certificationsData: Certification[] = [
     date: '2024',
     description: 'Professional certification in IT support fundamentals and practices',
     credentialUrl: '#',
+    image: '/Certificatescredentials/Cert_demo.pdf',
   },
   {
     id: 'networking-fundamentals',
@@ -26,6 +28,7 @@ export const certificationsData: Certification[] = [
     date: '2024',
     description: 'Foundation certification for networking concepts and protocols',
     credentialUrl: '#',
+    image: '/Certificatescredentials/Cert_demo.pdf',
   },
   {
     id: 'web-development',
@@ -34,6 +37,7 @@ export const certificationsData: Certification[] = [
     date: '2024',
     description: 'Comprehensive course in HTML, CSS, and JavaScript fundamentals',
     credentialUrl: '#',
+    image: '/Certificatescredentials/Cert_demo.pdf',
   },
   {
     id: 'technical-support',
@@ -42,6 +46,7 @@ export const certificationsData: Certification[] = [
     date: '2023',
     description: 'Advanced training in technical support best practices',
     credentialUrl: '#',
+    image: '/Certificatescredentials/Cert_demo.pdf',
   },
   {
     id: 'microsoft-office',
@@ -50,5 +55,6 @@ export const certificationsData: Certification[] = [
     date: '2024',
     description: 'Expert-level certification in Microsoft Office Suite',
     credentialUrl: '#',
+    image: '/Certificatescredentials/Cert_demo.pdf',
   },
 ];

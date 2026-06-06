@@ -1,22 +1,17 @@
 // Contact Section Component
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Mail, Phone, MapPin, Send, Clock, CheckCircle2, Handshake, Upload } from 'lucide-react';
+import { Mail, Phone, MapPin, Send, Clock, CheckCircle2, Handshake } from 'lucide-react';
 import { portfolioOwner } from '../data';
 import toast from 'react-hot-toast';
 
 export const ContactSection = () => {
-  const [formData, setFormData] = useState({ name: '', email: '', message: '', certificate: null as File | null });
+  const [formData, setFormData] = useState({ name: '', email: '', message: '' });
   const [isLoading, setIsLoading] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0] || null;
-    setFormData((prev) => ({ ...prev, certificate: file }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -28,7 +23,7 @@ export const ContactSection = () => {
     setIsLoading(true);
     setTimeout(() => {
       toast.success('Message sent successfully! I will get back to you soon.');
-      setFormData({ name: '', email: '', message: '', certificate: null });
+      setFormData({ name: '', email: '', message: '' });
       setIsLoading(false);
     }, 1500);
   };
@@ -177,7 +172,7 @@ export const ContactSection = () => {
                         >
                           {method.label.toUpperCase()}
                         </span>
-                        <span className="text-base font-medium" style={{ color: 'rgba(255,255,255,0.75)' }}>
+                        <span className="text-sm font-medium" style={{ color: 'rgba(255,255,255,0.75)' }}>
                           {method.value}
                         </span>
                       </div>
@@ -237,7 +232,7 @@ export const ContactSection = () => {
                         <input
                           type={field.type}
                           name={field.name}
-                          value={field.name === 'name' ? formData.name : field.name === 'email' ? formData.email : ''}
+                          value={formData[field.name as keyof typeof formData]}
                           onChange={handleChange}
                           placeholder={field.placeholder}
                           required
@@ -271,35 +266,6 @@ export const ContactSection = () => {
                     />
                   </div>
 
-                  <div>
-                    <label
-                      className="block text-xs font-medium mb-2"
-                      style={{ color: 'rgba(255,255,255,0.4)', letterSpacing: '0.08em' }}
-                    >
-                      CERTIFICATE (OPTIONAL)
-                    </label>
-                    <div className="relative">
-                      <input
-                        type="file"
-                        name="certificate"
-                        onChange={handleFileChange}
-                        accept="image/*,.pdf"
-                        className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                      />
-                      <div
-                        className="flex items-center gap-3 p-4 rounded-md transition-all duration-200"
-                        style={{ ...inputSurface }}
-                        onFocus={(e) => { e.currentTarget.style.borderColor = 'rgba(91,141,238,0.6)'; }}
-                        onBlur={(e)  => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.14)'; }}
-                      >
-                        <Upload size={16} style={{ color: '#5b8dee' }} />
-                        <span className="text-sm" style={{ color: formData.certificate ? 'rgba(255,255,255,0.75)' : 'rgba(255,255,255,0.4)' }}>
-                          {formData.certificate ? formData.certificate.name : 'Upload certificate or document...'}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-
                   <p className="text-xs" style={{ color: 'rgba(255,255,255,0.3)' }}>
                     Mon–Fri 9am–6pm · Sat 10am–4pm · Sun urgent only
                   </p>
@@ -315,8 +281,6 @@ export const ContactSection = () => {
                   color: '#7aabff',
                   height: '50px',
                 }}
-                onClick={handleSubmit}
-                disabled={isLoading}
                 onMouseEnter={(e) => {
                   if (!isLoading) {
                     e.currentTarget.style.background = 'rgba(91,141,238,0.3)';
