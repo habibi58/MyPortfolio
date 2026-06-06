@@ -16,7 +16,7 @@ import { ClaudeCode, Antigravity, Cursor, Windsurf, Microsoft, Github  } from '@
 
 export const SkillsSection = () => {
   return (
-    <section id="skills" style={{ marginBottom: '200px' }} className="relative py-32 my-20 overflow-hidden">
+    <section id="skills" className="relative py-32 my-20 mb-20 md:mb-32 lg:mb-48 overflow-hidden">
       {/* Background decoration */}
       <div className="absolute inset-0 dot-pattern opacity-10" />
       <div className="absolute top-1/2 left-0 w-[500px] h-[500px] rounded-full bg-blue-500/[0.02] blur-[120px] -translate-y-1/2" />
