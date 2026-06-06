@@ -101,7 +101,7 @@ export const ContactSection = () => {
           className="grid grid-cols-1 lg:grid-cols-2 gap-10 px-4"
         >
           {/* ── LEFT column ── */}
-          <motion.div variants={leftColVariants} className="flex flex-col gap-10 p-16">
+          <motion.div variants={leftColVariants} className="flex flex-col gap-10 p-4 md:p-8 lg:p-16">
             <motion.div variants={colChildrenVariants} className="flex flex-col gap-10">
 
               {/* Available for work badge */}

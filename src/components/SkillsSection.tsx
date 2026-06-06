@@ -61,7 +61,7 @@ export const SkillsSection = () => {
             </h3>
           </div>
 
-          <div className="w-[100vw] relative left-[50%] -translate-x-[50%] overflow-hidden py-10">
+          <div className="w-full max-w-[100vw] relative overflow-hidden py-10">
             <ScrollVelocity
               texts={[
                 <span className="flex items-center gap-12 px-6 py-4" key="row1">

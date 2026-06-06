@@ -347,7 +347,7 @@ export const ProjectsSection = () => {
             }}
           >
             {/* Left side — Timeline item */}
-            <div className="w-[200px] shrink-0 pt-4">
+            <div className="w-[200px] shrink-0 pt-4 hidden md:block">
               <motion.button
                 layout
                 onClick={() => scrollToProject(index)}

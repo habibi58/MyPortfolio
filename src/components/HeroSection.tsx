@@ -174,17 +174,18 @@ export const HeroSection = () => {
 
       <section
         id="home"
-        className="relative flex min-h-screen w-full items-center justify-center overflow-visible pt-20"
+        className="relative flex min-h-screen w-full items-center justify-center overflow-visible pt-16 sm:pt-20"
       >
-        <div className="relative z-10 mx-auto max-w-6xl w-full px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center min-h-full">
+        <div className="relative z-10 mx-auto max-w-6xl w-full px-3 sm:px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-12 items-center min-h-full">
 
             {/* Left Column */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.6 }}
-              style={{ paddingLeft: '25px' }}
+              style={{ paddingLeft: '0' }}
+              className="sm:pl-6"
             >
               {/* Name */}
               <BlurText
@@ -194,7 +195,7 @@ export const HeroSection = () => {
                 easing="easeOut"
                 animateBy="words"
                 direction="top"
-                className="mb-6 font-syne text-3xl font-extrabold tracking-tight md:text-5xl lg:text-6xl text-white uppercase"
+                className="mb-4 sm:mb-6 font-syne text-xl sm:text-3xl font-extrabold tracking-tight md:text-5xl lg:text-6xl text-white uppercase"
               />
 
               {/* ── Role Animator (replaces typewriter) ── */}
@@ -222,7 +223,9 @@ export const HeroSection = () => {
                     style={{
                       position: 'relative',
                       display: 'inline-block',
-                      minWidth: '360px',
+                      minWidth: '200px',
+                      maxWidth: '360px',
+                      width: '100%',
                       height: 'clamp(36px, 4.5vw, 52px)',
                       overflow: 'hidden',
                       perspective: '800px',

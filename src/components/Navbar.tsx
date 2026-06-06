@@ -63,7 +63,7 @@ export const Navbar = () => {
         : 'bg-transparent'
         }`}
     >
-      <div className="grid w-full grid-cols-2 lg:grid-cols-[1fr_auto_1fr] items-center py-3 pl-8 pr-8 lg:pl-12 lg:pr-12">
+      <div className="grid w-full grid-cols-2 lg:grid-cols-[1fr_auto_1fr] items-center py-3 pl-4 pr-4 sm:pl-6 sm:pr-6 lg:pl-12 lg:pr-12">
 
         {/* Logo */}
         <motion.div

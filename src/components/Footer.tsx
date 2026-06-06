@@ -15,6 +15,7 @@ export const Footer = () => {
   ];
 
   const quickLinks = ['About', 'Projects', 'Skills', 'Contact'];
+  const resources = ['Resume', 'Blog', 'Documentation', 'Terms'];
 
   const GLOW_COLORS = ['#3b82f6', '#8b5cf6', '#14b8a6'];
 
@@ -72,10 +73,10 @@ export const Footer = () => {
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true }}
-            className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12"
+            className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12"
           >
             {/* Brand Section */}
-            <motion.div variants={itemVariants} className="space-y-4 md:col-span-2">
+            <motion.div variants={itemVariants} className="space-y-4">
               <div>
                 <h3 className="text-3xl font-bold mb-2 text-blue-400">
                   Jason
@@ -96,6 +97,29 @@ export const Footer = () => {
                     <a
                       href={`#${link.toLowerCase()}`}
                       className="text-slate-400 hover:text-blue-400 transition-colors duration-300 text-base"
+                      style={{
+                        color: '#94a3b8',
+                        transition: 'color 0.3s ease',
+                      }}
+                      onMouseEnter={(e) => (e.currentTarget.style.color = GLOW_COLORS[idx % GLOW_COLORS.length])}
+                      onMouseLeave={(e) => (e.currentTarget.style.color = '#94a3b8')}
+                    >
+                      {link}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </motion.div>
+
+            {/* Resources */}
+            <motion.div variants={itemVariants} className="space-y-4">
+              <h4 className="font-bold text-white font-display text-base">Resources</h4>
+              <ul className="space-y-2">
+                {resources.map((link, idx) => (
+                  <li key={link}>
+                    <a
+                      href="#"
+                      className="text-slate-400 text-base"
                       style={{
                         color: '#94a3b8',
                         transition: 'color 0.3s ease',
