@@ -3,7 +3,6 @@ import { motion } from 'framer-motion';
 import { Award, ExternalLink, Calendar, BadgeCheck } from 'lucide-react';
 import { certificationsData } from '../data';
 import { SectionHeading } from './SectionHeading';
-import { Card } from './Card';
 import { Button } from './Button';
 import { containerVariants, itemVariants } from '../animations/variants';
 
