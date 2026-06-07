@@ -5,6 +5,7 @@ export interface Project {
   title: string;
   description: string;
   fullDescription: string;
+  features?: string[];
   image: string;
   technologies: string[];
   liveLink?: string;
@@ -14,11 +15,24 @@ export interface Project {
 
 export const projectsData: Project[] = [
   {
-    id: 'helpdesk-ticketing',
-    title: 'Student Records Evaluation System',
-    description: 'A comprehensive ticket management system for IT support teams',
+    id: 'student-record-management',
+    title: 'Student Record Management System',
+    description: 'A web-based application for efficient student information management',
     fullDescription:
-      'A full-stack helpdesk ticketing system designed to manage IT support requests efficiently. Users can create tickets, track their status, and receive updates. Support staff can manage, prioritize, and resolve issues.',
+      'A comprehensive Student Record Management System designed to efficiently store, manage, and organize student information in a centralized platform.',
+    features: [
+      'Student profile management (add, edit, delete student records)',
+      'Enrollment and registration tracking',
+      'Attendance monitoring',
+      'Grade/score management',
+      'Search and filter student records',
+      'Import student data from Excel files',
+      'Export records to PDF format',
+      'Generate printable documents (prospectus, transcript of records, certificate)',
+      'Data export for reports and documentation',
+      'Dashboard with student statistics overview',
+      'Secure database storage for student information',
+    ],
     image: '/projectimages/project1.png',
     technologies: ['HTML', 'CSS', 'JavaScript', 'PHP', 'MySQL'],
     liveLink: '#',
@@ -61,28 +75,5 @@ export const projectsData: Project[] = [
     githubLink: '#',
     featured: false,
   },
-  {
-    id: 'network-diagnostic-tool',
-    title: 'Network Diagnostic Tool',
-    description: 'Network monitoring and diagnostic utility for IT support',
-    fullDescription:
-      'A powerful network diagnostic tool that helps IT support teams quickly identify and resolve network issues. Features ping, traceroute, DNS lookup, and network speed testing.',
-    image: '/assets/projects/network-tool.png',
-    technologies: ['Python', 'PyQt5', 'Socket Programming', 'Threading'],
-    liveLink: '#',
-    githubLink: '#',
-    featured: false,
-  },
-  {
-    id: 'ticket-automation',
-    title: 'Ticket Automation System',
-    description: 'Automated ticket categorization and routing system',
-    fullDescription:
-      'An intelligent system that automatically categorizes and routes support tickets based on content analysis. Uses machine learning to improve categorization over time.',
-    image: '/assets/projects/automation.png',
-    technologies: ['Python', 'Machine Learning', 'NLP', 'FastAPI'],
-    liveLink: '#',
-    githubLink: '#',
-    featured: false,
-  },
+    
 ];

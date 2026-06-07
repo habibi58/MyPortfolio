@@ -18,7 +18,7 @@ export const Card = React.forwardRef<HTMLDivElement, CardProps>(
         className={cn(
           'group/card relative rounded-2xl p-6 transition-all duration-500',
           glass
-            ? 'border border-white/[0.06] bg-slate-800/50 backdrop-blur-xl'
+            ? 'border border-white/[0.15] bg-black/60 backdrop-blur-xl'
             : 'border border-slate-700/60 bg-slate-900/80 shadow-sm',
           gradient &&
             'border-slate-700/40 bg-gradient-to-br from-slate-800/90 via-slate-900/80 to-blue-950/50',

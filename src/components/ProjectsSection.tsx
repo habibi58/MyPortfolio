@@ -220,9 +220,10 @@ interface MobileLabelProps {
   project: Project;
   index: number;
   isActive: boolean;
+  visual: ProjectVisual;
 }
 
-const MobileLabel = ({ project, index, isActive }: MobileLabelProps) => (
+const MobileLabel = ({ project, index, isActive, visual }: MobileLabelProps) => (
   <div
     className="pss-mobile-label"
     style={{
@@ -402,12 +403,52 @@ const ScrollStackItem = ({
 
         {/* ── Content ── */}
         <div className="pss-card-body" style={{ padding: '0px 16px 20px 16px' }}>
+          {/* Short intro sentence */}
           <p
-            className="pss-description text-[0.935rem] leading-[1.75] mb-6"
-            style={{ color: '#636363' }}
+            className="pss-description text-[0.935rem] leading-[1.75]"
+            style={{ color: '#636363', marginBottom: '10px' }}
           >
             {project.fullDescription}
           </p>
+
+          {/* Feature bullets — rendered if features array exists */}
+          {project.features && project.features.length > 0 && (
+            <ul
+              style={{
+                paddingLeft: '0',
+                margin: '0 0 20px 0',
+                listStyle: 'none',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '6px',
+              }}
+            >
+              {project.features.map((feature, i) => (
+                <li
+                  key={i}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'flex-start',
+                    gap: '8px',
+                    fontSize: '0.875rem',
+                    lineHeight: '1.6',
+                    color: '#636363',
+                  }}
+                >
+                  <span style={{
+                    flexShrink: 0,
+                    marginTop: '7px',
+                    width: '5px',
+                    height: '5px',
+                    borderRadius: '50%',
+                    backgroundColor: '#3b82f6',
+                    display: 'inline-block',
+                  }} />
+                  <span>{feature}</span>
+                </li>
+              ))}
+            </ul>
+          )}
 
           {/* ── Tech badges ── */}
           <motion.div
@@ -462,30 +503,54 @@ export const ProjectsSection = () => {
   const [activeIndex, setActiveIndex] = useState(0);
   const itemRefs = useRef<(HTMLDivElement | null)[]>([]);
 
-  /* ── Intersection Observer: scroll position → active project sync ──
-     Mobile uses a much looser rootMargin so small cards stay active longer.
-     Desktop keeps the original -40% dead zone for the cinematic feel.      ── */
+  /* ── Scroll-based active detection ──
+     Uses scroll position + element offsets instead of IntersectionObserver
+     so only ONE project is active at a time with no jitter.
+     On scroll, finds which project's center is closest to the viewport center.  ── */
   useEffect(() => {
-    const isMobile = window.matchMedia('(max-width: 767px)').matches;
-    const rootMargin = isMobile ? '-20% 0px -20% 0px' : '-40% 0px -40% 0px';
+    let rafId: number;
+    let lastActive = 0;
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            const idx = Number(entry.target.getAttribute('data-index'));
-            if (!isNaN(idx)) setActiveIndex(idx);
-          }
-        });
-      },
-      { rootMargin, threshold: 0.01 },
-    );
+    const getActive = () => {
+      const viewportCenter = window.innerHeight / 2;
+      let closest = 0;
+      let closestDist = Infinity;
 
-    itemRefs.current.forEach((el) => {
-      if (el) observer.observe(el);
-    });
+      itemRefs.current.forEach((el, i) => {
+        if (!el) return;
+        const rect = el.getBoundingClientRect();
+        const elCenter = rect.top + rect.height / 2;
+        const dist = Math.abs(elCenter - viewportCenter);
+        if (dist < closestDist) {
+          closestDist = dist;
+          closest = i;
+        }
+      });
 
-    return () => observer.disconnect();
+      return closest;
+    };
+
+    const onScroll = () => {
+      cancelAnimationFrame(rafId);
+      rafId = requestAnimationFrame(() => {
+        const next = getActive();
+        if (next !== lastActive) {
+          lastActive = next;
+          setActiveIndex(next);
+        }
+      });
+    };
+
+    // Set initial active on mount
+    const initial = getActive();
+    lastActive = initial;
+    setActiveIndex(initial);
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+      cancelAnimationFrame(rafId);
+    };
   }, []);
 
   /* ── Click timeline item → smooth-scroll to project card ── */
@@ -555,9 +620,13 @@ export const ProjectsSection = () => {
             animate={{
               opacity: activeIndex === index ? 1 : 0.1,
               scale: activeIndex === index ? 1 : 0.95,
-              y: activeIndex === index ? 0 : 80,
+              y: activeIndex === index ? 0 : 20,
             }}
-            transition={{ duration: 0.75, ease: EASE }}
+            transition={{
+              opacity: { duration: 0.6, ease: EASE },
+              scale:   { duration: 0.6, ease: EASE },
+              y:       { duration: 0.6, ease: EASE },
+            }}
             className="pss-row flex items-start gap-8 md:items-start items-center flex-col md:flex-row"
             style={{
               minHeight: index === projectsData.length - 1 ? '65vh' : '80vh',
@@ -613,6 +682,7 @@ export const ProjectsSection = () => {
                 project={project}
                 index={index}
                 isActive={activeIndex === index}
+                visual={projectVisuals[index] || projectVisuals[0]}
               />
 
               <ScrollStackItem
