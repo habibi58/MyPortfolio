@@ -2,11 +2,11 @@
 
 export const portfolioOwner = {
   name: 'Jason',
-  title: 'IT Graduate & Technical Support Specialist',
-  shortTitle: 'IT Support Professional',
-  email: 'jason.support@example.com',
-  phone: '+63 (912) 345-6789',
-  location: 'Rizal, Philippines',
+  title: 'Mohamad jason Celoza Portfolio',
+  shortTitle: 'Mohamad jason Celoza Portfolio',
+  email: 'jasonceloza90@gmail.com',
+  phone: '+63 994-448-8088',
+  location: 'Binangonan, Rizal, Philippines',
   profileImage: '/assets/profile.jpg',
   coverImage: '/assets/cover.jpg',
   bio: 'Passionate about building and improving modern digital systems. Focused on delivering efficient, reliable, and scalable solutions that solve real-world problems.',
@@ -36,7 +36,7 @@ export const portfolioOwner = {
 
 export const heroContent = {
   mainHeading: `Hi, I'm Jason`,
-  subHeading: 'IT Graduate & Technical Support Specialist',
+  subHeading: 'IT Graduate',
   description:
     'Passionate about cloud technologies, web development, and solving real-world problems through clean and efficient solutions.',
   ctaPrimary: 'View My Work',
@@ -50,11 +50,11 @@ export const stats = [
   },
   {
     label: 'Certifications',
-    value: '5',
+    value: '1',
   },
   {
     label: 'Years IT Experience',
-    value: '1.5+',
+    value: '0.5',
   },
   {
     label: 'Users Supported',
