@@ -7,9 +7,12 @@ export const experienceData = [
     location:      'Cainta, Rizal, Philippines',
     isCurrentRole: false,
     description: [
-      'Provided Tier 1–2 technical support to 200+ end users across hardware and software.',
-      'Reduced average ticket resolution time by 40% through knowledge base improvements.',
-      'Configured and maintained Windows Active Directory, DNS, and DHCP services.',
+      'Assembled and disassembled desktop computers for maintenance, upgrades, and troubleshooting.',
+      'Diagnosed and resolved basic IT problems (Windows OS, applications, connectivity)',
+      'Provided basic troubleshooting support, including adjusting monitor settings and resolving minor hardware or display issues.',
+      'Maintained accurate records of hardware assets, system units, monitors, and peripherals.',
+      'Escalated complex issues to higher-level support teams.',
+      'Maintained high customer satisfaction through clear communication and timely resolution',
     ],
     technologies: ['Windows OS', 'IGEL OS', 'Microsoft Office 365', 'Azure AD', 'PowerShell'],
 

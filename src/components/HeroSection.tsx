@@ -349,15 +349,15 @@ export const HeroSection = () => {
               >
                 <div className="hero-avatar">
                   <img
-                    src="/profile.jpg"
-                    alt="Mohamad Jason"
-                    onError={(e) => {
-                      const target = e.currentTarget;
-                      target.style.display = 'none';
-                      const fallback = target.nextElementSibling as HTMLElement;
-                      if (fallback) fallback.style.display = 'flex';
-                    }}
-                  />
+                  src="/Profile/Profile.png"
+                  alt="Mohamad Jason"
+                  onError={(e) => {
+                    const target = e.currentTarget;
+                    target.style.display = 'none';
+                    const fallback = target.nextElementSibling as HTMLElement;
+                    if (fallback) fallback.style.display = 'flex';
+                  }}
+                />
                   <span
                     style={{
                       display: 'none',
