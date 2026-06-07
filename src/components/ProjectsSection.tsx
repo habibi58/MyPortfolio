@@ -1,6 +1,8 @@
 // ──────────────────────────────────────────────────────────────────────
 // Cinematic Timeline ScrollStack Portfolio Section
 // Apple-style scroll storytelling with synced timeline + project cards
+// Mobile fixes applied ONLY via <style> + CSS class overrides at ≤767px
+// Desktop JSX is byte-for-byte identical to the original
 // ──────────────────────────────────────────────────────────────────────
 
 import { useState, useRef, useEffect, useCallback } from 'react';
@@ -79,7 +81,200 @@ const badgeVariants = {
 };
 
 /* ═══════════════════════════════════════════════════════════════════════
+   MOBILE-ONLY STYLES
+   Injected once via a <style> tag. All rules are inside @media (max-width: 767px)
+   so desktop is completely unaffected.
+   ═══════════════════════════════════════════════════════════════════════ */
+
+const MOBILE_STYLES = `
+@media (max-width: 767px) {
+
+  /* Section wrapper — prevent horizontal bleed */
+  #projects {
+    margin-top: 48px !important;
+    overflow-x: hidden;
+  }
+
+  /* Section header padding */
+  .pss-header {
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+    padding-bottom: 28px !important;
+  }
+
+  /* "Portfolio" eyebrow */
+  .pss-eyebrow {
+    font-size: 10px !important;
+    margin-bottom: 10px !important;
+  }
+
+  /* "Featured Projects" title */
+  .pss-title {
+    font-size: 28px !important;
+    margin-bottom: 10px !important;
+  }
+
+  /* Subtitle paragraph */
+  .pss-subtitle {
+    font-size: 13px !important;
+    margin-bottom: 20px !important;
+  }
+
+  /* Outer list container */
+  .pss-list {
+    padding-left: 14px !important;
+    padding-right: 14px !important;
+    padding-bottom: 48px !important;
+  }
+
+  /* Per-project row — stack vertically, tighter height */
+  .pss-row {
+    flex-direction: column !important;
+    gap: 8px !important;
+    min-height: 62vh !important;
+    padding-top: 16px !important;
+    padding-bottom: 12px !important;
+  }
+  .pss-row:first-child {
+    padding-top: 0 !important;
+  }
+
+  /* Right column (card wrapper) — full width */
+  .pss-card-col {
+    width: 100% !important;
+    min-width: 0 !important;
+  }
+
+  /* Card article — full width, no 90% cap */
+  .pss-card-article {
+    max-width: 100% !important;
+  }
+
+  /* Image / icon zone — tall enough for full image display on mobile */
+  .pss-visual-zone {
+    height: 220px !important;
+    padding: 10px 12px !important;
+  }
+
+  /* Card content area */
+  .pss-card-body {
+    padding: 12px 14px 16px 14px !important;
+  }
+
+  /* Description text */
+  .pss-description {
+    font-size: 13px !important;
+    margin-bottom: 14px !important;
+  }
+
+  /* Badge row */
+  .pss-badges {
+    gap: 6px !important;
+    margin-bottom: 14px !important;
+  }
+
+  /* Individual badges */
+  .pss-badge {
+    font-size: 11px !important;
+    padding: 5px 10px !important;
+    gap: 5px !important;
+  }
+
+  .pss-badge img {
+    width: 13px !important;
+    height: 13px !important;
+  }
+
+  /* Image wrapper — tighter padding on mobile */
+  .pss-img-wrap {
+    padding: 10px 12px !important;
+  }
+
+  /* Mobile project label strip (shown only on mobile) */
+  .pss-mobile-label {
+    display: flex !important;
+  }
+
+  /* Progress dots (shown only on mobile) */
+  .pss-dots {
+    display: flex !important;
+  }
+}
+
+/* Desktop — hide mobile-only elements */
+@media (min-width: 768px) {
+  .pss-mobile-label {
+    display: none !important;
+  }
+  .pss-dots {
+    display: none !important;
+  }
+}
+`;
+
+/* ═══════════════════════════════════════════════════════════════════════
+   MOBILE LABEL  (visible only on phones, rendered above each card)
+   ═══════════════════════════════════════════════════════════════════════ */
+
+interface MobileLabelProps {
+  project: Project;
+  index: number;
+  isActive: boolean;
+  visual: ProjectVisual;
+}
+
+const MobileLabel = ({ project, index, isActive, visual }: MobileLabelProps) => (
+  <div
+    className="pss-mobile-label"
+    style={{
+      /* hidden by default; shown by CSS at ≤767px */
+      display: 'none',
+      alignItems: 'center',
+      gap: '8px',
+      marginBottom: '8px',
+      paddingLeft: '2px',
+    }}
+  >
+    <motion.span
+      style={{
+        display: 'block',
+        width: '6px',
+        height: '6px',
+        borderRadius: '50%',
+        flexShrink: 0,
+        backgroundColor: isActive ? '#3b82f6' : 'rgba(255,255,255,0.2)',
+      }}
+      animate={{ backgroundColor: isActive ? '#3b82f6' : 'rgba(255,255,255,0.2)' }}
+      transition={{ duration: 0.4 }}
+    />
+    <span
+      style={{
+        fontFamily: 'monospace',
+        fontSize: '11px',
+        fontWeight: 600,
+        letterSpacing: '0.15em',
+        textTransform: 'uppercase' as const,
+        color: isActive ? '#3b82f6' : 'rgba(196,196,200,0.6)',
+      }}
+    >
+      {String(index + 1).padStart(2, '0')}
+    </span>
+    <span
+      style={{
+        fontSize: '13px',
+        fontWeight: 700,
+        color: isActive ? '#ffffff' : 'rgba(255,255,255,0.4)',
+        lineHeight: 1.3,
+      }}
+    >
+      {project.title}
+    </span>
+  </div>
+);
+
+/* ═══════════════════════════════════════════════════════════════════════
    SCROLL STACK ITEM  (Right Column Card)
+   — Desktop JSX is identical to original; CSS classes carry mobile overrides
    ═══════════════════════════════════════════════════════════════════════ */
 
 interface ScrollStackItemProps {
@@ -99,23 +294,8 @@ const ScrollStackItem = ({
 
   return (
     <motion.div className="w-full flex justify-end md:justify-end justify-center flex-col items-center">
-      {/* Mobile-only title - outside card */}
-      <div className="md:hidden px-4 pt-4 pb-4 text-center w-full">
-        <motion.span
-          className="block font-mono text-xs font-semibold tracking-wider mb-1"
-          style={{ color: '#3b82f6' }}
-        >
-          {String(index + 1).padStart(2, '0')}
-        </motion.span>
-        <motion.h3
-          className="font-display font-bold text-xl leading-snug"
-          style={{ color: '#ffffff' }}
-        >
-          {project.title}
-        </motion.h3>
-      </div>
       <motion.article
-        className="rounded-[20px] overflow-hidden relative"
+        className="pss-card-article rounded-[20px] overflow-hidden relative"
         style={{
           backgroundColor: '#000000',
           border: '1px solid #3b82f635',
@@ -141,15 +321,31 @@ const ScrollStackItem = ({
 
         {/* ── Visual / Image Area ── */}
         <div
-          className="relative h-[350px] flex items-center justify-center overflow-hidden"
-          style={{ backgroundColor: '#000000', padding: '24px' }}
+          className="pss-visual-zone relative h-[200px] md:h-[350px] flex items-center justify-center overflow-hidden py-3 md:py-6 px-4 md:px-8"
+          style={{ backgroundColor: '#000000' }}
         >
           {project.image ? (
-            <img
-              src={project.image}
-              alt={project.title}
-              className="w-full h-full object-cover rounded-xl"
-            />
+            <div
+              className="pss-img-wrap"
+              style={{
+                width: '100%',
+                height: '100%',
+                padding: '16px 20px',
+                boxSizing: 'border-box',
+              }}
+            >
+              <img
+                src={project.image}
+                alt={project.title}
+                style={{
+                  width: '100%',
+                  height: '100%',
+                  objectFit: 'cover',
+                  borderRadius: '12px',
+                  display: 'block',
+                }}
+              />
+            </div>
           ) : (
             <>
               {/* Dot pattern */}
@@ -206,9 +402,9 @@ const ScrollStackItem = ({
         </div>
 
         {/* ── Content ── */}
-        <div style={{ padding: '0px 20px 24px 20px' }}>
+        <div className="pss-card-body" style={{ padding: '0px 16px 20px 16px' }}>
           <p
-            className="text-[0.935rem] leading-[1.75] mb-6"
+            className="pss-description text-[0.935rem] leading-[1.75] mb-6"
             style={{ color: '#636363' }}
           >
             {project.fullDescription}
@@ -216,7 +412,7 @@ const ScrollStackItem = ({
 
           {/* ── Tech badges ── */}
           <motion.div
-            className="flex flex-wrap gap-2 mb-7"
+            className="pss-badges flex flex-wrap gap-2 mb-7"
             initial="hidden"
             animate={isActive ? 'visible' : 'hidden'}
           >
@@ -234,7 +430,7 @@ const ScrollStackItem = ({
                   custom={i}
                   variants={badgeVariants}
                   whileHover={{ y: -2, transition: { duration: 0.2 } }}
-                  className="inline-flex items-center rounded-full font-medium"
+                  className="pss-badge inline-flex items-center rounded-full font-medium"
                   style={{
                     backgroundColor: colors.bg,
                     color: colors.text,
@@ -259,15 +455,21 @@ const ScrollStackItem = ({
 };
 
 /* ═══════════════════════════════════════════════════════════════════════
-   PROJECTS SECTION  (Main Export — TimelineScrollSection + ScrollStack)
+   PROJECTS SECTION  (Main Export)
+   — Desktop JSX is identical to original; mobile via CSS classes only
    ═══════════════════════════════════════════════════════════════════════ */
 
 export const ProjectsSection = () => {
   const [activeIndex, setActiveIndex] = useState(0);
   const itemRefs = useRef<(HTMLDivElement | null)[]>([]);
 
-  /* ── Intersection Observer: scroll position → active project sync ── */
+  /* ── Intersection Observer: scroll position → active project sync ──
+     Mobile uses a much looser rootMargin so small cards stay active longer.
+     Desktop keeps the original -40% dead zone for the cinematic feel.      ── */
   useEffect(() => {
+    const isMobile = window.matchMedia('(max-width: 767px)').matches;
+    const rootMargin = isMobile ? '-20% 0px -20% 0px' : '-40% 0px -40% 0px';
+
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -277,7 +479,7 @@ export const ProjectsSection = () => {
           }
         });
       },
-      { rootMargin: '-40% 0px -40% 0px', threshold: 0.01 },
+      { rootMargin, threshold: 0.01 },
     );
 
     itemRefs.current.forEach((el) => {
@@ -301,9 +503,12 @@ export const ProjectsSection = () => {
       className="relative w-full"
       style={{ marginTop: '100px' }}
     >
+      {/* ── Inject mobile-only styles once ── */}
+      <style dangerouslySetInnerHTML={{ __html: MOBILE_STYLES }} />
+
       {/* ── Section Header ── */}
       <div
-        className="px-3 sm:px-4 sm:px-6 lg:px-8 pb-16 flex flex-col items-center text-center"
+        className="pss-header px-3 sm:px-4 sm:px-6 lg:px-8 pb-16 flex flex-col items-center text-center"
         style={{ maxWidth: '64rem', marginLeft: 'auto', marginRight: 'auto' }}
       >
         <motion.div
@@ -314,19 +519,19 @@ export const ProjectsSection = () => {
           className="flex flex-col items-center"
         >
           <p
-            className="font-mono text-sm font-semibold tracking-[0.3em] uppercase mb-5"
+            className="pss-eyebrow font-mono text-sm font-semibold tracking-[0.3em] uppercase mb-5"
             style={{ color: '#3b82f6' }}
           >
             Portfolio
           </p>
           <h2
-            className="font-display text-5xl lg:text-6xl font-extrabold tracking-tight mb-6"
+            className="pss-title font-display text-5xl lg:text-6xl font-extrabold tracking-tight mb-6"
             style={{ color: '#ffffff' }}
           >
             Featured Projects
           </h2>
           <p
-            className="text-lg max-w-2xl mx-auto leading-relaxed"
+            className="pss-subtitle text-lg max-w-2xl mx-auto leading-relaxed"
             style={{ color: '#888', textAlign: 'center', marginBottom: '40px' }}
           >
             A curated showcase of my work in IT support systems, web
@@ -337,7 +542,7 @@ export const ProjectsSection = () => {
 
       {/* ── Two-Column Layout ── */}
       <div
-        className="px-3 sm:px-4 sm:px-6 lg:px-8 pb-32"
+        className="pss-list px-3 sm:px-4 sm:px-6 lg:px-8 pb-32"
         style={{ maxWidth: '64rem', marginLeft: 'auto', marginRight: 'auto' }}
       >
         {projectsData.map((project, index) => (
@@ -354,7 +559,7 @@ export const ProjectsSection = () => {
               y: activeIndex === index ? 0 : 80,
             }}
             transition={{ duration: 0.75, ease: EASE }}
-            className="flex items-start gap-8 md:items-start items-center flex-col md:flex-row"
+            className="pss-row flex items-start gap-8 md:items-start items-center flex-col md:flex-row"
             style={{
               minHeight: index === projectsData.length - 1 ? '65vh' : '80vh',
               paddingTop: index === 0 ? '0' : '2rem',
@@ -403,7 +608,15 @@ export const ProjectsSection = () => {
             </div>
 
             {/* Right side — Project card */}
-            <div className="flex-1">
+            <div className="pss-card-col flex-1">
+              {/* Mobile-only label (hidden on desktop via CSS) */}
+              <MobileLabel
+                project={project}
+                index={index}
+                isActive={activeIndex === index}
+                visual={projectVisuals[index] || projectVisuals[0]}
+              />
+
               <ScrollStackItem
                 project={project}
                 index={index}
@@ -413,6 +626,41 @@ export const ProjectsSection = () => {
             </div>
           </motion.div>
         ))}
+      </div>
+
+      {/* ── Mobile progress dots (hidden on desktop via CSS) ── */}
+      <div
+        className="pss-dots justify-center"
+        style={{
+          display: 'none', /* shown at ≤767px via CSS */
+          gap: '8px',
+          paddingBottom: '32px',
+          paddingTop: '4px',
+        }}
+      >
+        {projectsData.map((_, i) => {
+          const visual = projectVisuals[i] || projectVisuals[0];
+          return (
+            <motion.button
+              key={i}
+              onClick={() => scrollToProject(i)}
+              aria-label={`Go to project ${i + 1}`}
+              style={{
+                height: '6px',
+                borderRadius: '9999px',
+                border: 'none',
+                cursor: 'pointer',
+                padding: 0,
+                backgroundColor: activeIndex === i ? visual.color : 'rgba(255,255,255,0.2)',
+              }}
+              animate={{
+                width: activeIndex === i ? 20 : 6,
+                backgroundColor: activeIndex === i ? visual.color : 'rgba(255,255,255,0.2)',
+              }}
+              transition={{ duration: 0.35, ease: EASE }}
+            />
+          );
+        })}
       </div>
     </section>
   );

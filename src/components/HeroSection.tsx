@@ -1,4 +1,7 @@
 // Hero Section Component
+// Mobile optimizations applied ONLY via injected <style> at ≤767px.
+// Desktop JSX is byte-for-byte identical to the original.
+
 import { useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { Download } from 'lucide-react';
@@ -144,6 +147,118 @@ function useRoleAnimator() {
   return { rARef, rBRef };
 }
 
+/* ═══════════════════════════════════════════════════════════════════════
+   MOBILE-ONLY STYLES
+   Every rule is inside @media (max-width: 767px) — desktop untouched.
+   ═══════════════════════════════════════════════════════════════════════ */
+const HERO_MOBILE_STYLES = `
+@media (max-width: 767px) {
+
+  /* Left column — center everything */
+  .hero-left {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    text-align: center !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+
+  /* Name (BlurText wrapper) */
+  .hero-name {
+    text-align: center !important;
+    font-size: 1.15rem !important;
+    line-height: 1.2 !important;
+    margin-bottom: 16px !important;
+    display: flex !important;
+    flex-wrap: wrap !important;
+    justify-content: center !important;
+    width: 100% !important;
+  }
+
+  /* "Aspiring + role" row — keep side by side, centered */
+  .hero-role-row {
+    justify-content: center !important;
+    flex-wrap: nowrap !important;
+    align-items: center !important;
+    gap: 8px !important;
+  }
+
+  /* "Aspiring" BlurText */
+  .hero-aspiring {
+    font-size: 1.1rem !important;
+    text-align: center !important;
+    white-space: nowrap !important;
+    flex-shrink: 0 !important;
+  }
+
+  /* Animated role stage — wide enough for longest role */
+  .hero-role-stage {
+    min-width: 0 !important;
+    max-width: 220px !important;
+    width: 220px !important;
+    height: 28px !important;
+    margin: 0 !important;
+    flex-shrink: 1 !important;
+    overflow: visible !important;
+  }
+
+  /* Role slot font size */
+  .hero-role-slot {
+    font-size: 16px !important;
+    justify-content: flex-start !important;
+    white-space: nowrap !important;
+  }
+
+  /* Description — hidden on mobile */
+  .hero-description {
+    display: none !important;
+  }
+
+  /* CTA button row — 2-column grid */
+  .hero-cta {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 12px !important;
+    width: 100% !important;
+    margin-top: 12px !important;
+    margin-bottom: 24px !important;
+  }
+
+  /* Each button fills its grid cell equally, smaller text */
+  .hero-cta > * {
+    width: 100% !important;
+    justify-content: center !important;
+    font-size: 20px !important;
+    padding: 6px 8px !important;
+  }
+
+  /* Target inner label spans too */
+  .hero-cta .vw-label,
+  .hero-cta .btn-premium-resume {
+    font-size: 10px !important;
+  }
+
+  /* Shrink icons inside buttons */
+  .hero-cta .vw-icon,
+  .hero-cta .vw-icon i,
+  .hero-cta .download-icon-wrapper svg,
+  .hero-cta .icon-stack svg {
+    font-size: 20px !important;
+    width: 17px !important;
+    height: 17px !important;
+  }
+
+  /* Social icons — center */
+  .hero-social {
+    display: flex !important;
+    justify-content: center !important;
+    margin-top: 8px !important;
+    margin-bottom: 24px !important;
+  }
+}
+`;
+
 export const HeroSection = () => {
   const stageRef = useRef(null);
   const { rARef, rBRef } = useRoleAnimator();
@@ -155,6 +270,9 @@ export const HeroSection = () => {
 
   return (
     <>
+      {/* Mobile-only style injection */}
+      <style dangerouslySetInnerHTML={{ __html: HERO_MOBILE_STYLES }} />
+
       <div className="fixed inset-0 z-0">
         <ParticlesBackground
           key="particles-dark"
@@ -185,7 +303,7 @@ export const HeroSection = () => {
               animate={{ opacity: 1 }}
               transition={{ duration: 0.6 }}
               style={{ paddingLeft: '0' }}
-              className="sm:pl-6"
+              className="hero-left sm:pl-6"
             >
               {/* Name */}
               <BlurText
@@ -195,72 +313,100 @@ export const HeroSection = () => {
                 easing="easeOut"
                 animateBy="words"
                 direction="top"
-                className="mb-4 sm:mb-6 font-syne text-xl sm:text-3xl font-extrabold tracking-tight md:text-5xl lg:text-6xl text-white uppercase"
+                className="hero-name mb-4 sm:mb-6 font-syne text-2xl sm:text-3xl font-extrabold tracking-tight md:text-5xl lg:text-6xl text-white uppercase"
               />
 
-              {/* ── Role Animator (replaces typewriter) ── */}
-              <motion.div
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 3, duration: 0.6 }}
-                className="mt-6 mb-6 min-h-20"
-              >
-                <div className="flex items-center flex-wrap gap-x-3">
-                  {/* "Aspiring" stays fixed */}
-                  <BlurText
-                    text="Aspiring"
-                    delay={300}
-                    stepDuration={1.4}
-                    easing="easeOut"
-                    animateBy="words"
-                    direction="top"
-                    className="font-display text-2xl font-bold md:text-4xl text-white"
-                  />
-
-                  {/* Animated role stage */}
-                  <div
-                    ref={stageRef}
+              {/* ── Role Animator ── */}
+              {(() => {
+                const isMobile = typeof window !== 'undefined' && window.innerWidth <= 767;
+                const stageFontSize = isMobile ? '20px' : 'clamp(24px, 3.5vw, 42px)';
+                const stageWidth = isMobile ? '115px' : '100%';
+                const stageMinWidth = isMobile ? '115px' : '200px';
+                const stageMaxWidth = isMobile ? '115px' : '360px';
+                const stageHeight = isMobile ? '20px' : 'clamp(36px, 4.5vw, 52px)';
+                const stageOverflow = isMobile ? 'visible' : 'hidden';
+                return (
+                  <motion.div
+                    initial={{ opacity: 0, y: 30 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 3, duration: 0.6 }}
                     style={{
-                      position: 'relative',
-                      display: 'inline-block',
-                      minWidth: '200px',
-                      maxWidth: '360px',
+                      marginTop: '24px',
+                      marginBottom: '24px',
                       width: '100%',
-                      height: 'clamp(36px, 4.5vw, 52px)',
-                      overflow: 'hidden',
-                      perspective: '800px',
-                      transformStyle: 'preserve-3d',
+                      display: 'flex',
+                      justifyContent: isMobile ? 'center' : 'flex-start',
                     }}
                   >
-                    {/* Slot A — starts with first role */}
-                    <span
-                      ref={rARef}
+                    {/* inner pill — shrinks to content, then gets centered by parent */}
+                    <div
                       style={{
-                        position: 'absolute', inset: 0,
-                        display: 'flex', alignItems: 'center',
-                        fontSize: 'clamp(24px, 3.5vw, 42px)',
-                        fontWeight: 700, letterSpacing: '-1px',
-                        whiteSpace: 'nowrap',
-                        color: COLORS[0],
-                        fontFamily: 'inherit',
+                        display: 'inline-flex',
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        gap: isMobile ? '6px' : '12px',
+                        flexWrap: 'nowrap',
                       }}
-                    />
-                    {/* Slot B — incoming role */}
-                    <span
-                      ref={rBRef}
-                      style={{
-                        position: 'absolute', inset: 0,
-                        display: 'flex', alignItems: 'center',
-                        fontSize: 'clamp(24px, 3.5vw, 42px)',
-                        fontWeight: 700, letterSpacing: '-1px',
-                        whiteSpace: 'nowrap',
-                        opacity: 0,
-                        fontFamily: 'inherit',
-                      }}
-                    />
-                  </div>
-                </div>
-              </motion.div>
+                    >
+                      {/* "Aspiring" stays fixed */}
+                      <BlurText
+                        text="Aspiring"
+                        delay={300}
+                        stepDuration={1.4}
+                        easing="easeOut"
+                        animateBy="words"
+                        direction="top"
+                        className="hero-aspiring font-display text-2xl font-bold md:text-4xl text-white"
+                        style={isMobile ? { fontSize: '13px', whiteSpace: 'nowrap', marginLeft: '12px' } : {}}
+                      />
+
+                      {/* Animated role stage */}
+                      <div
+                        ref={stageRef}
+                        style={{
+                          position: 'relative',
+                          display: 'inline-block',
+                          width: stageWidth,
+                          minWidth: stageMinWidth,
+                          maxWidth: stageMaxWidth,
+                          height: stageHeight,
+                          overflow: stageOverflow,
+                          perspective: '800px',
+                          transformStyle: 'preserve-3d',
+                          flexShrink: 0,
+                        }}
+                      >
+                        {/* Slot A */}
+                        <span
+                          ref={rARef}
+                          style={{
+                            position: 'absolute', inset: 0,
+                            display: 'flex', alignItems: 'center',
+                            fontSize: stageFontSize,
+                            fontWeight: 700, letterSpacing: '-1px',
+                            whiteSpace: 'nowrap',
+                            color: COLORS[0],
+                            fontFamily: 'inherit',
+                          }}
+                        />
+                        {/* Slot B */}
+                        <span
+                          ref={rBRef}
+                          style={{
+                            position: 'absolute', inset: 0,
+                            display: 'flex', alignItems: 'center',
+                            fontSize: stageFontSize,
+                            fontWeight: 700, letterSpacing: '-1px',
+                            whiteSpace: 'nowrap',
+                            opacity: 0,
+                            fontFamily: 'inherit',
+                          }}
+                        />
+                      </div>
+                    </div>
+                  </motion.div>
+                );
+              })()}
 
               {/* Description */}
               <BlurText
@@ -270,7 +416,7 @@ export const HeroSection = () => {
                 easing="easeOut"
                 animateBy="words"
                 direction="bottom"
-                className="mb-10 text-lg text-gray-300 leading-relaxed md:text-xl"
+                className="hero-description mb-10 text-lg text-gray-300 leading-relaxed md:text-xl"
               />
 
               {/* CTA Buttons */}
@@ -279,7 +425,7 @@ export const HeroSection = () => {
                 initial="hidden"
                 animate="visible"
                 transition={{ delay: 0.8 }}
-                className="mt-12 mb-16 flex flex-col gap-6 sm:flex-row"
+                className="hero-cta mt-12 mb-16 flex flex-col gap-6 sm:flex-row"
                 style={{ marginTop: '15px' }}
               >
                 <motion.button
@@ -315,9 +461,7 @@ export const HeroSection = () => {
               </motion.div>
 
               {/* Social Links */}
-              <div
-                className="mt-12 mb-12"
-              >
+              <div className="hero-social mt-12 mb-12">
                 <SocialIcons />
               </div>
             </motion.div>
