@@ -220,10 +220,9 @@ interface MobileLabelProps {
   project: Project;
   index: number;
   isActive: boolean;
-  visual: ProjectVisual;
 }
 
-const MobileLabel = ({ project, index, isActive, visual }: MobileLabelProps) => (
+const MobileLabel = ({ project, index, isActive }: MobileLabelProps) => (
   <div
     className="pss-mobile-label"
     style={{
@@ -614,7 +613,6 @@ export const ProjectsSection = () => {
                 project={project}
                 index={index}
                 isActive={activeIndex === index}
-                visual={projectVisuals[index] || projectVisuals[0]}
               />
 
               <ScrollStackItem
