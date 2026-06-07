@@ -167,13 +167,14 @@ const HERO_MOBILE_STYLES = `
   /* Name (BlurText wrapper) */
   .hero-name {
     text-align: center !important;
-    font-size: 1.15rem !important;
+    font-size: 1.35rem !important;
     line-height: 1.2 !important;
     margin-bottom: 16px !important;
     display: flex !important;
     flex-wrap: wrap !important;
     justify-content: center !important;
     width: 100% !important;
+    margin-top:20px;
   }
 
   /* "Aspiring + role" row — keep side by side, centered */
@@ -221,22 +222,23 @@ const HERO_MOBILE_STYLES = `
     grid-template-columns: 1fr 1fr !important;
     gap: 12px !important;
     width: 100% !important;
+    height: 40px;
     margin-top: 12px !important;
-    margin-bottom: 24px !important;
+    margin-bottom: 5px !important;
   }
 
   /* Each button fills its grid cell equally, smaller text */
   .hero-cta > * {
     width: 100% !important;
     justify-content: center !important;
-    font-size: 20px !important;
+    font-size: 11px !important;
     padding: 6px 8px !important;
   }
 
   /* Target inner label spans too */
   .hero-cta .vw-label,
   .hero-cta .btn-premium-resume {
-    font-size: 10px !important;
+    font-size: 11px !important;
   }
 
   /* Shrink icons inside buttons */
@@ -244,9 +246,41 @@ const HERO_MOBILE_STYLES = `
   .hero-cta .vw-icon i,
   .hero-cta .download-icon-wrapper svg,
   .hero-cta .icon-stack svg {
-    font-size: 20px !important;
-    width: 17px !important;
-    height: 17px !important;
+    font-size: 16px !important;
+    width: 16px !important;
+    height: 19px !important;
+  }
+
+  /* Profile picture — neon flicker (mobile only) */
+  .hero-profile-pic {
+    display: flex !important;
+    justify-content: center !important;
+    margin-bottom: 20px !important;
+  }
+
+  @keyframes neon-flicker {
+    0%,100% { box-shadow: 0 0 8px #3b82f6, 0 0 20px #3b82f6, 0 0 40px #3b82f6; border-color: #3b82f6; }
+    50%      { box-shadow: 0 0 4px #3b82f6, 0 0 10px #3b82f6;                   border-color: #60a5fa; }
+  }
+
+  .hero-avatar {
+    width: 160px !important;
+    height: 160px !important;
+    border-radius: 50% !important;
+    border: 2.5px solid #3b82f6 !important;
+    background: #000 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    overflow: hidden !important;
+    animation: neon-flicker 1.8s ease-in-out infinite !important;
+  }
+
+  .hero-avatar img {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    border-radius: 50% !important;
   }
 
   /* Social icons — center */
@@ -305,6 +339,39 @@ export const HeroSection = () => {
               style={{ paddingLeft: '0' }}
               className="hero-left sm:pl-6"
             >
+              {/* Profile Picture — mobile only, hidden on desktop via CSS */}
+              <motion.div
+                className="hero-profile-pic"
+                style={{ display: 'none' }}
+                initial={{ opacity: 0, scale: 0 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.2, duration: 0.8, type: 'spring', stiffness: 100, damping: 15 }}
+              >
+                <div className="hero-avatar">
+                  <img
+                    src="/profile.jpg"
+                    alt="Mohamad Jason"
+                    onError={(e) => {
+                      const target = e.currentTarget;
+                      target.style.display = 'none';
+                      const fallback = target.nextElementSibling as HTMLElement;
+                      if (fallback) fallback.style.display = 'flex';
+                    }}
+                  />
+                  <span
+                    style={{
+                      display: 'none',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      fontSize: '32px',
+                      color: '#3b82f6',
+                    }}
+                  >
+                    <i className="ti ti-user" aria-hidden="true" />
+                  </span>
+                </div>
+              </motion.div>
+
               {/* Name */}
               <BlurText
                 text="Mohamad Jason Labis Celoza"
@@ -319,7 +386,7 @@ export const HeroSection = () => {
               {/* ── Role Animator ── */}
               {(() => {
                 const isMobile = typeof window !== 'undefined' && window.innerWidth <= 767;
-                const stageFontSize = isMobile ? '20px' : 'clamp(24px, 3.5vw, 42px)';
+                const stageFontSize = isMobile ? '18px' : 'clamp(24px, 3.5vw, 40px)';
                 const stageWidth = isMobile ? '115px' : '100%';
                 const stageMinWidth = isMobile ? '115px' : '200px';
                 const stageMaxWidth = isMobile ? '115px' : '360px';
