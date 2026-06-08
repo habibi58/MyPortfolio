@@ -1,9 +1,9 @@
 // MobileSkillsScroll.tsx
-// Infinite horizontal scroll strip — mobile only (≤767px).
-// Momentum physics: swipe velocity is captured on lift and decays smoothly
-// back to the base auto-scroll speed. No jarring snap or pause.
+// A simple infinite horizontal scroll strip built for phones.
+// Shown only on mobile (≤767px) via CSS — hidden on desktop.
+// No dependency on ScrollVelocity or its CSS.
 
-import { useRef, useEffect, useCallback } from 'react';
+import { useRef, useEffect, useState, useCallback } from 'react';
 import {
   Wrench, Download, Network, Headphones,
 } from 'lucide-react';
@@ -32,11 +32,9 @@ const STYLES = `
       cursor: grab;
       user-select: none;
       -webkit-user-select: none;
-      /* pan-y: vertical page scroll still works, we capture horizontal */
-      touch-action: pan-y;
     }
 
-    .mss-track.is-dragging {
+    .mss-track:active {
       cursor: grabbing;
     }
 
@@ -65,11 +63,18 @@ const STYLES = `
       justify-content: center;
       margin-bottom: 8px;
       flex-shrink: 0;
-      -webkit-tap-highlight-color: transparent;
     }
 
-    .mss-box svg  { width: 28px; height: 28px; }
-    .mss-box img  { width: 30px; height: 30px; object-fit: contain; }
+    .mss-box svg {
+      width: 28px;
+      height: 28px;
+    }
+
+    .mss-box img {
+      width: 30px;
+      height: 30px;
+      object-fit: contain;
+    }
 
     .mss-label {
       font-size: 10px;
@@ -82,8 +87,12 @@ const STYLES = `
       word-break: break-word;
     }
 
-    .mss-row          { margin-bottom: 16px; }
-    .mss-row:last-child { margin-bottom: 0; }
+    .mss-row {
+      margin-bottom: 16px;
+    }
+    .mss-row:last-child {
+      margin-bottom: 0;
+    }
   }
 `;
 
@@ -92,164 +101,140 @@ const ROW1 = [
   { label: 'Technical Support',    icon: <Wrench    style={{ width: 28, height: 28, color: '#60a5fa' }} /> },
   { label: 'Software Install',     icon: <Download  style={{ width: 28, height: 28, color: '#60a5fa' }} /> },
   { label: 'Networking Basics',    icon: <Network   style={{ width: 28, height: 28, color: '#60a5fa' }} /> },
-  { label: 'Windows OS',           icon: <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/windows8/windows8-original.svg"       alt="Windows"  style={{ width: 30, height: 30 }} /> },
+  { label: 'Windows OS',           icon: <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/windows8/windows8-original.svg" alt="Windows" style={{ width: 30, height: 30 }} /> },
   { label: 'Microsoft Office',     icon: <Microsoft.Color size={32} /> },
   { label: 'Customer Service',     icon: <Headphones style={{ width: 28, height: 28, color: '#60a5fa' }} /> },
   { label: 'Claude Code',          icon: <ClaudeCode.Color size={32} /> },
   { label: 'Cursor AI',            icon: <Cursor.Avatar size={30} /> },
   { label: 'Windsurf',             icon: <Windsurf.Avatar size={30} /> },
   { label: 'Antigravity',          icon: <Antigravity.Color size={32} /> },
-  { label: 'VS Code',              icon: <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/vscode/vscode-original.svg"            alt="VS Code"  style={{ width: 30, height: 30 }} /> },
+  { label: 'VS Code',              icon: <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/vscode/vscode-original.svg" alt="VS Code" style={{ width: 30, height: 30 }} /> },
   { label: 'GitHub',               icon: <Github size={32} /> },
 ];
 
 const ROW2 = [
-  { label: 'HTML',         icon: <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/html5/html5-original.svg"            alt="HTML"       style={{ width: 30, height: 30 }} /> },
-  { label: 'CSS',          icon: <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/css3/css3-original.svg"              alt="CSS"        style={{ width: 30, height: 30 }} /> },
-  { label: 'JavaScript',   icon: <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/javascript/javascript-original.svg"  alt="JS"         style={{ width: 30, height: 30 }} /> },
-  { label: 'React.js',     icon: <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/react/react-original.svg"            alt="React"      style={{ width: 30, height: 30 }} /> },
-  { label: 'Vite',         icon: <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/vitejs/vitejs-original.svg"          alt="Vite"       style={{ width: 30, height: 30 }} /> },
-  { label: 'PHP',          icon: <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/php/php-original.svg"                alt="PHP"        style={{ width: 30, height: 30 }} /> },
-  { label: 'MySQL',        icon: <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/mysql/mysql-original.svg"            alt="MySQL"      style={{ width: 30, height: 30 }} /> },
-  { label: 'C#',           icon: <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/csharp/csharp-original.svg"          alt="C#"         style={{ width: 30, height: 30 }} /> },
-  { label: 'VB.NET',       icon: <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/visualbasic/visualbasic-original.svg" alt="VB.NET"   style={{ width: 30, height: 30 }} /> },
+  { label: 'HTML',         icon: <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/html5/html5-original.svg"         alt="HTML"       style={{ width: 30, height: 30 }} /> },
+  { label: 'CSS',          icon: <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/css3/css3-original.svg"           alt="CSS"        style={{ width: 30, height: 30 }} /> },
+  { label: 'JavaScript',   icon: <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/javascript/javascript-original.svg" alt="JS"       style={{ width: 30, height: 30 }} /> },
+  { label: 'React.js',     icon: <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/react/react-original.svg"         alt="React"      style={{ width: 30, height: 30 }} /> },
+  { label: 'Vite',         icon: <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/vitejs/vitejs-original.svg"       alt="Vite"       style={{ width: 30, height: 30 }} /> },
+  { label: 'PHP',          icon: <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/php/php-original.svg"             alt="PHP"        style={{ width: 30, height: 30 }} /> },
+  { label: 'MySQL',        icon: <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/mysql/mysql-original.svg"         alt="MySQL"      style={{ width: 30, height: 30 }} /> },
+  { label: 'C#',           icon: <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/csharp/csharp-original.svg"       alt="C#"         style={{ width: 30, height: 30 }} /> },
+  { label: 'VB.NET',       icon: <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/visualbasic/visualbasic-original.svg" alt="VB.NET" style={{ width: 30, height: 30 }} /> },
   { label: 'Tailwind CSS', icon: <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/tailwindcss/tailwindcss-original.svg" alt="Tailwind" style={{ width: 30, height: 30 }} /> },
-  { label: 'TypeScript',   icon: <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/typescript/typescript-original.svg"  alt="TS"         style={{ width: 30, height: 30 }} /> },
+  { label: 'TypeScript',   icon: <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/typescript/typescript-original.svg" alt="TS"       style={{ width: 30, height: 30 }} /> },
 ];
 
-/* ─────────────────────────────────────────────────────────────────────────────
-   Physics constants
-   ──────────────────────────────────────────────────────────────────────────── */
-const FRICTION      = 0.92;   // velocity multiplied each frame during coast (0–1)
-const MIN_COAST_VEL = 0.15;   // below this |velocity| we consider coast finished
-const MAX_VELOCITY  = 30;     // cap so an insane flick doesn't fly off screen
-
-/* ─────────────────────────────────────────────────────────────────────────────
-   ScrollRow
-   ──────────────────────────────────────────────────────────────────────────── */
-function ScrollRow({ items, speed, reverse = false }: {
-  items: typeof ROW1;
-  speed: number;
-  reverse?: boolean;
-}) {
-  const trackRef = useRef<HTMLDivElement>(null);
-
-  /* position & physics — all refs so RAF never needs re-registration */
-  const posRef          = useRef(0);      // current translateX (px)
-  const velRef          = useRef(0);      // momentum velocity (px/frame), signed
-  const coastingRef     = useRef(false);  // true while momentum decay is active
-  const draggingRef     = useRef(false);  // true while finger is down
-  const lastTouchXRef   = useRef(0);
-  const lastTouchTRef   = useRef(0);      // timestamp of last touchmove (for velocity)
-  const rawVelRef       = useRef(0);      // instantaneous px/ms during drag
-
-  /* ── RAF loop ── */
+/* ── Infinite scroll hook ── */
+function useInfiniteScroll(
+  ref: React.RefObject<HTMLDivElement | null>,
+  speed: number,
+  reverse = false,
+  isPaused: boolean = false
+) {
   useEffect(() => {
-    const el = trackRef.current;
+    const el = ref.current;
     if (!el) return;
+    let x = 0;
     let rafId: number;
-
-    const autoStep = reverse ? speed : -speed; // base step per frame
+    const halfWidth = el.scrollWidth / 2;
 
     const tick = () => {
-      const sectionW = el.scrollWidth / 3; // tripled list → 1 section = scrollWidth/3
-
-      if (draggingRef.current) {
-        /* finger down — position written directly by touchMove, nothing to add */
-      } else if (coastingRef.current) {
-        /* momentum decay: move by velRef, bleed toward autoStep */
-        const target = autoStep;                   // where we want velRef to settle
-        velRef.current += (target - velRef.current) * 0.04; // ease toward auto speed
-        velRef.current *= FRICTION;
-
-        posRef.current += velRef.current;
-
-        /* done coasting when velocity is close enough to the natural auto speed */
-        if (Math.abs(velRef.current - target) < MIN_COAST_VEL &&
-            Math.abs(velRef.current) < Math.abs(autoStep) + MIN_COAST_VEL) {
-          velRef.current = autoStep;
-          coastingRef.current = false;
-        }
-      } else {
-        /* normal auto-scroll */
-        posRef.current += autoStep;
+      if (!isPaused) {
+        x += reverse ? speed : -speed;
+        if (!reverse && x <= -halfWidth) x += halfWidth;
+        if (reverse  && x >= 0)          x -= halfWidth;
       }
-
-      /* seamless loop wrap */
-      if (!reverse && posRef.current <= -sectionW)  posRef.current += sectionW;
-      if ( reverse && posRef.current >=  0)          posRef.current -= sectionW;
-
-      el.style.transform = `translateX(${posRef.current}px)`;
+      el.style.transform = `translateX(${x}px)`;
       rafId = requestAnimationFrame(tick);
     };
 
     rafId = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(rafId);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [ref, speed, reverse, isPaused]);
+}
 
-  /* ── Touch handlers ── */
+/* ── Single scrolling row ── */
+function ScrollRow({ items, speed, reverse }: {
+  items: typeof ROW1;
+  speed: number;
+  reverse?: boolean;
+}) {
+  const trackRef = useRef<HTMLDivElement>(null);
+  const [isPaused, setIsPaused] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
+  const touchStartRef = useRef(0);
+  const touchCurrentRef = useRef(0);
+  const currentXRef = useRef(0);
+  const resumeTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useInfiniteScroll(trackRef, speed, reverse, isPaused || isDragging);
+
   const handleTouchStart = useCallback((e: React.TouchEvent) => {
-    draggingRef.current   = true;
-    coastingRef.current   = false;          // cancel any in-progress coast
-    velRef.current        = 0;
-    rawVelRef.current     = 0;
-    lastTouchXRef.current = e.touches[0].clientX;
-    lastTouchTRef.current = e.timeStamp;
-
-    trackRef.current?.classList.add('is-dragging');
+    setIsPaused(true);
+    setIsDragging(true);
+    touchStartRef.current = e.touches[0].clientX;
+    touchCurrentRef.current = e.touches[0].clientX;
+    
+    // Capture current transform position
+    const el = trackRef.current;
+    if (el) {
+      const currentTransform = el.style.transform;
+      currentXRef.current = parseFloat(currentTransform.replace('translateX(', '').replace('px)', '')) || 0;
+    }
+    
+    // Clear any existing resume timeout
+    if (resumeTimeoutRef.current) {
+      clearTimeout(resumeTimeoutRef.current);
+      resumeTimeoutRef.current = null;
+    }
   }, []);
 
   const handleTouchMove = useCallback((e: React.TouchEvent) => {
-    if (!draggingRef.current) return;
-
-    const clientX = e.touches[0].clientX;
-    const dt      = e.timeStamp - lastTouchTRef.current;
-    const dx      = clientX - lastTouchXRef.current;
-
-    /* running velocity in px/ms, smoothed with EMA to reduce jitter */
-    if (dt > 0) {
-      const instant = dx / dt;
-      rawVelRef.current = rawVelRef.current * 0.6 + instant * 0.4;
-    }
-
-    lastTouchXRef.current = clientX;
-    lastTouchTRef.current = e.timeStamp;
-
-    posRef.current += dx;
-
-    /* wrap guard after large drag */
+    if (!isDragging) return;
+    
+    const currentTouch = e.touches[0].clientX;
+    const deltaX = currentTouch - touchStartRef.current;
     const el = trackRef.current;
+    
     if (el) {
-      const sectionW = el.scrollWidth / 3;
-      if (posRef.current < -(sectionW * 2)) posRef.current += sectionW;
-      if (posRef.current >  sectionW)        posRef.current -= sectionW;
+      el.style.transform = `translateX(${currentXRef.current + deltaX}px)`;
     }
-  }, []);
+  }, [isDragging]);
 
   const handleTouchEnd = useCallback(() => {
-    draggingRef.current = false;
-    trackRef.current?.classList.remove('is-dragging');
-
-    /* convert px/ms → px/frame (assuming ~60 fps), clamp, then coast */
-    const pxPerFrame = rawVelRef.current * (1000 / 60);
-    velRef.current   = Math.max(-MAX_VELOCITY, Math.min(MAX_VELOCITY, pxPerFrame));
-    coastingRef.current = true;
+    setIsDragging(false);
+    
+    // Resume auto-scroll after a short delay
+    resumeTimeoutRef.current = setTimeout(() => {
+      setIsPaused(false);
+    }, 1500);
   }, []);
 
-  const tripled = [...items, ...items, ...items];
+  // Cleanup timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (resumeTimeoutRef.current) {
+        clearTimeout(resumeTimeoutRef.current);
+      }
+    };
+  }, []);
+
+  // Duplicate items so the loop is seamless
+  const doubled = [...items, ...items, ...items];
 
   return (
     <div className="mss-outer mss-row">
-      <div
-        className="mss-track"
+      <div 
+        className="mss-track" 
         ref={trackRef}
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
-        onTouchCancel={handleTouchEnd}
+        style={{ touchAction: 'none' }}
       >
-        {tripled.map((item, i) => (
+        {doubled.map((item, i) => (
           <div className="mss-item" key={i}>
             <div className="mss-box">{item.icon}</div>
             <span className="mss-label">{item.label}</span>
