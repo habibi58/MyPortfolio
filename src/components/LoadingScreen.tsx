@@ -29,9 +29,10 @@ export default function LoadingScreen({ onFinished }: LoadingScreenProps) {
 
   const startExit = useCallback(() => {
     setExiting(true);
+    // Match CSS exit animation duration (2800ms)
     setTimeout(() => {
       onFinished();
-    }, 1200);
+    }, 2800);
   }, [onFinished]);
 
   useEffect(() => {

@@ -139,7 +139,8 @@
   font-weight: 400;
   letter-spacing: 0.28em;
   text-transform: uppercase;
-  color: #3182ce;  margin-bottom: 10px;
+  color: #3182ce;
+  margin-bottom: 10px;
   opacity: 0;
   transform: translateY(12px);
   transition: all 2s cubic-bezier(0.16, 1, 0.3, 1);
@@ -157,6 +158,11 @@
   justify-content: center;
   gap: 0;
   margin-bottom: 6px;
+  /* prevent overflow on narrow screens */
+  max-width: 100vw;
+  padding: 0 12px;
+  box-sizing: border-box;
+  flex-wrap: nowrap;
 }
 
 .ls-last-name-container {
@@ -165,6 +171,9 @@
   justify-content: center;
   gap: 0;
   margin-bottom: 16px;
+  max-width: 100vw;
+  padding: 0 12px;
+  box-sizing: border-box;
 }
 
 .ls-letter {
@@ -279,7 +288,7 @@
 }
 
 .loading-screen.exit {
-  animation: ls-exit 1.2s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+  animation: ls-exit 2.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
 
 .loading-screen.exit .ls-greeting,
@@ -290,19 +299,20 @@
 .loading-screen.exit .ls-progress-text,
 .loading-screen.exit .ls-corner {
   opacity: 0 !important;
-  transform: translateY(-15px) scale(0.97);
-  transition: all 0.5s cubic-bezier(0.25, 1, 0.5, 1) !important;
+  transform: translateY(-20px) scale(0.96);
+  transition: all 1.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
 }
 
 .loading-screen.exit .ls-particles {
   opacity: 0;
-  transition: opacity 0.6s ease;
+  transition: opacity 1.8s ease;
 }
 
 @keyframes ls-exit {
   0%   { opacity: 1; filter: blur(0px); }
-  30%  { opacity: 1; filter: blur(2px); }
-  100% { opacity: 0; filter: blur(8px); pointer-events: none; }
+  40%  { opacity: 1; filter: blur(0px); }
+  70%  { opacity: 0.6; filter: blur(3px); }
+  100% { opacity: 0; filter: blur(10px); pointer-events: none; }
 }
 
 .ls-corner {
@@ -321,3 +331,98 @@
 .ls-corner--tr { top: 24px; right: 24px; border-top: 1px solid #60a5fa; border-right: 1px solid #60a5fa; }
 .ls-corner--bl { bottom: 24px; left: 24px; border-bottom: 1px solid #60a5fa; border-left: 1px solid #60a5fa; }
 .ls-corner--br { bottom: 24px; right: 24px; border-bottom: 1px solid #60a5fa; border-right: 1px solid #60a5fa; }
+
+/* ═══════════════════════════════════════════════════════════════
+   MOBILE — ≤767px
+   All desktop values above are untouched.
+   ═══════════════════════════════════════════════════════════════ */
+@media (max-width: 767px) {
+
+  /* Remove glow orb on mobile */
+  .loading-screen::before {
+    display: none;
+  }
+
+  /* "Hi, I'm" */
+  .ls-greeting {
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    margin-bottom: 8px;
+  }
+
+  /* MOHAMAD JASON row — scale down, prevent overflow */
+  .ls-name-container {
+    padding: 0 8px;
+    margin-bottom: 4px;
+    overflow: hidden;
+  }
+
+  .ls-letter {
+    /* 6.5vw = ~23px at 360px; 13 chars * 23px = ~300px — fits in 360px */
+    font-size: clamp(1.1rem, 6.5vw, 2.2rem);
+    letter-spacing: 0.02em;
+  }
+
+  /* Gap between MOHAMAD and JASON */
+  .ls-letter--gap {
+    width: 0.15em;
+  }
+
+  /* CELOZA row */
+  .ls-last-name-container {
+    padding: 0 8px;
+    margin-bottom: 12px;
+    overflow: hidden;
+  }
+
+  .ls-letter--last {
+    font-size: clamp(1.1rem, 6.5vw, 2.2rem);
+    letter-spacing: 0.14em;
+  }
+
+  /* Underline accent */
+  .ls-line-accent {
+    bottom: -8px;
+    height: 2px;
+  }
+
+  /* "Welcome To My Portfolio" */
+  .ls-subtitle {
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    margin-top: 14px;
+    margin-bottom: 32px;
+    padding: 0 16px;
+    text-align: center;
+  }
+
+  /* Progress bar — wider on phone */
+  .ls-progress-container {
+    width: calc(100vw - 64px);
+    max-width: 280px;
+  }
+
+  /* Progress % text */
+  .ls-progress-text {
+    font-size: 0.6rem;
+    margin-top: 12px;
+  }
+
+  /* Skip button — sits higher on small screens */
+  .ls-skip-button {
+    bottom: 28px !important;
+    font-size: 12px !important;
+    padding: 8px 20px !important;
+  }
+
+  /* Corners — smaller on phone */
+  .ls-corner {
+    width: 20px;
+    height: 20px;
+  }
+
+  .ls-corner--tl { top: 16px; left: 16px; }
+  .ls-corner--tr { top: 16px; right: 16px; }
+  .ls-corner--bl { bottom: 16px; left: 16px; }
+  .ls-corner--br { bottom: 16px; right: 16px; }
+}

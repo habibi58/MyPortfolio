@@ -6,6 +6,7 @@ import { SectionHeading } from './SectionHeading';
 import { Card } from './Card';
 import { containerVariants, itemVariants } from '../animations/variants';
 import ScrollVelocity from './ScrollVelocity';
+import { MobileSkillsScroll } from './MobileSkillsScroll';
 import {
   Wrench,
   Download,
@@ -61,7 +62,11 @@ export const SkillsSection = () => {
             </h3>
           </div>
 
-          <div className="w-full max-w-[100vw] relative overflow-hidden py-10">
+          {/* ── Mobile scroll strip (phone only) ── */}
+          <MobileSkillsScroll />
+
+          {/* ── Desktop scroll strip (hidden on mobile) ── */}
+          <div className="hidden md:block w-full max-w-[100vw] relative overflow-hidden py-10">
             <ScrollVelocity
               texts={[
                 <span className="flex items-center gap-12 px-6 py-4" key="row1">
@@ -71,7 +76,6 @@ export const SkillsSection = () => {
                     </div>
                     <span className="text-sm font-bold text-slate-300 text-center whitespace-normal leading-tight">Technical Support</span>
                   </span>
-                  
                   <span className="flex flex-col items-center justify-center gap-3 w-32">
                     <div className="w-16 h-16 rounded-2xl bg-slate-800/80 shadow-lg flex items-center justify-center border border-slate-700/50 backdrop-blur-sm">
                       <Download className="w-8 h-8 text-blue-400" />
@@ -103,7 +107,7 @@ export const SkillsSection = () => {
                     <span className="text-sm font-bold text-slate-300 text-center whitespace-normal leading-tight">Customer Service</span>
                   </span>
                   <span className="flex flex-col items-center justify-center gap-3 w-32">
-                  <div className="w-16 h-16 rounded-2xl bg-slate-800/80 shadow-lg flex items-center justify-center border border-slate-700/50 backdrop-blur-sm">
+                    <div className="w-16 h-16 rounded-2xl bg-slate-800/80 shadow-lg flex items-center justify-center border border-slate-700/50 backdrop-blur-sm">
                       <ClaudeCode.Color size={40} />
                     </div>
                     <span className="text-sm font-bold text-slate-300 text-center whitespace-normal leading-tight">Claude Code</span>
@@ -182,7 +186,6 @@ export const SkillsSection = () => {
                     </div>
                     <span className="text-sm font-bold text-slate-300 text-center whitespace-normal leading-tight">MySQL</span>
                   </span>
-
                   <span className="flex flex-col items-center justify-center gap-3 w-32">
                     <div className="w-16 h-16 rounded-2xl bg-slate-800/80 shadow-lg flex items-center justify-center border border-slate-700/50 backdrop-blur-sm">
                       <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/csharp/csharp-original.svg" alt="C#" className="w-10 h-10" />

@@ -264,8 +264,8 @@ const HERO_MOBILE_STYLES = `
   }
 
   .hero-avatar {
-    width: 160px !important;
-    height: 160px !important;
+    width: 200px !important;
+    height: 200px !important;
     border-radius: 50% !important;
     border: 2.5px solid #3b82f6 !important;
     background: #000 !important;

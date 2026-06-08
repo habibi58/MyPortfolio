@@ -5,6 +5,8 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 gsap.registerPlugin(ScrollTrigger);
 
+let lenisInstance: Lenis | null = null;
+
 export const useLenis = () => {
   useEffect(() => {
     const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
@@ -19,6 +21,7 @@ export const useLenis = () => {
       touchMultiplier: isMobile ? 1.2 : 1.5, // Moderate touch response on mobile
     });
 
+    lenisInstance = lenis;
     lenis.on('scroll', ScrollTrigger.update);
 
     const updateLenis = (time: number) => {
@@ -31,6 +34,9 @@ export const useLenis = () => {
     return () => {
       gsap.ticker.remove(updateLenis);
       lenis.destroy();
+      lenisInstance = null;
     };
   }, []);
 };
+
+export const getLenisInstance = () => lenisInstance;

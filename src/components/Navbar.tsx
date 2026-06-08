@@ -5,6 +5,7 @@ import { Menu, X } from 'lucide-react';
 import { useScroll } from '../hooks';
 import { navItems } from '../data';
 import GooeyNav from './GooeyNav/GooeyNav';
+import { getLenisInstance } from '../hooks/useLenis';
 
 export const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -49,7 +50,16 @@ export const Navbar = () => {
     setActiveSection(id);
     const element = document.getElementById(id);
     if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
+      const lenis = getLenisInstance();
+      if (lenis) {
+        lenis.scrollTo(element.offsetTop - 80);
+      } else {
+        const offset = element.offsetTop - 80;
+        window.scrollTo({
+          top: offset,
+          behavior: 'smooth'
+        });
+      }
     }
   };
 
@@ -107,8 +117,9 @@ export const Navbar = () => {
         <motion.div className="flex items-center gap-2 justify-self-end sm:gap-3">
           <button
             onClick={() => setIsOpen(!isOpen)}
-            className="rounded-xl p-2.5 hover:bg-slate-800 lg:hidden transition-colors"
+            className="rounded-xl p-2.5 hover:bg-slate-800 lg:hidden transition-colors pointer-events-auto touch-manipulation"
             aria-label={isOpen ? 'Close menu' : 'Open menu'}
+            style={{ zIndex: 100 }}
           >
             {isOpen ? <X size={22} /> : <Menu size={22} />}
           </button>
@@ -122,25 +133,23 @@ export const Navbar = () => {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
-            className="border-t border-slate-700/30 bg-slate-900/80 backdrop-blur-xl lg:hidden"
+            className="border-t border-white/10 bg-black/60 lg:hidden pointer-events-auto"
+            style={{ zIndex: 100 }}
           >
-            <motion.div className="space-y-1 px-4 py-4">
+            <div className="space-y-1 px-4 py-4">
               {navItems.map((item, index) => (
-                <motion.button
+                <button
                   key={item.id}
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: index * 0.05 }}
                   onClick={() => handleNavClick(item.href)}
-                  className={`block w-full rounded-xl px-4 py-3 text-left font-medium transition-all duration-300 ${activeSection === item.id
-                    ? 'bg-gradient-to-r from-blue-600/10 to-blue-700/10 text-blue-400 border border-blue-600/20'
+                  className={`block w-full rounded-xl px-4 py-3 text-left font-medium transition-all duration-300 pointer-events-auto ${activeSection === item.id
+                    ? 'bg-black/40 text-white border border-white/20'
                     : 'text-slate-300 hover:bg-slate-800'
                     }`}
                 >
                   {item.label}
-                </motion.button>
+                </button>
               ))}
-            </motion.div>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
