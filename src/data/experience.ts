@@ -14,7 +14,7 @@ export const experienceData = [
       'Escalated complex issues to higher-level support teams.',
       'Maintained high customer satisfaction through clear communication and timely resolution',
     ],
-    technologies: ['Windows OS', 'IGEL OS', 'Microsoft Office 365', 'Azure AD', 'PowerShell'],
+    technologies: ['Windows OS', 'Microsoft Office 365','IGEL OS', 'Ticketing Systems', 'Hardware & Software Troubleshooting' ],
 
     /* ── new fields ── */
     stats: [

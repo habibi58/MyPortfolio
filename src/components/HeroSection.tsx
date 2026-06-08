@@ -336,7 +336,7 @@ export const HeroSection = () => {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.6 }}
-              style={{ paddingLeft: '0' }}
+              style={{ paddingLeft: '20px' }}
               className="hero-left sm:pl-6"
             >
               {/* Profile Picture — mobile only, hidden on desktop via CSS */}
@@ -345,7 +345,7 @@ export const HeroSection = () => {
                 style={{ display: 'none' }}
                 initial={{ opacity: 0, scale: 0 }}
                 animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 0.2, duration: 0.8, type: 'spring', stiffness: 100, damping: 15 }}
+                transition={{ delay: 0.2, duration: 2, type: 'spring', stiffness: 50, damping: 20 }}
               >
                 <div className="hero-avatar">
                   <img
