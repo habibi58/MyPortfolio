@@ -120,7 +120,7 @@ const ROW2 = [
 ];
 
 /* ── Infinite scroll hook ── */
-function useInfiniteScroll(ref: React.RefObject<HTMLDivElement>, speed: number, reverse = false) {
+function useInfiniteScroll(ref: React.RefObject<HTMLDivElement | null>, speed: number, reverse = false) {
   useEffect(() => {
     const el = ref.current;
     if (!el) return;

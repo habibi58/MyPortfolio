@@ -137,7 +137,7 @@ export const Navbar = () => {
             style={{ zIndex: 100 }}
           >
             <div className="space-y-1 px-4 py-4">
-              {navItems.map((item, index) => (
+              {navItems.map((item) => (
                 <button
                   key={item.id}
                   onClick={() => handleNavClick(item.href)}
