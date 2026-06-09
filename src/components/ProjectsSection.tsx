@@ -47,6 +47,12 @@ const techIcons: Record<string, string> = {
   JavaScript: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/javascript/javascript-original.svg',
   PHP:        'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/php/php-original.svg',
   MySQL:      'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/mysql/mysql-original.svg',
+  'React.js': 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/react/react-original.svg',
+  React:      'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/react/react-original.svg',
+  TypeScript: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/typescript/typescript-original.svg',
+  Vite:       'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/vite/vite-original.svg',
+  'Tailwind CSS': 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/tailwindcss/tailwindcss-original.svg',
+  Tailwind:   'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/tailwindcss/tailwindcss-original.svg',
 };
 
 /* Technology badge color map */
@@ -57,9 +63,11 @@ const techColorMap: Record<string, { bg: string; text: string; border: string }>
   PHP:        { bg: 'rgba(119,123,180,0.12)', text: '#a78bfa', border: 'rgba(119,123,180,0.25)' },
   MySQL:      { bg: 'rgba(0,116,156,0.12)',   text: '#22d3ee', border: 'rgba(0,116,156,0.25)'   },
   React:      { bg: 'rgba(97,218,251,0.10)',  text: '#67e8f9', border: 'rgba(97,218,251,0.22)'  },
+  'React.js': { bg: 'rgba(97,218,251,0.10)',  text: '#67e8f9', border: 'rgba(97,218,251,0.22)'  },
   TypeScript: { bg: 'rgba(49,120,198,0.12)',  text: '#93c5fd', border: 'rgba(49,120,198,0.25)'  },
   Python:     { bg: 'rgba(55,118,171,0.12)',  text: '#7dd3fc', border: 'rgba(55,118,171,0.25)'  },
   Tailwind:   { bg: 'rgba(6,182,212,0.12)',   text: '#2dd4bf', border: 'rgba(6,182,212,0.25)'   },
+  'Tailwind CSS': { bg: 'rgba(6,182,212,0.12)', text: '#2dd4bf', border: 'rgba(6,182,212,0.25)'   },
   Node:       { bg: 'rgba(83,158,69,0.12)',   text: '#86efac', border: 'rgba(83,158,69,0.25)'   },
   'Node.js':  { bg: 'rgba(83,158,69,0.12)',   text: '#86efac', border: 'rgba(83,158,69,0.25)'   },
   MongoDB:    { bg: 'rgba(71,162,72,0.12)',   text: '#4ade80', border: 'rgba(71,162,72,0.25)'   },
@@ -67,6 +75,7 @@ const techColorMap: Record<string, { bg: string; text: string; border: string }>
   Vue:        { bg: 'rgba(66,184,131,0.12)',  text: '#6ee7b7', border: 'rgba(66,184,131,0.25)'  },
   'Vue.js':   { bg: 'rgba(66,184,131,0.12)',  text: '#6ee7b7', border: 'rgba(66,184,131,0.25)'  },
   Figma:      { bg: 'rgba(162,89,255,0.12)',  text: '#c084fc', border: 'rgba(162,89,255,0.25)'  },
+  Vite:       { bg: 'rgba(139,92,246,0.12)',  text: '#a78bfa', border: 'rgba(139,92,246,0.25)'  },
 };
 
 /* Badge animation variants */
@@ -163,7 +172,7 @@ const MOBILE_STYLES = `
 
   /* Description text */
   .pss-description {
-    font-size: 13px !important;
+    font-size: 14px !important;
     margin-bottom: 14px !important;
   }
 
@@ -249,7 +258,7 @@ const MobileLabel = ({ project, index, isActive }: MobileLabelProps) => (
     <span
       style={{
         fontFamily: 'monospace',
-        fontSize: '11px',
+        fontSize: '12px',
         fontWeight: 600,
         letterSpacing: '0.15em',
         textTransform: 'uppercase' as const,
@@ -260,7 +269,7 @@ const MobileLabel = ({ project, index, isActive }: MobileLabelProps) => (
     </span>
     <span
       style={{
-        fontSize: '13px',
+        fontSize: '16px',
         fontWeight: 700,
         color: isActive ? '#ffffff' : 'rgba(255,255,255,0.4)',
         lineHeight: 1.3,
@@ -595,10 +604,9 @@ export const ProjectsSection = () => {
           </h2>
           <p
             className="pss-subtitle text-lg max-w-2xl mx-auto leading-relaxed"
-            style={{ color: '#888', textAlign: 'center', marginBottom: '40px' }}
+            style={{ color: '#888', textAlign: 'center', marginBottom: '120px' }}
           >
-            A curated showcase of my work in IT support systems, web
-            development, and software engineering
+            
           </p>
         </motion.div>
       </div>

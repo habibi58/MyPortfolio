@@ -46,7 +46,7 @@ export const heroContent = {
 export const stats = [
   {
     label: 'Projects Completed',
-    value: '6+',
+    value: '4',
   },
   {
     label: 'Certifications',

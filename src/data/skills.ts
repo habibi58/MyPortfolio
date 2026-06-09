@@ -33,8 +33,16 @@ export const skillsData: Skill[] = [
     category: 'Skills',
     proficiency: 90,
   },
+  {
+    id: 'vite',
+    name: 'Vite',
+    category: 'Tools',
+    proficiency: 85,
+    icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/vite/vite-original.svg',
+  },
 ];
 
 export const skillCategories = [
   'Skills',
+  'Tools',
 ];

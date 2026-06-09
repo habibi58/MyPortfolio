@@ -56,7 +56,7 @@ export const SkillsSection = () => {
           transition={{ delay: 0.3 }}
           className="mt-20"
         >
-          <div className="text-center mb-10">
+          <div className="text-center mb-70">
             <h3 className="font-display text-2xl font-bold text-white">
               Technical Stack Overview
             </h3>
