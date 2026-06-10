@@ -35,7 +35,7 @@ export const experienceData = [
         desc:  'ServiceNow ticketing dashboard showing queue metrics and resolution trends.',
       },
       {
-        img:   '/public/Certificates/certficicatettec.png', // ← drop file in /public/certificates/
+        img:   '/Certificates/certficicatettec.png', // ← drop file in /public/certificates/
         emoji: '📜',
         title: 'Certficate of Completion',
         desc:  'Successfully completed 500 hours of training and hands-on experience, demonstrating dedication, professionalism, and continuous skill development.',

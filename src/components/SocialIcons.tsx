@@ -6,9 +6,7 @@ import {
   FaFacebookF,
   FaInstagram,
   FaLinkedinIn,
-  FaYoutube,
 } from 'react-icons/fa';
-import { FaXTwitter } from 'react-icons/fa6';
 import { portfolioOwner } from '../data';
 
 interface SocialLink {
@@ -35,25 +33,11 @@ const socialLinks: SocialLink[] = [
     glowColor: 'rgba(228, 64, 95, 0.45)',
   },
   {
-    label: 'Twitter',
-    url: portfolioOwner.social.twitter,
-    Icon: FaXTwitter,
-    brandColor: '#ffffff',
-    glowColor: 'rgba(255, 255, 255, 0.35)',
-  },
-  {
     label: 'LinkedIn',
     url: portfolioOwner.social.linkedin,
     Icon: FaLinkedinIn,
     brandColor: '#0A66C2',
     glowColor: 'rgba(10, 102, 194, 0.45)',
-  },
-  {
-    label: 'YouTube',
-    url: portfolioOwner.social.youtube ?? 'https://youtube.com',
-    Icon: FaYoutube,
-    brandColor: '#FF0000',
-    glowColor: 'rgba(255, 0, 0, 0.40)',
   },
 ];
 

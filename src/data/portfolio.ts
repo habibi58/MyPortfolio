@@ -24,13 +24,13 @@ export const portfolioOwner = {
     goals: 'Become an expert IT Support Professional and contribute to organizations in a meaningful way',
   },
   social: {
-    github: 'https://github.com',
-    linkedin: 'https://linkedin.com',
-    facebook: 'https://facebook.com',
-    twitter: 'https://twitter.com',
-    instagram: 'https://instagram.com',
+    github: 'https://github.com/habibi58',
+    linkedin: 'https://www.linkedin.com/in/mohamad-jason-celoza-5787a9395/',
+    facebook: 'https://www.facebook.com/mdjason.celoza/',
+    twitter: 'https://www.instagram.com/mdjason_celoza/',
+    instagram: 'https://www.instagram.com/mdjason_celoza/',
     youtube: 'https://youtube.com',
-    email: 'jason.support@example.com',
+    email: 'jasonceloza90@gmail.com',
   },
 };
 

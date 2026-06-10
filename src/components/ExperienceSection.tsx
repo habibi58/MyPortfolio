@@ -79,7 +79,6 @@ const THEMES: Theme[] = [
   },
 ];
 
-/* ─── tiny helpers ─── */
 const getTheme = (i: number): Theme => THEMES[i % THEMES.length];
 
 function animateCount(el: HTMLElement, target: number) {
@@ -105,7 +104,6 @@ export const ExperienceSection = () => {
       if (!row) return;
       const t = getTheme(i);
 
-      /* scroll reveal */
       const io = new IntersectionObserver(
         ([entry]) => {
           if (!entry.isIntersecting) return;
@@ -114,17 +112,11 @@ export const ExperienceSection = () => {
 
           row.querySelectorAll('[data-count]').forEach((el) => {
             const htmlEl = el as HTMLElement;
-            if (htmlEl.dataset.count) {
-              animateCount(htmlEl, parseInt(htmlEl.dataset.count, 10));
-            }
+            if (htmlEl.dataset.count) animateCount(htmlEl, parseInt(htmlEl.dataset.count, 10));
           });
           row.querySelectorAll('[data-w]').forEach((el) => {
             const htmlEl = el as HTMLElement;
-            setTimeout(() => { 
-              if (htmlEl.dataset.w) {
-                htmlEl.style.width = htmlEl.dataset.w + '%'; 
-              }
-            }, 300);
+            setTimeout(() => { if (htmlEl.dataset.w) htmlEl.style.width = htmlEl.dataset.w + '%'; }, 300);
           });
           io.disconnect();
         },
@@ -133,54 +125,65 @@ export const ExperienceSection = () => {
       io.observe(row);
       observers.push(io);
 
-      /* hover glow on the card inside this row */
       const card = row.querySelector('.exp-inner-card') as HTMLElement;
       if (card) {
-        const mouseEnterHandler = () => {
-          card.style.boxShadow  = `0 0 0 1px ${t.border}, 0 24px 60px ${t.glow}, 0 8px 32px rgba(0,0,0,0.5)`;
+        card.addEventListener('mouseenter', () => {
+          card.style.boxShadow   = `0 0 0 1px ${t.border}, 0 24px 60px ${t.glow}, 0 8px 32px rgba(0,0,0,0.5)`;
           card.style.borderColor = t.border;
           card.style.transform   = 'translateY(-6px)';
-        };
-        const mouseLeaveHandler = () => {
-          card.style.boxShadow  = 'none';
+        });
+        card.addEventListener('mouseleave', () => {
+          card.style.boxShadow   = 'none';
           card.style.borderColor = 'rgba(255,255,255,0.07)';
           card.style.transform   = 'translateY(0)';
-        };
-        card.addEventListener('mouseenter', mouseEnterHandler);
-        card.addEventListener('mouseleave', mouseLeaveHandler);
+        });
       }
     });
 
     return () => observers.forEach((o) => o.disconnect());
   }, []);
 
-  /* lightbox helpers */
+  /* ── lightbox ── */
   const openLightbox = (imgSrc: string | null, emoji: string, title: string, desc: string) => {
-    const lb = document.getElementById('exp-lb');
+    const lb      = document.getElementById('exp-lb');
     const preview = document.getElementById('exp-lb-img');
     if (!lb || !preview) return;
 
     if (imgSrc) {
-      preview.innerHTML = `<img src="${imgSrc}" alt="${title}"
-        style="width:100%;height:100%;object-fit:contain;border-radius:10px;"/>`;
-      preview.style.background = 'transparent';
-    } else {
-      preview.innerHTML         = emoji;
-      preview.style.fontSize    = '72px';
-      preview.style.display     = 'flex';
-      preview.style.alignItems  = 'center';
+      // Clear first, then create img via DOM API (safer than innerHTML on mobile)
+      preview.innerHTML = '';
+      preview.style.background    = 'linear-gradient(135deg,#0a0f1a,#141c2e)';
+      preview.style.display       = 'flex';
+      preview.style.alignItems    = 'center';
       preview.style.justifyContent = 'center';
-      preview.style.background  = 'linear-gradient(135deg,#0a0f1a,#141c2e)';
+
+      const img = document.createElement('img');
+      img.alt   = title;
+      img.style.cssText = 'max-width:100%;height:auto;object-fit:contain;border-radius:10px;display:block;margin:0 auto;';
+      img.onerror = () => {
+        // Image failed — show emoji fallback
+        preview.innerHTML  = emoji || '📄';
+        preview.style.fontSize = '72px';
+      };
+      img.src = imgSrc; // set src AFTER onerror so handler is registered first
+      preview.appendChild(img);
+    } else {
+      preview.innerHTML            = emoji;
+      preview.style.fontSize       = '72px';
+      preview.style.display        = 'flex';
+      preview.style.alignItems     = 'center';
+      preview.style.justifyContent = 'center';
+      preview.style.background     = 'linear-gradient(135deg,#0a0f1a,#141c2e)';
+      preview.style.minHeight      = '180px';
     }
 
     const titleEl = document.getElementById('exp-lb-title');
-    const descEl = document.getElementById('exp-lb-desc');
+    const descEl  = document.getElementById('exp-lb-desc');
     if (titleEl) titleEl.textContent = title;
-    if (descEl) descEl.textContent  = desc;
+    if (descEl)  descEl.textContent  = desc;
 
     lb.style.opacity       = '1';
     lb.style.pointerEvents = 'all';
-    
     const box = lb.querySelector('.exp-lb-box') as HTMLElement;
     if (box) box.style.transform = 'scale(1) translateY(0)';
   };
@@ -190,7 +193,6 @@ export const ExperienceSection = () => {
     if (!lb) return;
     lb.style.opacity       = '0';
     lb.style.pointerEvents = 'none';
-    
     const box = lb.querySelector('.exp-lb-box') as HTMLElement;
     if (box) box.style.transform = 'scale(0.9) translateY(20px)';
   };
@@ -198,7 +200,6 @@ export const ExperienceSection = () => {
   return (
     <section id="experience" className="relative py-24 overflow-hidden">
 
-      {/* ── keyframes injected once ── */}
       <style>{`
         @keyframes exp-node-ping {
           0%   { transform: scale(1); opacity: 0.5; }
@@ -213,32 +214,76 @@ export const ExperienceSection = () => {
                       border-color .3s ease,
                       box-shadow .3s ease;
         }
-        .exp-gal-item:hover .exp-gal-thumb  { transform: scale(1.1); }
-        .exp-gal-item:hover .exp-gal-over   { opacity: 1 !important; }
+        .exp-gal-item:hover .exp-gal-thumb { transform: scale(1.1); }
+        .exp-gal-item:hover .exp-gal-over  { opacity: 1 !important; }
+
+        /* ── Lightbox mobile fixes ── */
+        .exp-lb-box {
+          box-sizing: border-box;
+        }
+        #exp-lb-img {
+          /* Let the image size itself naturally — no fixed aspect ratio that collapses */
+          min-height: 120px;
+          max-height: 55vw;
+          width: 100%;
+          border-radius: 14px;
+          margin-bottom: 16px;
+          border: 0.5px solid rgba(255,255,255,0.08);
+          overflow: hidden;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+        @media (max-width: 767px) {
+          .exp-lb-box {
+            padding: 18px 14px !important;
+            border-radius: 16px !important;
+            width: 96% !important;
+            max-height: 90vh;
+            overflow-y: auto;
+          }
+          #exp-lb-img {
+            min-height: 200px;
+            max-height: 65vw;
+          }
+          #exp-lb-img img {
+            max-width: 100% !important;
+            max-height: 62vw !important;
+            width: auto !important;
+            height: auto !important;
+            object-fit: contain !important;
+          }
+          #exp-lb-title {
+            font-size: 14px !important;
+          }
+          #exp-lb-desc {
+            font-size: 12px !important;
+          }
+        }
       `}</style>
 
-      {/* ── subtle grid ── */}
+      {/* subtle grid */}
       <div className="pointer-events-none absolute inset-0"
         style={{ backgroundImage:'linear-gradient(rgba(255,255,255,0.01) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.01) 1px,transparent 1px)', backgroundSize:'60px 60px' }} />
 
-      {/* ── floating particles ── */}
+      {/* floating particles */}
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
         {Array.from({ length: 18 }).map((_, i) => (
           <div key={i} style={{
-            position:  'absolute',
-            width:     `${Math.random() * 2 + 1}px`,
-            height:    `${Math.random() * 2 + 1}px`,
-            left:      `${Math.random() * 100}%`,
-            bottom:    '-4px',
-            borderRadius: '50%',
-            background:   '#fff',
-            opacity:   Math.random() * 0.12 + 0.03,
-            animation: `float-up ${Math.random() * 14 + 10}s ${Math.random() * 8}s linear infinite`,
+            position:'absolute',
+            width:`${Math.random() * 2 + 1}px`,
+            height:`${Math.random() * 2 + 1}px`,
+            left:`${Math.random() * 100}%`,
+            bottom:'-4px',
+            borderRadius:'50%',
+            background:'#fff',
+            opacity:Math.random() * 0.12 + 0.03,
+            animation:`float-up ${Math.random() * 14 + 10}s ${Math.random() * 8}s linear infinite`,
           }} />
         ))}
         <style>{`
           @keyframes float-up {
-            0%   { transform:translateY(0) translateX(0);    opacity:0;   }
+            0%   { transform:translateY(0) translateX(0);   opacity:0; }
             15%  { opacity:1; }
             85%  { opacity:0.3; }
             100% { transform:translateY(-100vh) translateX(25px); opacity:0; }
@@ -256,15 +301,19 @@ export const ExperienceSection = () => {
           background:'rgba(0,0,0,0.92)', backdropFilter:'blur(14px)',
           opacity:0, pointerEvents:'none',
           transition:'opacity .3s ease',
+          padding: '16px',
+          boxSizing: 'border-box',
         }}
       >
         <div className="exp-lb-box" style={{
           background:   '#08101e',
           border:       '0.5px solid rgba(255,255,255,0.12)',
           borderRadius: '22px',
-          padding:      '28px',
+          padding:      '20px',
           maxWidth:     '620px',
           width:        '92%',
+          maxHeight:    '90vh',
+          overflowY:    'auto',
           position:     'relative',
           transform:    'scale(0.9) translateY(20px)',
           transition:   'transform .4s cubic-bezier(.22,1,.36,1)',
@@ -282,13 +331,11 @@ export const ExperienceSection = () => {
               alignItems:'center', justifyContent:'center',
               transition:'all .2s',
             }}
+            onMouseEnter={(e) => { e.currentTarget.style.background='rgba(255,255,255,0.14)'; e.currentTarget.style.color='#fff'; }}
+            onMouseLeave={(e) => { e.currentTarget.style.background='rgba(255,255,255,0.06)'; e.currentTarget.style.color='rgba(255,255,255,0.5)'; }}
           >✕</button>
 
-          <div id="exp-lb-img" style={{
-            width:'100%', aspectRatio:'16/9', borderRadius:14,
-            marginBottom:16, border:'0.5px solid rgba(255,255,255,0.08)',
-            overflow:'hidden',
-          }} />
+          <div id="exp-lb-img" />
           <div id="exp-lb-title" style={{ fontSize:17, fontWeight:600, color:'#fff', marginBottom:6 }} />
           <div id="exp-lb-desc"  style={{ fontSize:13, color:'rgba(255,255,255,0.5)', lineHeight:1.7 }} />
         </div>
@@ -296,7 +343,7 @@ export const ExperienceSection = () => {
 
       {/* ── SECTION BODY ── */}
       <div className="relative max-w-6xl mx-auto px-3 sm:px-4 sm:px-6 lg:px-8">
-        <div style={{ marginBottom: '60px' }}>
+        <div style={{ marginBottom:'60px' }}>
           <SectionHeading
             subtitle="CAREER PATH"
             title="Experience"
@@ -305,23 +352,22 @@ export const ExperienceSection = () => {
         </div>
 
         <div className="relative">
-          {/* spine */}
           <div className="hidden md:block absolute left-1/2 -translate-x-1/2 w-px h-full pointer-events-none"
             style={{ background:'linear-gradient(180deg,transparent,rgba(59,130,246,0.15) 12%,rgba(59,130,246,0.15) 88%,transparent)' }} />
 
           <div className="space-y-20">
             {experienceData.map((exp: ExperienceItem, index) => {
-              const t       = getTheme(index);
-              const isLeft  = index % 2 === 0;
+              const t      = getTheme(index);
+              const isLeft = index % 2 === 0;
               const gallery = exp.gallery ?? [
-                { emoji:'📄', title:'Work Sample',   desc:'A key deliverable from this role.' },
-                { emoji:'📜', title:'Certificate',   desc:'Professional certification earned.' },
-                { emoji:'🏆', title:'Achievement',   desc:'Award or recognition received.'    },
+                { emoji:'📄', title:'Work Sample',  desc:'A key deliverable from this role.' },
+                { emoji:'📜', title:'Certificate',  desc:'Professional certification earned.' },
+                { emoji:'🏆', title:'Achievement',  desc:'Award or recognition received.'    },
               ];
-              const stats = exp.stats ?? [
-                { count:10,  label:'Projects'    },
-                { count:95,  label:'% Uptime'    },
-                { count:30,  label:'% Improved'  },
+              const stats  = exp.stats ?? [
+                { count:10, label:'Projects'   },
+                { count:95, label:'% Uptime'   },
+                { count:30, label:'% Improved' },
               ];
               const bars   = exp.bars   ?? [];
               const skills = exp.skills ?? exp.technologies ?? [];
@@ -332,69 +378,51 @@ export const ExperienceSection = () => {
                   ref={(el) => { rowRefs.current[index] = el; }}
                   className="grid grid-cols-1 md:grid-cols-[1fr_80px_1fr]"
                   style={{
-                    opacity:          0,
-                    transform:        'translateY(48px)',
-                    transition:       `opacity .75s cubic-bezier(.22,1,.36,1) ${index * 0.12}s,
-                                       transform .75s cubic-bezier(.22,1,.36,1) ${index * 0.12}s`,
+                    opacity:   0,
+                    transform: 'translateY(48px)',
+                    transition:`opacity .75s cubic-bezier(.22,1,.36,1) ${index * 0.12}s,
+                                transform .75s cubic-bezier(.22,1,.36,1) ${index * 0.12}s`,
                   }}
                 >
-                  {/* ── left slot ── */}
                   {isLeft
                     ? <ExperienceCard exp={exp} t={t} gallery={gallery} stats={stats} bars={bars} skills={skills} openLightbox={openLightbox} col={1} />
-                    : <div />
-                  }
+                    : <div />}
 
-                  {/* ── node ── */}
+                  {/* node */}
                   <div className="hidden md:flex flex-col items-center">
                     <motion.div
                       className="relative flex-shrink-0 mt-6"
                       initial={{ scale:0, opacity:0 }}
                       whileInView={{ scale:1, opacity:1 }}
                       viewport={{ once:true }}
-                      transition={{ delay: index * 0.15, type:'spring', stiffness:200 }}
+                      transition={{ delay:index * 0.15, type:'spring', stiffness:200 }}
                     >
                       <div style={{
                         width:52, height:52, borderRadius:'50%',
                         display:'flex', alignItems:'center', justifyContent:'center',
                         fontSize:22, position:'relative', zIndex:2,
-                        background: `linear-gradient(135deg,${t.glow},${t.bg})`,
-                        border: `1.5px solid ${t.border}`,
-                        boxShadow: `0 0 24px ${t.glow}`,
+                        background:`linear-gradient(135deg,${t.glow},${t.bg})`,
+                        border:`1.5px solid ${t.border}`,
+                        boxShadow:`0 0 24px ${t.glow}`,
                       }}>
-                        {t.icon ? (
-                          <img src={t.icon} alt="Company logo" style={{ width:'100%', height:'100%', objectFit:'contain', padding:8, borderRadius:'50%' }} />
-                        ) : (
-                          t.node
-                        )}
-                        {/* ring */}
-                        <div style={{
-                          position:'absolute', inset:-4, borderRadius:'50%',
-                          border:`1px solid ${t.accent}`, opacity:0.35,
-                        }} />
-                        {/* pulse */}
-                        <div style={{
-                          position:'absolute', inset:0, borderRadius:'50%',
-                          background: `radial-gradient(circle,${t.accent}35,transparent)`,
-                          animation: 'exp-node-ping 2.5s ease-out infinite',
-                        }} />
+                        {t.icon
+                          ? <img src={t.icon} alt="logo" style={{ width:'100%', height:'100%', objectFit:'contain', padding:8, borderRadius:'50%' }} />
+                          : t.node}
+                        <div style={{ position:'absolute', inset:-4, borderRadius:'50%', border:`1px solid ${t.accent}`, opacity:0.35 }} />
+                        <div style={{ position:'absolute', inset:0, borderRadius:'50%', background:`radial-gradient(circle,${t.accent}35,transparent)`, animation:'exp-node-ping 2.5s ease-out infinite' }} />
                       </div>
                     </motion.div>
-                    {/* stem */}
-                    <div className="flex-1 w-px mt-2"
-                       style={{ background:`linear-gradient(180deg,${t.accent}30,transparent)` }} />
+                    <div className="flex-1 w-px mt-2" style={{ background:`linear-gradient(180deg,${t.accent}30,transparent)` }} />
                   </div>
 
-                  {/* ── right slot ── */}
                   {!isLeft
                     ? <ExperienceCard exp={exp} t={t} gallery={gallery} stats={stats} bars={bars} skills={skills} openLightbox={openLightbox} col={3} />
-                    : <div />
-                  }
+                    : <div />}
                 </div>
               );
             })}
           </div>
 
-          {/* end dot */}
           <motion.div
             className="flex flex-col items-center mt-16"
             initial={{ opacity:0, y:20 }}
@@ -402,11 +430,7 @@ export const ExperienceSection = () => {
             viewport={{ once:true }}
             transition={{ delay:0.3 }}
           >
-            <div style={{
-              width:10, height:10, borderRadius:'50%',
-              background:'linear-gradient(135deg,#3b82f6,#8b5cf6)',
-              boxShadow:'0 0 18px #3b82f640',
-            }} />
+            <div style={{ width:10, height:10, borderRadius:'50%', background:'linear-gradient(135deg,#3b82f6,#8b5cf6)', boxShadow:'0 0 18px #3b82f640' }} />
             <p style={{ fontSize:10, letterSpacing:3, textTransform:'uppercase', color:'#ffffff', marginTop:12 }}>
               The journey continues
             </p>
@@ -418,7 +442,7 @@ export const ExperienceSection = () => {
 };
 
 /* ══════════════════════════════════════
-   ExperienceCard  (sub-component)
+   ExperienceCard
    ══════════════════════════════════════ */
 interface ExperienceCardProps {
   exp: ExperienceItem;
@@ -432,7 +456,7 @@ interface ExperienceCardProps {
 }
 
 const ExperienceCard: React.FC<ExperienceCardProps> = ({ exp, t, gallery, stats, bars, skills, openLightbox, col }) => (
-  <div style={{ gridColumn: col, padding: '4px' }}>
+  <div style={{ gridColumn:col, padding:'4px' }}>
     <div
       className="exp-inner-card"
       style={{
@@ -444,81 +468,48 @@ const ExperienceCard: React.FC<ExperienceCardProps> = ({ exp, t, gallery, stats,
         overflow:     'hidden',
       }}
     >
-      {/* top gradient accent line */}
-      <div style={{
-        position:'absolute', top:0, left:'10%', right:'10%',
-        height:1,
-        background:`linear-gradient(90deg,transparent,${t.accent}65,transparent)`,
-      }} />
+      <div style={{ position:'absolute', top:0, left:'10%', right:'10%', height:1, background:`linear-gradient(90deg,transparent,${t.accent}65,transparent)` }} />
 
-      {/* ── header ── */}
+      {/* header */}
       <div style={{ display:'flex', alignItems:'flex-start', gap:14, marginBottom:16 }}>
         <div style={{
           width:46, height:46, borderRadius:'50%', flexShrink:0,
-          display:'flex', alignItems:'center', justifyContent:'center',
-          fontSize:22,
+          display:'flex', alignItems:'center', justifyContent:'center', fontSize:22,
           background:`linear-gradient(135deg,${t.glow},${t.bg})`,
           border:`0.5px solid ${t.border}`,
         }}>
-          {t.icon ? (
-            <img src={t.icon} alt="Company logo" style={{ width:'100%', height:'100%', objectFit:'contain', padding:6, borderRadius:'50%' }} />
-          ) : (
-            t.node
-          )}
+          {t.icon
+            ? <img src={t.icon} alt="logo" style={{ width:'100%', height:'100%', objectFit:'contain', padding:6, borderRadius:'50%' }} />
+            : t.node}
         </div>
-
         <div style={{ flex:1, minWidth:0 }}>
-          <div style={{ fontSize:17, fontWeight:700, color:'#fff', letterSpacing:'-0.3px', lineHeight:1.25 }}>
-            {exp.position}
-          </div>
-          <div style={{ fontSize:13, fontWeight:500, color:t.accent, marginTop:2 }}>
-            {exp.company}
-          </div>
+          <div style={{ fontSize:17, fontWeight:700, color:'#fff', letterSpacing:'-0.3px', lineHeight:1.25 }}>{exp.position}</div>
+          <div style={{ fontSize:13, fontWeight:500, color:t.accent, marginTop:2 }}>{exp.company}</div>
         </div>
-
         {exp.isCurrentRole && (
-          <div style={{
-            padding:'4px 12px', borderRadius:30, flexShrink:0,
-            fontSize:10, fontWeight:600, letterSpacing:'1.5px', textTransform:'uppercase',
-            background:`${t.accent}12`, color:t.text, border:`0.5px solid ${t.border}`,
-          }}>
+          <div style={{ padding:'4px 12px', borderRadius:30, flexShrink:0, fontSize:10, fontWeight:600, letterSpacing:'1.5px', textTransform:'uppercase', background:`${t.accent}12`, color:t.text, border:`0.5px solid ${t.border}` }}>
             CURRENT
           </div>
         )}
       </div>
 
-      {/* ── meta ── */}
+      {/* meta */}
       <div style={{ display:'flex', flexWrap:'wrap', gap:'6px 18px', marginBottom:16 }}>
-        {exp.duration && (
-          <span style={{ display:'flex', alignItems:'center', gap:5, fontSize:12, color:'rgba(255,255,255,0.4)' }}>
-            <span>📅</span> {exp.duration}
-          </span>
-        )}
-        {exp.location && (
-          <span style={{ display:'flex', alignItems:'center', gap:5, fontSize:12, color:'rgba(255,255,255,0.4)' }}>
-            <span>📍</span> {exp.location}
-          </span>
-        )}
+        {exp.duration && <span style={{ display:'flex', alignItems:'center', gap:5, fontSize:12, color:'rgba(255,255,255,0.4)' }}><span>📅</span>{exp.duration}</span>}
+        {exp.location && <span style={{ display:'flex', alignItems:'center', gap:5, fontSize:12, color:'rgba(255,255,255,0.4)' }}><span>📍</span>{exp.location}</span>}
       </div>
 
-      {/* ── animated stat counters ── */}
+      {/* stats */}
       <div style={{ display:'grid', gridTemplateColumns:'repeat(3,1fr)', gap:8, marginBottom:16 }}>
         {stats.map((s, i) => (
-          <div key={i} style={{
-            background:'rgba(255,255,255,0.032)', border:'0.5px solid rgba(255,255,255,0.06)',
-            borderRadius:12, padding:'10px 8px', textAlign:'center',
-          }}>
-            <div data-count={s.count} style={{ fontSize:22, fontWeight:700, letterSpacing:'-1px', color:t.accent, lineHeight:1 }}>
-              0
-            </div>
-            <div style={{ fontSize:'9px', color:'rgba(255,255,255,0.32)', marginTop:3, letterSpacing:'0.8px', textTransform:'uppercase' }}>
-              {s.label}
-            </div>
+          <div key={i} style={{ background:'rgba(255,255,255,0.032)', border:'0.5px solid rgba(255,255,255,0.06)', borderRadius:12, padding:'10px 8px', textAlign:'center' }}>
+            <div data-count={s.count} style={{ fontSize:22, fontWeight:700, letterSpacing:'-1px', color:t.accent, lineHeight:1 }}>0</div>
+            <div style={{ fontSize:'9px', color:'rgba(255,255,255,0.32)', marginTop:3, letterSpacing:'0.8px', textTransform:'uppercase' }}>{s.label}</div>
           </div>
         ))}
       </div>
 
-      {/* ── progress bars ── */}
+      {/* bars */}
       {bars.map((b, i) => (
         <div key={i} style={{ marginBottom:10 }}>
           <div style={{ display:'flex', justifyContent:'space-between', marginBottom:4 }}>
@@ -526,19 +517,12 @@ const ExperienceCard: React.FC<ExperienceCardProps> = ({ exp, t, gallery, stats,
             <span style={{ fontSize:11, fontWeight:600, color:t.accent }}>{b.value}%</span>
           </div>
           <div style={{ height:2, background:'rgba(255,255,255,0.05)', borderRadius:2, overflow:'hidden' }}>
-            <div
-              data-w={b.value}
-              style={{
-                height:'100%', width:'0%', borderRadius:2,
-                background:`linear-gradient(90deg,${t.accent},${t.accent2})`,
-                transition:'width 1.3s cubic-bezier(.22,1,.36,1)',
-              }}
-            />
+            <div data-w={b.value} style={{ height:'100%', width:'0%', borderRadius:2, background:`linear-gradient(90deg,${t.accent},${t.accent2})`, transition:'width 1.3s cubic-bezier(.22,1,.36,1)' }} />
           </div>
         </div>
       ))}
 
-      {/* ── description bullets ── */}
+      {/* bullets */}
       {exp.description?.length > 0 && (
         <ul style={{ listStyle:'none', margin:'14px 0' }}>
           {exp.description.map((d, i) => (
@@ -550,22 +534,16 @@ const ExperienceCard: React.FC<ExperienceCardProps> = ({ exp, t, gallery, stats,
         </ul>
       )}
 
-      {/* ── skill tags ── */}
+      {/* skill tags */}
       {skills.length > 0 && (
         <div style={{ display:'flex', flexWrap:'wrap', gap:6, marginBottom:18 }}>
           {skills.map((sk) => (
-            <span key={sk} style={{
-              padding:'4px 11px', borderRadius:30, fontSize:11, fontWeight:500,
-              color:t.text, background:`${t.accent}0a`, border:`0.5px solid ${t.border}`,
-              letterSpacing:'0.3px',
-            }}>
-              {sk}
-            </span>
+            <span key={sk} style={{ padding:'4px 11px', borderRadius:30, fontSize:11, fontWeight:500, color:t.text, background:`${t.accent}0a`, border:`0.5px solid ${t.border}`, letterSpacing:'0.3px' }}>{sk}</span>
           ))}
         </div>
       )}
 
-      {/* ── gallery ── */}
+      {/* gallery */}
       {gallery.length > 0 && (
         <>
           <p style={{ fontSize:'9px', letterSpacing:'3px', textTransform:'uppercase', color:'rgba(255,255,255,0.22)', marginBottom:8 }}>
@@ -577,38 +555,14 @@ const ExperienceCard: React.FC<ExperienceCardProps> = ({ exp, t, gallery, stats,
                 key={i}
                 className="exp-gal-item"
                 onClick={(e) => { e.stopPropagation(); openLightbox(g.img ?? null, g.emoji ?? '📄', g.title, g.desc); }}
-                style={{
-                  aspectRatio:'16/10', borderRadius:12, overflow:'hidden',
-                  position:'relative', cursor:'pointer',
-                  border:'0.5px solid rgba(255,255,255,0.08)',
-                  background:`linear-gradient(135deg,${t.glow},${t.bg})`,
-                }}
+                style={{ aspectRatio:'16/10', borderRadius:12, overflow:'hidden', position:'relative', cursor:'pointer', border:'0.5px solid rgba(255,255,255,0.08)', background:`linear-gradient(135deg,${t.glow},${t.bg})` }}
               >
-                {/* thumb — real image OR emoji */}
-                <div
-                  className="exp-gal-thumb"
-                  style={{
-                    width:'100%', height:'100%',
-                    display:'flex', alignItems:'center', justifyContent:'center',
-                    transition:'transform .5s ease',
-                    overflow:'hidden',
-                  }}
-                >
-                  <span style={{ fontSize:26 }}>{g.emoji}</span>
+                <div className="exp-gal-thumb" style={{ width:'100%', height:'100%', display:'flex', alignItems:'center', justifyContent:'center', transition:'transform .5s ease', overflow:'hidden' }}>
+                  {g.img
+                    ? <img src={g.img} alt={g.title} style={{ width:'100%', height:'100%', objectFit:'cover' }} />
+                    : <span style={{ fontSize:26 }}>{g.emoji}</span>}
                 </div>
-
-                {/* hover overlay */}
-                <div
-                  className="exp-gal-over"
-                  style={{
-                    position:'absolute', inset:0,
-                    display:'flex', alignItems:'center', justifyContent:'center',
-                    background:`${t.accent}40`, backdropFilter:'blur(3px)',
-                    opacity:0, transition:'opacity .3s', fontSize:18,
-                  }}
-                >
-                  🔍
-                </div>
+                <div className="exp-gal-over" style={{ position:'absolute', inset:0, display:'flex', alignItems:'center', justifyContent:'center', background:`${t.accent}40`, backdropFilter:'blur(3px)', opacity:0, transition:'opacity .3s', fontSize:18 }}>🔍</div>
               </div>
             ))}
           </div>
