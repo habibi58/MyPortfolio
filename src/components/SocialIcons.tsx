@@ -6,6 +6,7 @@ import {
   FaFacebookF,
   FaInstagram,
   FaLinkedinIn,
+  FaGithub,
 } from 'react-icons/fa';
 import { portfolioOwner } from '../data';
 
@@ -38,6 +39,13 @@ const socialLinks: SocialLink[] = [
     Icon: FaLinkedinIn,
     brandColor: '#0A66C2',
     glowColor: 'rgba(10, 102, 194, 0.45)',
+  },
+  {
+    label: 'GitHub',
+    url: portfolioOwner.social.github ?? 'https://github.com',
+    Icon: FaGithub,
+    brandColor: '#ffffff',
+    glowColor: 'rgba(255, 255, 255, 0.35)',
   },
 ];
 

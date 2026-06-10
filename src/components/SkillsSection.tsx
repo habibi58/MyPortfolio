@@ -54,9 +54,10 @@ export const SkillsSection = () => {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ delay: 0.3 }}
-          className="mt-20"
+          className="mt-20 mb-20"
+          style={{ marginTop: '20px', marginBottom: '80px' }}
         >
-          <div className="text-center mb-70">
+          <div className="text-center mb-12">
             <h3 className="font-display text-2xl font-bold text-white">
               Technical Stack Overview
             </h3>
@@ -285,10 +286,8 @@ const SkillCard = ({ skill, index }: SkillCardProps) => {
             delay: index * 0.1,
             ease: 'easeOut',
           }}
-          className="h-full bg-gradient-to-r from-blue-600 via-blue-500 to-blue-700 rounded-full relative"
-        >
-          <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/30 to-white/0 animate-shimmer bg-[length:200%_100%]" />
-        </motion.div>
+          className="h-full bg-gradient-to-r from-blue-600 via-blue-500 to-blue-700 rounded-full"
+        />
       </div>
 
       <p className="text-xs font-medium text-slate-500 mt-4 uppercase tracking-wider text-center">{skill.category}</p>

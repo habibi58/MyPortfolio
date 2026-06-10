@@ -10,11 +10,11 @@ import ScrollReveal from './ScrollReveal';
 
 const AnimatedCounter = ({ value }: { value: string }) => {
   const ref = useRef<HTMLSpanElement>(null);
-  const isInView = useInView(ref, { once: true, margin: "-100px" });
-  
+  const isInView = useInView(ref, { once: true, margin: "-50px" });
+
   const numMatch = value.match(/[\d.]+/);
   const suffixMatch = value.match(/[^\d.]+/);
-  
+
   const numValue = numMatch ? parseFloat(numMatch[0]) : 0;
   const suffix = suffixMatch ? suffixMatch[0] : '';
   const isFloat = value.includes('.');
