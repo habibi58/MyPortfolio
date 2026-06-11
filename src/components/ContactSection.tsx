@@ -47,7 +47,7 @@ export const ContactSection = () => {
         throw new Error(errorMessage);
       }
 
-      toast.success("Message sent! I'll get back to you within 24 hours.");
+      toast.success("Message sent! Thank you for reaching out. I'll get back to you within 24 hours and will send my response to the email address you provided.");
       setFormData({ name: '', email: '', message: '' });
     } catch (err: any) {
       console.error('Send error:', err);
