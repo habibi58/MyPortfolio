@@ -21,7 +21,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         Authorization: `Bearer ${process.env.RESEND_API_KEY}`,
       },
       body: JSON.stringify({
-        from: 'Portfolio Contact <jasonceloza90@gmail.com>',
+        from: 'Portfolio Contact <onboarding@resend.dev>',
         // 👇 Replace with your actual email
         to: [process.env.CONTACT_EMAIL ?? 'jasonceloza90@gmail.com'],
         subject: `New message from ${name}`,
