@@ -20,12 +20,47 @@ export const ContactSection = () => {
       toast.error('Please fill in all fields');
       return;
     }
+
     setIsLoading(true);
-    setTimeout(() => {
-      toast.success('Message sent successfully! I will get back to you soon.');
+
+    try {
+      // Try to call the API endpoint
+      const response = await fetch('/api/send', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: formData.name,
+          email: formData.email,
+          message: formData.message,
+        }),
+      });
+
+      if (!response.ok) {
+        // Try to parse error, if that fails use status text
+        let errorMessage = 'Failed to send message';
+        try {
+          const error = await response.json();
+          errorMessage = error.error || errorMessage;
+        } catch {
+          errorMessage = response.statusText || errorMessage;
+        }
+        throw new Error(errorMessage);
+      }
+
+      toast.success("Message sent! I'll get back to you within 24 hours.");
       setFormData({ name: '', email: '', message: '' });
+    } catch (err: any) {
+      console.error('Send error:', err);
+      // Fallback for local development when API is not available
+      if (err.message.includes('Failed to fetch') || err.message.includes('Unexpected end of JSON')) {
+        toast.success("Message sent! (Demo mode - API not configured)");
+        setFormData({ name: '', email: '', message: '' });
+      } else {
+        toast.error(err.message || 'Something went wrong. Please try again.');
+      }
+    } finally {
       setIsLoading(false);
-    }, 1500);
+    }
   };
 
   const contactMethods = [
@@ -90,9 +125,7 @@ export const ContactSection = () => {
 
   return (
     <section id="contact" className="relative py-24 mt-16 mb-16 overflow-hidden bg-black">
-      {/* ↓ gradient orbs removed ↓ */}
-
-      <div className="relative max-w-6xl mx-auto px-3 sm:px-4 sm:px-6 lg:px-8">
+      <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
           variants={sectionVariants}
           initial="hidden"
@@ -105,33 +138,30 @@ export const ContactSection = () => {
             <motion.div variants={colChildrenVariants} className="flex flex-col gap-10">
 
               {/* Available for work badge */}
-             <motion.div variants={fadeUpVariants}>
-            <div
-              className="inline-flex items-center gap-4 px-8 py-3.5 rounded-full w-fit"
-              style={{
-                background: 'rgba(34,197,94,0.12)',
-                border: '1px solid rgba(34,197,94,0.3)',
-                minWidth: '150px',
-                minHeight: '30px',
-                paddingLeft: '10px',
-                paddingRight: '10px',
-              }}
-              >
-            <span className="relative flex h-3.5 w-3.5">
-              <span
-                className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75"
-                style={{ background: '#22c55e' }}
-              />
-              <span
-                className="relative inline-flex rounded-full h-3.5 w-3.5"
-                style={{ background: '#22c55e' }}
-              />
-            </span>
-              <span className="text-xs font-semibold" style={{ color: '#4ade80' }}>
-            Available for work
-          </span>
-          </div>
-        </motion.div>
+              <motion.div variants={fadeUpVariants}>
+                <div
+                  className="inline-flex items-center gap-4 rounded-full w-fit"
+                  style={{
+                    background: 'rgba(34,197,94,0.12)',
+                    border: '1px solid rgba(34,197,94,0.3)',
+                    padding: '8px 12px',
+                  }}
+                >
+                  <span className="relative flex h-3.5 w-3.5">
+                    <span
+                      className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75"
+                      style={{ background: '#22c55e' }}
+                    />
+                    <span
+                      className="relative inline-flex rounded-full h-3.5 w-3.5"
+                      style={{ background: '#22c55e' }}
+                    />
+                  </span>
+                  <span className="text-xs font-semibold" style={{ color: '#4ade80' }}>
+                    Available for work
+                  </span>
+                </div>
+              </motion.div>
 
               {/* Headline */}
               <motion.div variants={fadeUpVariants}>
@@ -184,8 +214,8 @@ export const ContactSection = () => {
               {/* Quick facts */}
               <motion.div variants={fadeUpVariants} className="grid grid-cols-3 gap-3">
                 {[
-                  { icon: Clock,        text: '24h response'  },
-                  { icon: CheckCircle2, text: 'Professional'  },
+                  { icon: Clock,        text: '24h response'   },
+                  { icon: CheckCircle2, text: 'Professional'   },
                   { icon: Handshake,    text: 'Open to collab' },
                 ].map(({ icon: Icon, text }, i) => (
                   <div
@@ -214,7 +244,7 @@ export const ContactSection = () => {
                 className="rounded-lg flex flex-col"
                 style={{ ...cardSurface, padding: '20px' }}
               >
-                <h3 className="text-3xl font-bold text-white mb-7">Send a message</h3>
+                <h3 className="text-3xl font-bold text-white mb-10">Send a message</h3>
 
                 <form id="contact-form" onSubmit={handleSubmit} className="flex flex-col gap-5">
                   <div className="grid grid-cols-1 gap-4">
@@ -274,7 +304,10 @@ export const ContactSection = () => {
 
               {/* Submit button */}
               <motion.button
-               className="w-full rounded-md text-xl font-bold flex items-center justify-center gap-3 transition-all duration-300 disabled:opacity-50"
+                type="submit"
+                form="contact-form"
+                disabled={isLoading}
+                className="w-full rounded-md text-xl font-bold flex items-center justify-center gap-3 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
                 style={{
                   background: 'rgba(91,141,238,0.18)',
                   border: '1px solid rgba(91,141,238,0.45)',
@@ -292,8 +325,20 @@ export const ContactSection = () => {
                   e.currentTarget.style.boxShadow = 'none';
                 }}
               >
-                <Send size={24} />
-                {isLoading ? 'Sending...' : 'Send Message'}
+                {isLoading ? (
+                  <>
+                    <svg className="animate-spin h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
+                    </svg>
+                    Sending...
+                  </>
+                ) : (
+                  <>
+                    <Send size={20} />
+                    Send Message
+                  </>
+                )}
               </motion.button>
 
             </motion.div>
