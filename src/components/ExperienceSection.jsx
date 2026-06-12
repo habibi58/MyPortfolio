@@ -239,7 +239,7 @@ export const ExperienceSection = () => {
           <SectionHeading
             subtitle="CAREER PATH"
             title="Experience"
-            description="My professional journey and roles in IT support"
+            description="My professional journey"
           />
         </div>
 

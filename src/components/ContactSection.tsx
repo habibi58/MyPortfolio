@@ -170,7 +170,7 @@ export const ContactSection = () => {
                 </h2>
                 <p className="text-sm leading-relaxed" style={{ color: 'rgba(255,255,255,0.5)' }}>
                   Have a project in mind, a role to fill, or just want to say hello?
-                  My inbox is always open — I'll get back to you within 24 hours.
+                  My inbox is always open I'll get back to you within 24 hours.
                 </p>
               </motion.div>
 
