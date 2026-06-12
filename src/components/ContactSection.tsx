@@ -299,48 +299,46 @@ export const ContactSection = () => {
                   <p className="text-xs" style={{ color: 'rgba(255,255,255,0.3)' }}>
                     Mon–Fri 9am–6pm · Sat 10am–4pm · Sun urgent only
                   </p>
+
+                  {/* Submit button */}
+                  <motion.button
+                    type="submit"
+                    disabled={isLoading}
+                    className="w-full rounded-md text-xl font-bold flex items-center justify-center gap-3 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                    style={{
+                      background: 'rgba(91,141,238,0.18)',
+                      border: '1px solid rgba(91,141,238,0.45)',
+                      color: '#7aabff',
+                      height: '50px',
+                    }}
+                    onMouseEnter={(e) => {
+                      if (!isLoading) {
+                        e.currentTarget.style.background = 'rgba(91,141,238,0.3)';
+                        e.currentTarget.style.boxShadow = '0 0 28px rgba(91,141,238,0.25)';
+                      }
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.background = 'rgba(91,141,238,0.18)';
+                      e.currentTarget.style.boxShadow = 'none';
+                    }}
+                  >
+                    {isLoading ? (
+                      <>
+                        <svg className="animate-spin h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
+                        </svg>
+                        Sending...
+                      </>
+                    ) : (
+                      <>
+                        <Send size={20} />
+                        Send Message
+                      </>
+                    )}
+                  </motion.button>
                 </form>
               </motion.div>
-
-              {/* Submit button */}
-              <motion.button
-                type="submit"
-                form="contact-form"
-                disabled={isLoading}
-                className="w-full rounded-md text-xl font-bold flex items-center justify-center gap-3 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
-                style={{
-                  background: 'rgba(91,141,238,0.18)',
-                  border: '1px solid rgba(91,141,238,0.45)',
-                  color: '#7aabff',
-                  height: '50px',
-                }}
-                onMouseEnter={(e) => {
-                  if (!isLoading) {
-                    e.currentTarget.style.background = 'rgba(91,141,238,0.3)';
-                    e.currentTarget.style.boxShadow = '0 0 28px rgba(91,141,238,0.25)';
-                  }
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.background = 'rgba(91,141,238,0.18)';
-                  e.currentTarget.style.boxShadow = 'none';
-                }}
-              >
-                {isLoading ? (
-                  <>
-                    <svg className="animate-spin h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
-                    </svg>
-                    Sending...
-                  </>
-                ) : (
-                  <>
-                    <Send size={20} />
-                    Send Message
-                  </>
-                )}
-              </motion.button>
-
             </motion.div>
           </motion.div>
         </motion.div>
