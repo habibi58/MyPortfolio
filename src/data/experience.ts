@@ -31,8 +31,8 @@ export const experienceData = [
         /* swap emoji for img once you have the file */
         img:   null,
         emoji: '🖥️',
-        title: 'Helpdesk Dashboard',
-        desc:  'ServiceNow ticketing dashboard showing queue metrics and resolution trends.',
+        title: 'Desktop Support Dashboard',
+        desc:  'Asknow ticketing system used for managing and tracking support requests, ensuring efficient issue resolution and customer satisfaction.',
       },
       {
         img:   '/Certificates/certficicatettec.png', // ← drop file in /public/certificates/
@@ -42,9 +42,9 @@ export const experienceData = [
       },
       {
         img:   null,
-        emoji: '🏆',
-        title: 'Employee of the Month',
-        desc:  'Awarded Q2 2024 for resolving a critical network outage within 30 minutes.',
+        emoji: '🖼️',
+        title: 'Gallery Highlight',
+        desc:  'Showcasing a snapshot of the desktop support environment, highlighting the tools and technologies used to provide efficient IT support and maintain high customer satisfaction.',
       },
     ],
   },

@@ -509,7 +509,7 @@ export const HeroSection = () => {
                 </motion.button>
 
                 <motion.a
-                  href="\MohamadjasonCV.pdf"
+                  href="/Resume/MohamadjasonCV.pdf"
                   download="MohamadjasonCV.pdf"
                   className="btn-premium-resume"
                   initial={{ opacity: 0, scale: 0.65 }}
