@@ -7,6 +7,7 @@ import { SectionHeading } from './SectionHeading';
 interface GalleryItem {
   emoji?: string;
   img?: string | null;
+  imgs?: string[];
   title: string;
   desc: string;
 }
@@ -50,7 +51,187 @@ function animateCount(el: HTMLElement, target: number) {
 }
 
 /* ══════════════════════════════════════
-   Gallery Carousel
+   ArrowButton — shared prev/next button
+══════════════════════════════════════ */
+const ArrowBtn: React.FC<{
+  dir: 'left' | 'right';
+  disabled: boolean;
+  onClick: (e: React.MouseEvent) => void;
+  small?: boolean;
+}> = ({ dir, disabled, onClick, small }) => {
+  const size = small ? 26 : 32;
+  return (
+    <button
+      onClick={onClick}
+      disabled={disabled}
+      style={{
+        position: 'absolute',
+        [dir]: small ? 6 : 8,
+        top: '50%',
+        transform: 'translateY(-50%)',
+        width: size, height: size, borderRadius: '50%',
+        background: 'rgba(0,0,0,0.65)',
+        border: '0.5px solid rgba(255,255,255,0.18)',
+        color: disabled ? 'rgba(255,255,255,0.2)' : 'rgba(255,255,255,0.85)',
+        fontSize: small ? 13 : 16,
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        cursor: disabled ? 'default' : 'pointer',
+        transition: 'background .2s, color .2s',
+        zIndex: 4,
+        flexShrink: 0,
+        pointerEvents: disabled ? 'none' : 'auto',
+      }}
+      onMouseEnter={(e) => { if (!disabled) e.currentTarget.style.background = 'rgba(0,0,0,0.88)'; }}
+      onMouseLeave={(e) => { e.currentTarget.style.background = 'rgba(0,0,0,0.65)'; }}
+    >
+      {dir === 'left' ? '‹' : '›'}
+    </button>
+  );
+};
+
+/* ══════════════════════════════════════
+   InnerCarousel — multiple imgs in one slide
+══════════════════════════════════════ */
+const InnerCarousel: React.FC<{ imgs: string[] }> = ({ imgs }) => {
+  const [cur, setCur] = useState(0);
+  const [delta, setDelta] = useState(0);
+  const [dragging, setDragging] = useState(false);
+  const startX = useRef<number | null>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  const clamp = (n: number) => Math.max(0, Math.min(imgs.length - 1, n));
+  const goTo = (n: number) => { setCur(clamp(n)); setDelta(0); };
+
+  /* ── touch ── */
+  const onTouchStart = (e: React.TouchEvent) => {
+    e.stopPropagation();
+    startX.current = e.touches[0].clientX;
+    setDragging(true);
+  };
+  const onTouchMove = (e: React.TouchEvent) => {
+    e.stopPropagation();
+    if (startX.current === null) return;
+    setDelta(e.touches[0].clientX - startX.current);
+  };
+  const onTouchEnd = (e: React.TouchEvent) => {
+    e.stopPropagation();
+    if (Math.abs(delta) > 35) goTo(cur + (delta < 0 ? 1 : -1));
+    else setDelta(0);
+    startX.current = null;
+    setDragging(false);
+  };
+
+  /* ── mouse ── */
+  const onMouseDown = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    startX.current = e.clientX;
+    setDragging(true);
+  };
+  const onMouseMove = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (startX.current === null || !dragging) return;
+    setDelta(e.clientX - startX.current);
+  };
+  const onMouseUp = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (Math.abs(delta) > 35) goTo(cur + (delta < 0 ? 1 : -1));
+    else setDelta(0);
+    startX.current = null;
+    setDragging(false);
+  };
+
+  return (
+    <div
+      ref={containerRef}
+      style={{
+        width: '100%', height: '100%',
+        position: 'relative', overflow: 'hidden',
+        touchAction: 'none',
+        cursor: dragging ? 'grabbing' : 'grab',
+        userSelect: 'none',
+        WebkitUserSelect: 'none',
+      }}
+      onTouchStart={onTouchStart}
+      onTouchMove={onTouchMove}
+      onTouchEnd={onTouchEnd}
+      onMouseDown={onMouseDown}
+      onMouseMove={onMouseMove}
+      onMouseUp={onMouseUp}
+      onMouseLeave={onMouseUp}
+    >
+      {/* sliding track */}
+      <div style={{
+        display: 'flex',
+        width: '100%',
+        height: '100%',
+        transform: `translateX(calc(${-cur * 100}% + ${delta}px))`,
+        transition: dragging ? 'none' : 'transform 0.38s cubic-bezier(0.22,1,0.36,1)',
+        willChange: 'transform',
+      }}>
+        {imgs.map((src, i) => (
+          <img
+            key={i}
+            src={src}
+            alt={`slide ${i + 1}`}
+            draggable={false}
+            style={{
+              flexShrink: 0, width: '100%', height: '100%',
+              objectFit: 'cover', pointerEvents: 'none',
+              display: 'block',
+            }}
+          />
+        ))}
+      </div>
+
+      {/* prev / next arrows — always visible */}
+      <ArrowBtn
+        dir="left"
+        disabled={cur === 0}
+        small
+        onClick={(e) => { e.stopPropagation(); goTo(cur - 1); }}
+      />
+      <ArrowBtn
+        dir="right"
+        disabled={cur === imgs.length - 1}
+        small
+        onClick={(e) => { e.stopPropagation(); goTo(cur + 1); }}
+      />
+
+      {/* dot indicators */}
+      <div style={{
+        position: 'absolute', bottom: 6, left: 0, right: 0,
+        display: 'flex', justifyContent: 'center', gap: 5, zIndex: 3,
+        pointerEvents: 'none',
+      }}>
+        {imgs.map((_, i) => (
+          <div
+            key={i}
+            style={{
+              width: i === cur ? 14 : 5, height: 5, borderRadius: 3,
+              background: i === cur ? '#fff' : 'rgba(255,255,255,0.4)',
+              transition: 'width 0.3s cubic-bezier(0.22,1,0.36,1), background 0.3s',
+            }}
+          />
+        ))}
+      </div>
+
+      {/* counter badge */}
+      <div style={{
+        position: 'absolute', top: 6, left: 8, zIndex: 3,
+        background: 'rgba(0,0,0,0.6)',
+        borderRadius: 6, padding: '2px 8px',
+        fontSize: 10, color: 'rgba(255,255,255,0.8)',
+        pointerEvents: 'none',
+        fontWeight: 500,
+      }}>
+        {cur + 1} / {imgs.length}
+      </div>
+    </div>
+  );
+};
+
+/* ══════════════════════════════════════
+   GalleryCarousel — swipes between gallery items
 ══════════════════════════════════════ */
 interface GalleryCarouselProps {
   gallery: GalleryItem[];
@@ -63,27 +244,28 @@ const GalleryCarousel: React.FC<GalleryCarouselProps> = ({ gallery, t, openLight
   const [dragging, setDragging] = useState(false);
   const [dragDelta, setDragDelta] = useState(0);
   const startX = useRef<number | null>(null);
-  const trackRef = useRef<HTMLDivElement>(null);
   const isMulti = gallery.length > 1;
 
   const clamp = (n: number) => Math.max(0, Math.min(gallery.length - 1, n));
-
   const goTo = useCallback((next: number) => {
     setIdx(clamp(next));
     setDragDelta(0);
   }, [gallery.length]);
 
+  /* current slide has InnerCarousel — don't swipe outer when inner is active */
+  const currentHasInner = !!(gallery[idx]?.imgs && gallery[idx].imgs!.length > 1);
+
   const onTouchStart = (e: React.TouchEvent) => {
-    if (!isMulti) return;
+    if (!isMulti || currentHasInner) return;
     startX.current = e.touches[0].clientX;
     setDragging(true);
   };
   const onTouchMove = (e: React.TouchEvent) => {
-    if (!isMulti || startX.current === null) return;
+    if (!isMulti || currentHasInner || startX.current === null) return;
     setDragDelta(e.touches[0].clientX - startX.current);
   };
   const onTouchEnd = () => {
-    if (!isMulti) return;
+    if (!isMulti || currentHasInner) return;
     if (Math.abs(dragDelta) > 40) goTo(idx + (dragDelta < 0 ? 1 : -1));
     else setDragDelta(0);
     startX.current = null;
@@ -91,25 +273,23 @@ const GalleryCarousel: React.FC<GalleryCarouselProps> = ({ gallery, t, openLight
   };
 
   const onMouseDown = (e: React.MouseEvent) => {
-    if (!isMulti) return;
+    if (!isMulti || currentHasInner) return;
     startX.current = e.clientX;
     setDragging(true);
   };
   const onMouseMove = (e: React.MouseEvent) => {
-    if (!isMulti || startX.current === null || !dragging) return;
+    if (!isMulti || currentHasInner || startX.current === null || !dragging) return;
     setDragDelta(e.clientX - startX.current);
   };
   const onMouseUp = () => {
-    if (!isMulti) return;
+    if (!isMulti || currentHasInner) return;
     if (Math.abs(dragDelta) > 40) goTo(idx + (dragDelta < 0 ? 1 : -1));
     else setDragDelta(0);
     startX.current = null;
     setDragging(false);
   };
 
-  const translateX = isMulti
-    ? `calc(${-idx * 100}% + ${dragDelta}px)`
-    : '0%';
+  const translateX = isMulti ? `calc(${-idx * 100}% + ${dragDelta}px)` : '0%';
 
   return (
     <div>
@@ -127,9 +307,10 @@ const GalleryCarousel: React.FC<GalleryCarouselProps> = ({ gallery, t, openLight
           borderRadius: 14,
           overflow: 'hidden',
           border: '0.5px solid rgba(255,255,255,0.08)',
-          cursor: isMulti ? (dragging ? 'grabbing' : 'grab') : 'pointer',
+          cursor: isMulti && !currentHasInner ? (dragging ? 'grabbing' : 'grab') : 'default',
           userSelect: 'none',
           WebkitUserSelect: 'none',
+          touchAction: currentHasInner ? 'auto' : 'pan-y pinch-zoom',
         }}
         onTouchStart={onTouchStart}
         onTouchMove={onTouchMove}
@@ -141,7 +322,6 @@ const GalleryCarousel: React.FC<GalleryCarouselProps> = ({ gallery, t, openLight
       >
         {/* sliding track */}
         <div
-          ref={trackRef}
           style={{
             display: 'flex',
             transform: `translateX(${translateX})`,
@@ -153,7 +333,7 @@ const GalleryCarousel: React.FC<GalleryCarouselProps> = ({ gallery, t, openLight
             <div
               key={i}
               onClick={() => {
-                if (Math.abs(dragDelta) < 6) {
+                if (!currentHasInner && Math.abs(dragDelta) < 6) {
                   openLightbox(g.img ?? null, g.emoji ?? '📄', g.title, g.desc);
                 }
               }}
@@ -167,87 +347,65 @@ const GalleryCarousel: React.FC<GalleryCarouselProps> = ({ gallery, t, openLight
                 background: `linear-gradient(135deg,${t.glow},${t.bg})`,
                 overflow: 'hidden',
                 position: 'relative',
+                cursor: g.imgs && g.imgs.length > 1 ? 'default' : 'pointer',
               }}
             >
-              {g.img
-                ? <img
-                    src={g.img}
-                    alt={g.title}
-                    style={{
-                      width: '100%', height: '100%',
-                      objectFit: 'cover', display: 'block',
-                      pointerEvents: 'none',
-                    }}
-                  />
-                : <span style={{ fontSize: 36, pointerEvents: 'none' }}>{g.emoji}</span>
+              {/* image content */}
+              {g.imgs && g.imgs.length > 1
+                ? <InnerCarousel imgs={g.imgs} />
+                : g.img
+                  ? <img
+                      src={g.img}
+                      alt={g.title}
+                      draggable={false}
+                      style={{
+                        width: '100%', height: '100%',
+                        objectFit: 'cover', display: 'block',
+                        pointerEvents: 'none',
+                      }}
+                    />
+                  : <span style={{ fontSize: 36, pointerEvents: 'none' }}>{g.emoji}</span>
               }
 
-              {/* title gradient overlay */}
-              <div style={{
-                position: 'absolute', bottom: 0, left: 0, right: 0,
-                padding: '18px 12px 10px',
-                background: 'linear-gradient(0deg,rgba(0,0,0,0.72) 0%,transparent 100%)',
-                fontSize: 11, fontWeight: 500, color: 'rgba(255,255,255,0.82)',
-                letterSpacing: '0.2px',
-                pointerEvents: 'none',
-              }}>
-                {g.title}
-              </div>
+              {/* title overlay — only for non-inner-carousel slides */}
+              {!(g.imgs && g.imgs.length > 1) && (
+                <div style={{
+                  position: 'absolute', bottom: 0, left: 0, right: 0,
+                  padding: '18px 12px 10px',
+                  background: 'linear-gradient(0deg,rgba(0,0,0,0.72) 0%,transparent 100%)',
+                  fontSize: 11, fontWeight: 500, color: 'rgba(255,255,255,0.82)',
+                  letterSpacing: '0.2px', pointerEvents: 'none',
+                }}>
+                  {g.title}
+                </div>
+              )}
 
-              {/* magnify hint */}
-              <div style={{
-                position: 'absolute', top: 8, right: 8,
-                background: 'rgba(0,0,0,0.45)', backdropFilter: 'blur(4px)',
-                borderRadius: 6, padding: '3px 7px',
-                fontSize: 10, color: 'rgba(255,255,255,0.55)',
-                pointerEvents: 'none',
-              }}>
-                🔍
-              </div>
+              {/* magnify hint — only for non-inner-carousel slides */}
+              {!(g.imgs && g.imgs.length > 1) && (
+                <div style={{
+                  position: 'absolute', top: 8, right: 8,
+                  background: 'rgba(0,0,0,0.45)',
+                  borderRadius: 6, padding: '3px 7px',
+                  fontSize: 10, color: 'rgba(255,255,255,0.55)',
+                  pointerEvents: 'none',
+                }}>
+                  🔍
+                </div>
+              )}
             </div>
           ))}
         </div>
 
-        {/* prev / next arrows — only for multi */}
-        {isMulti && (
+        {/* outer prev / next arrows — only when multi and current slide is NOT an inner carousel */}
+        {isMulti && !currentHasInner && (
           <>
-            <button
-              onClick={(e) => { e.stopPropagation(); goTo(idx - 1); }}
-              disabled={idx === 0}
-              style={{
-                position: 'absolute', left: 8, top: '50%', transform: 'translateY(-50%)',
-                width: 28, height: 28, borderRadius: '50%',
-                background: 'rgba(0,0,0,0.55)', backdropFilter: 'blur(6px)',
-                border: '0.5px solid rgba(255,255,255,0.14)',
-                color: 'rgba(255,255,255,0.7)', fontSize: 14,
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                cursor: idx === 0 ? 'default' : 'pointer',
-                opacity: idx === 0 ? 0.3 : 1,
-                transition: 'opacity .2s',
-                zIndex: 2,
-              }}
-            >‹</button>
-            <button
-              onClick={(e) => { e.stopPropagation(); goTo(idx + 1); }}
-              disabled={idx === gallery.length - 1}
-              style={{
-                position: 'absolute', right: 8, top: '50%', transform: 'translateY(-50%)',
-                width: 28, height: 28, borderRadius: '50%',
-                background: 'rgba(0,0,0,0.55)', backdropFilter: 'blur(6px)',
-                border: '0.5px solid rgba(255,255,255,0.14)',
-                color: 'rgba(255,255,255,0.7)', fontSize: 14,
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                cursor: idx === gallery.length - 1 ? 'default' : 'pointer',
-                opacity: idx === gallery.length - 1 ? 0.3 : 1,
-                transition: 'opacity .2s',
-                zIndex: 2,
-              }}
-            >›</button>
+            <ArrowBtn dir="left"  disabled={idx === 0}               onClick={(e) => { e.stopPropagation(); goTo(idx - 1); }} />
+            <ArrowBtn dir="right" disabled={idx === gallery.length - 1} onClick={(e) => { e.stopPropagation(); goTo(idx + 1); }} />
           </>
         )}
       </div>
 
-      {/* dot indicators — only for multi */}
+      {/* outer dot indicators */}
       {isMulti && (
         <div style={{ display: 'flex', justifyContent: 'center', gap: 6, marginTop: 10 }}>
           {gallery.map((_, i) => (
@@ -697,7 +855,7 @@ const ExperienceCard: React.FC<ExperienceCardProps> = ({ exp, t, gallery, stats,
         </div>
       )}
 
-      {/* gallery — swipeable carousel */}
+      {/* gallery */}
       {gallery.length > 0 && (
         <GalleryCarousel gallery={gallery} t={t} openLightbox={openLightbox} />
       )}
