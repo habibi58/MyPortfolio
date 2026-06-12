@@ -509,8 +509,8 @@ export const HeroSection = () => {
                 </motion.button>
 
                 <motion.a
-                  href="/Mohamad_Jason_Resume.pdf"
-                  download="Mohamad_Jason_Resume.pdf"
+                  href="\MohamadjasonCV.pdf"
+                  download="MohamadjasonCV.pdf"
                   className="btn-premium-resume"
                   initial={{ opacity: 0, scale: 0.65 }}
                   animate={{ opacity: 1, scale: 1 }}
