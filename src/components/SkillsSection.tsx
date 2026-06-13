@@ -59,7 +59,7 @@ export const SkillsSection = () => {
         >
           <div className="text-center mb-12">
             <h3 className="font-display text-2xl font-bold text-white">
-              Technical Stack Overview
+              Tech Stack Overview
             </h3>
           </div>
 

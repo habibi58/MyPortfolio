@@ -7,6 +7,7 @@ import {
   ExperienceSection,
   ProjectsSection,
   CertificationsSection,
+  EducationSection,
   ContactSection,
 } from '../components';
 import ScrollFloat from '../components/ScrollFloat';
@@ -43,6 +44,8 @@ export const Home = () => {
       <ProjectsSection />
       <div className="h-34" />
       <CertificationsSection />
+      <div className="h-34" />
+      <EducationSection />
       <div className="h-34" />
       <ContactSection />
       <div className="h-32" />

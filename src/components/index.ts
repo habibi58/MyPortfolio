@@ -11,6 +11,7 @@ export { SkillsSection } from './SkillsSection';
 export { ExperienceSection } from './ExperienceSection';
 export { ProjectsSection } from './ProjectsSection';
 export { CertificationsSection } from './CertificationsSection';
+export { EducationSection } from './Educationsection';
 export { ContactSection } from './ContactSection';
 export { default as Particles } from './Particles';
 export { ParticlesBackground } from './ParticlesBackground';
