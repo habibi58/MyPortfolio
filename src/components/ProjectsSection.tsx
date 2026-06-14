@@ -258,11 +258,12 @@ const MobileLabel = ({ project, index, isActive }: MobileLabelProps) => (
     <span
       style={{
         fontFamily: 'monospace',
-        fontSize: '12px',
+        fontSize: '19px',
         fontWeight: 600,
         letterSpacing: '0.15em',
         textTransform: 'uppercase' as const,
         color: isActive ? '#3b82f6' : 'rgba(196,196,200,0.6)',
+        minWidth: '27px',
       }}
     >
       {String(index + 1).padStart(2, '0')}
