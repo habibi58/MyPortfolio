@@ -30,7 +30,7 @@ export const educationData: EducationItem[] = [
     level: 'Senior High',
     levelKey: 's',
     course: 'STEM – Science, Technology, Engineering, and Mathematics',
-    location: 'Cainta, Rizal',
+    location: 'Binangonan, Rizal',
     years: '2019 – 2021',
     icon: '🏫',
     yearCount: 2,
