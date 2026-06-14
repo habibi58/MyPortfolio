@@ -97,8 +97,14 @@ export const projectsData: Project[] = [
     title: 'My Portfolio Website',
     description: 'A responsive portfolio website to showcase projects and skills',
     fullDescription:
-      'in progess',
-    image: '/assets/projects/shop.png',
+      'A modern, fully responsive portfolio website with smooth animations and a clean glassmorphism design, set on a starry background and optimized for both desktop and mobile devices.',
+      features: [
+      'Smooth animations and transitions',
+      'Glassmorphism design aesthetic',
+      'Contact form with validation',
+      'Resend API integration for email delivery',
+    ],
+    image: '/projectimages/project4.png',
     technologies: ['React.js', 'TypeScript', 'Tailwind CSS',],
     liveLink: '#',
     githubLink: '#',

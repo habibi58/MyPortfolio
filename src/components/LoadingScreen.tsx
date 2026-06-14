@@ -7,9 +7,10 @@ interface LoadingScreenProps {
 }
 
 const GREETING = "Hi, I'm";
-const FIRST_LETTERS = ['M', 'O', 'H', 'A', 'M', 'A', 'D', ' ', 'J', 'A', 'S', 'O', 'N'];
-const LAST_LETTERS = ['C', 'E', 'L', 'O', 'Z', 'A'];
-const ALL_LETTERS = [...FIRST_LETTERS, ...LAST_LETTERS];
+const FIRST_NAME = ['M', 'O', 'H', 'A', 'M', 'A', 'D'];
+const MIDDLE_NAME = ['J', 'A', 'S', 'O', 'N'];
+const LAST_NAME = ['C', 'E', 'L', 'O', 'Z', 'A'];
+const ALL_LETTERS = [...FIRST_NAME, ...MIDDLE_NAME, ...LAST_NAME];
 const SUBTITLE = 'Welcome To My Portfolio';
 const TOTAL_DURATION = 5000;
 
@@ -22,7 +23,6 @@ export default function LoadingScreen({ onFinished }: LoadingScreenProps) {
     ALL_LETTERS.map(() => false),
   );
   const [subtitleRevealed, setSubtitleRevealed] = useState(false);
-  const [lineActive, setLineActive] = useState(false);
   const [cornersRevealed, setCornersRevealed] = useState(false);
   const [progressTextRevealed, setProgressTextRevealed] = useState(false);
   const [exiting, setExiting] = useState(false);
@@ -59,7 +59,6 @@ export default function LoadingScreen({ onFinished }: LoadingScreenProps) {
 
     const subtitleTimer = setTimeout(() => {
       setSubtitleRevealed(true);
-      setLineActive(true);
       setCornersRevealed(true);
       setProgressTextRevealed(true);
     }, afterLetters);
@@ -134,36 +133,52 @@ export default function LoadingScreen({ onFinished }: LoadingScreenProps) {
         {GREETING}
       </div>
 
-      {/* First row: MOHAMAD JASON */}
-      <div className="ls-name-container">
-        {FIRST_LETTERS.map((letter, i) => (
-          letter === ' '
-            ? <span key={i} className="ls-letter--gap" />
-            : <span
-                key={i}
-                className={`ls-letter${lettersRevealed[i] ? ' revealed' : ''}`}
-                style={{ transitionDelay: `${i * 60}ms` }}
-              >
-                {letter}
-              </span>
-        ))}
-        <div className={`ls-line-accent${lineActive ? ' active' : ''}`} />
-      </div>
-
-      {/* Second row: CELOZA */}
-      <div className="ls-last-name-container">
-        {LAST_LETTERS.map((letter, i) => {
-          const globalIndex = FIRST_LETTERS.length + i;
-          return (
+      {/* Name sections wrapper for mobile layout */}
+      <div className="ls-name-wrapper">
+        {/* First name: MOHAMAD */}
+        <div className="ls-name-container ls-first-name">
+          {FIRST_NAME.map((letter, i) => (
             <span
               key={i}
-              className={`ls-letter ls-letter--last${lettersRevealed[globalIndex] ? ' revealed' : ''}`}
-              style={{ transitionDelay: `${globalIndex * 60}ms` }}
+              className={`ls-letter${lettersRevealed[i] ? ' revealed' : ''}`}
+              style={{ transitionDelay: `${i * 60}ms` }}
             >
               {letter}
             </span>
-          );
-        })}
+          ))}
+        </div>
+
+        {/* Middle name: JASON - hidden on desktop, shown on mobile */}
+        <div className="ls-name-container ls-middle-name">
+          {MIDDLE_NAME.map((letter, i) => {
+            const globalIndex = FIRST_NAME.length + i;
+            return (
+              <span
+                key={globalIndex}
+                className={`ls-letter${lettersRevealed[globalIndex] ? ' revealed' : ''}`}
+                style={{ transitionDelay: `${globalIndex * 60}ms` }}
+              >
+                {letter}
+              </span>
+            );
+          })}
+        </div>
+
+        {/* Last name: CELOZA */}
+        <div className="ls-last-name-container">
+          {LAST_NAME.map((letter, i) => {
+            const globalIndex = FIRST_NAME.length + MIDDLE_NAME.length + i;
+            return (
+              <span
+                key={i}
+                className={`ls-letter ls-letter--last${lettersRevealed[globalIndex] ? ' revealed' : ''}`}
+                style={{ transitionDelay: `${globalIndex * 60}ms` }}
+              >
+                {letter}
+              </span>
+            );
+          })}
+        </div>
       </div>
 
       <div className={`ls-subtitle${subtitleRevealed ? ' revealed' : ''}`}>
@@ -177,31 +192,6 @@ export default function LoadingScreen({ onFinished }: LoadingScreenProps) {
       <div className={`ls-progress-text${progressTextRevealed ? ' revealed' : ''}`}>
         {progress}%
       </div>
-
-      <button
-        onClick={startExit}
-        className="ls-skip-button"
-        style={{
-          position: 'absolute',
-          bottom: '40px',
-          padding: '10px 24px',
-          background: 'rgba(255, 255, 255, 0.1)',
-          border: '1px solid rgba(255, 255, 255, 0.3)',
-          color: 'white',
-          borderRadius: '8px',
-          cursor: 'pointer',
-          fontSize: '14px',
-          transition: 'all 0.3s ease',
-        }}
-        onMouseEnter={(e) => {
-          e.currentTarget.style.background = 'rgba(255, 255, 255, 0.2)';
-        }}
-        onMouseLeave={(e) => {
-          e.currentTarget.style.background = 'rgba(255, 255, 255, 0.1)';
-        }}
-      >
-        Skip
-      </button>
     </div>
   );
 }

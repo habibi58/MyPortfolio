@@ -10,25 +10,6 @@
   overflow: hidden;
 }
 
-.loading-screen::before {
-  content: '';
-  position: absolute;
-  width: 600px;
-  height: 600px;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(59, 130, 246, 0.2) 0%, transparent 70%);
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  animation: ls-pulse-glow 3s ease-in-out infinite;
-  pointer-events: none;
-}
-
-@keyframes ls-pulse-glow {
-  0%, 100% { opacity: 0.4; transform: translate(-50%, -50%) scale(1); }
-  50%      { opacity: 1;   transform: translate(-50%, -50%) scale(1.15); }
-}
-
 .ls-particles {
   position: absolute;
   inset: 0;
@@ -151,6 +132,14 @@
   transform: translateY(0);
 }
 
+.ls-name-wrapper {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+}
+
 .ls-name-container {
   position: relative;
   display: flex;
@@ -163,6 +152,11 @@
   padding: 0 12px;
   box-sizing: border-box;
   flex-wrap: nowrap;
+}
+
+/* Show middle name container on desktop */
+.ls-middle-name {
+  display: flex;
 }
 
 .ls-last-name-container {
@@ -179,7 +173,7 @@
 .ls-letter {
   font-family: 'Syne', 'Inter', sans-serif;
   font-weight: 800;
-  font-size: clamp(2rem, 6.5vw, 4.5rem);
+  font-size: clamp(1.8rem, 5vw, 3.5rem);
   letter-spacing: 0.06em;
   text-transform: uppercase;
   display: inline-block;
@@ -193,7 +187,7 @@
 }
 
 .ls-letter--last {
-  font-size: clamp(1.2rem, 4vw, 2.8rem);
+  font-size: clamp(1.8rem, 5vw, 3.5rem);
   letter-spacing: 0.25em;
   opacity: 0;
 }
@@ -207,28 +201,6 @@
   opacity: 1;
   transform: translateY(0) rotateX(0deg);
   transition: all 1s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-@keyframes ls-gradient-flow {
-  0%   { background-position: 0% 50%; }
-  50%  { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
-}
-
-.ls-line-accent {
-  position: absolute;
-  bottom: -12px;
-  left: 50%;
-  transform: translateX(-50%);
-  height: 3px;
-  width: 0;
-  border-radius: 4px;
-  background: linear-gradient(90deg, transparent, #3b82f6, #60a5fa, #3b82f6, transparent);
-  transition: width 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.6s;
-}
-
-.ls-line-accent.active {
-  width: 110%;
 }
 
 .ls-subtitle {
@@ -345,21 +317,32 @@
 
   /* "Hi, I'm" */
   .ls-greeting {
-    font-size: 0.75rem;
+    font-size: 1.2rem;
     letter-spacing: 0.2em;
     margin-bottom: 8px;
+  }
+
+  /* Name wrapper — stack vertically on mobile */
+  .ls-name-wrapper {
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  /* Show middle name container on mobile */
+  .ls-middle-name {
+    display: flex;
   }
 
   /* MOHAMAD JASON row — scale down, prevent overflow */
   .ls-name-container {
     padding: 0 8px;
-    margin-bottom: 4px;
+    margin-bottom: 0;
     overflow: hidden;
   }
 
   .ls-letter {
     /* 6.5vw = ~23px at 360px; 13 chars * 23px = ~300px — fits in 360px */
-    font-size: clamp(1.1rem, 6.5vw, 2.2rem);
+    font-size: clamp(1.4rem, 8vw, 2.8rem);
     letter-spacing: 0.02em;
   }
 
@@ -376,7 +359,7 @@
   }
 
   .ls-letter--last {
-    font-size: clamp(1.1rem, 6.5vw, 2.2rem);
+    font-size: clamp(1.4rem, 8vw, 2.8rem);
     letter-spacing: 0.14em;
   }
 
@@ -388,7 +371,7 @@
 
   /* "Welcome To My Portfolio" */
   .ls-subtitle {
-    font-size: 0.65rem;
+    font-size: 0.95rem;
     letter-spacing: 0.15em;
     margin-top: 14px;
     margin-bottom: 32px;
@@ -406,13 +389,6 @@
   .ls-progress-text {
     font-size: 0.6rem;
     margin-top: 12px;
-  }
-
-  /* Skip button — sits higher on small screens */
-  .ls-skip-button {
-    bottom: 28px !important;
-    font-size: 12px !important;
-    padding: 8px 20px !important;
   }
 
   /* Corners — smaller on phone */
