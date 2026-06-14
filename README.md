@@ -2,6 +2,32 @@
 
 A modern, responsive, and fully animated portfolio website built with React.js, Tailwind CSS, and Framer Motion. This portfolio showcases IT support experience, technical skills, projects, and certifications.
 
+---
+
+## ⚠️ IMPORTANT NOTICE
+
+**Copyright © 2026 Mohamad Jason Celoza. All Rights Reserved.**
+
+This portfolio website and its entire content, including but not limited to:
+- Source code
+- Design elements
+- Images and graphics
+- Text content
+- Animations and effects
+- Configuration files
+
+are the exclusive property of Mohamad Jason Celoza and are protected by copyright laws.
+
+**Unauthorized use, reproduction, modification, distribution, or display of any part of this portfolio is strictly prohibited without express written permission from the copyright owner.**
+
+### Ownership Statement
+This repository and its contents are owned and maintained by Mohamad Jason Celoza. Any use of this code, design, or content for commercial purposes, portfolio templates, or redistribution requires explicit permission from the owner.
+
+### Contact for Permissions
+For inquiries regarding permissions, licensing, or any questions about this portfolio, please contact the owner through the contact form on the website or via email.
+
+---
+
 ## 🚀 Features
 
 ### ✨ Design & UX
@@ -252,7 +278,11 @@ npm run build
 
 ## 📄 License
 
-This project is open source and available for personal use.
+**Copyright © 2026 Mohamad Jason Celoza. All Rights Reserved.**
+
+This portfolio is proprietary software and is protected by copyright laws. See the [LICENSE](LICENSE) file for the full copyright notice and terms of use.
+
+**Unauthorized use, reproduction, modification, distribution, or display of this portfolio is strictly prohibited without express written permission from the copyright owner.**
 
 ---
 
