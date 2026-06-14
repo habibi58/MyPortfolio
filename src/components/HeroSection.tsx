@@ -290,6 +290,11 @@ const HERO_MOBILE_STYLES = `
     margin-top: 8px !important;
     margin-bottom: 24px !important;
   }
+
+  /* Hide right column avatar on mobile */
+  .grid-cols-1 > div:nth-child(2) {
+    display: none !important;
+  }
 }
 `;
 
@@ -534,7 +539,65 @@ export const HeroSection = () => {
             </motion.div>
 
             {/* Right Column */}
-            <div />
+            <motion.div
+              initial={{ opacity: 0, x: 50 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.4, duration: 0.8 }}
+              className="flex items-center justify-center"
+            >
+              <div className="relative" style={{ marginTop: '-50px', marginLeft: '70px' }}>
+                <motion.div
+                  initial={{ opacity: 0, scale: 0 }}
+                  animate={{ 
+                    opacity: 1, 
+                    scale: 1,
+                    boxShadow: [
+                      '0 0 30px rgba(59, 130, 246, 0.5), 0 0 60px rgba(59, 130, 246, 0.3)',
+                      '0 0 40px rgba(59, 130, 246, 0.7), 0 0 80px rgba(59, 130, 246, 0.5)',
+                      '0 0 30px rgba(59, 130, 246, 0.5), 0 0 60px rgba(59, 130, 246, 0.3)',
+                    ]
+                  }}
+                  transition={{ 
+                    delay: 0.6, 
+                    duration: 1.2, 
+                    type: 'spring', 
+                    stiffness: 50, 
+                    damping: 20,
+                    boxShadow: {
+                      repeat: Infinity,
+                      duration: 2,
+                    }
+                  }}
+                  className="w-72 h-72 sm:w-80 sm:h-80 lg:w-96 lg:h-96 rounded-full border-4 border-blue-500 bg-black overflow-hidden shadow-2xl"
+                  style={{
+                    boxShadow: '0 0 30px rgba(59, 130, 246, 0.5), 0 0 60px rgba(59, 130, 246, 0.3)',
+                  }}
+                >
+                  <img
+                    src="/Profile/Profile.png"
+                    alt="Mohamad Jason"
+                    className="w-full h-full object-cover rounded-full"
+                    onError={(e) => {
+                      const target = e.currentTarget;
+                      target.style.display = 'none';
+                      const fallback = target.nextElementSibling as HTMLElement;
+                      if (fallback) fallback.style.display = 'flex';
+                    }}
+                  />
+                  <span
+                    style={{
+                      display: 'none',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      fontSize: '48px',
+                      color: '#3b82f6',
+                    }}
+                  >
+                    <i className="ti ti-user" aria-hidden="true" />
+                  </span>
+                </motion.div>
+              </div>
+            </motion.div>
           </div>
         </div>
       </section>
