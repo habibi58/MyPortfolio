@@ -15,7 +15,7 @@ export interface EducationItem {
 export const educationData: EducationItem[] = [
   {
     id: 1,
-    school: 'Binangonan Cathoclic College',
+    school: 'Binangonan Catholic College',
     level: 'College',
     levelKey: 'c',
     course: 'Bachelor of Science in Information Technology',
@@ -26,7 +26,7 @@ export const educationData: EducationItem[] = [
   },
   {
     id: 2,
-    school: 'Binangonan Cathoclic College',
+    school: 'Binangonan Catholic College',
     level: 'Senior High',
     levelKey: 's',
     course: 'STEM – Science, Technology, Engineering, and Mathematics',
