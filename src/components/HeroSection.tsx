@@ -292,7 +292,7 @@ const HERO_MOBILE_STYLES = `
   }
 
   /* Hide right column avatar on mobile */
-  .grid-cols-1 > div:nth-child(2) {
+  .hero-grid > div:nth-child(2) {
     display: none !important;
   }
 }
@@ -334,7 +334,7 @@ export const HeroSection = () => {
         className="relative flex min-h-screen w-full items-center justify-center overflow-visible pt-16 sm:pt-20"
       >
         <div className="relative z-10 mx-auto max-w-6xl w-full px-3 sm:px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-12 items-center min-h-full">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-12 items-center min-h-full hero-grid">
 
             {/* Left Column */}
             <motion.div

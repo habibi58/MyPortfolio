@@ -86,15 +86,6 @@ export const ContactSection = () => {
     },
   };
 
-  const rightColVariants = {
-    hidden:  { opacity: 0, x: 50 },
-    visible: {
-      opacity: 1,
-      x: 0,
-      transition: { duration: 0.7, ease: [0.22, 1, 0.36, 1] as const },
-    },
-  };
-
   const colChildrenVariants = {
     hidden:  { opacity: 0 },
     visible: {
@@ -124,14 +115,14 @@ export const ContactSection = () => {
   };
 
   return (
-    <section id="contact" className="relative py-24 mt-16 mb-16 overflow-hidden bg-black">
+    <section id="contact" className="relative py-12 md:py-24 mt-8 md:mt-16 mb-8 md:mb-16 bg-black">
       <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
           variants={sectionVariants}
           initial="hidden"
           whileInView="visible"
-          viewport={{ once: true, amount: 0.15 }}
-          className="grid grid-cols-1 lg:grid-cols-2 gap-10 px-2 md:px-4"
+          viewport={{ once: true, amount: 0.05 }}
+          className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-10 px-2 md:px-4"
         >
           {/* ── LEFT column ── */}
           <motion.div variants={leftColVariants} className="flex flex-col gap-10 p-4 md:p-8 lg:p-16">
@@ -235,14 +226,13 @@ export const ContactSection = () => {
           </motion.div>
 
           {/* ── RIGHT column ── */}
-          <motion.div variants={rightColVariants} className="flex flex-col gap-8">
-            <motion.div variants={colChildrenVariants} className="flex flex-col gap-8">
+          <div className="flex flex-col gap-8 w-full !block">
+            <div className="flex flex-col gap-8 w-full !block">
 
               {/* Form card */}
-              <motion.div
-                variants={fadeUpVariants}
-                className="rounded-lg flex flex-col"
-                style={{ ...cardSurface, padding: '20px' }}
+              <div
+                className="rounded-lg flex flex-col w-full !block"
+                style={{ ...cardSurface, padding: '20px', position: 'relative', zIndex: 10, display: 'block' }}
               >
                 <h3 className="text-3xl font-bold text-white mb-10">Send a message</h3>
 
@@ -267,7 +257,7 @@ export const ContactSection = () => {
                           placeholder={field.placeholder}
                           required
                           className="w-full rounded-md text-sm outline-none text-white placeholder:text-slate-500 transition-all duration-200"
-                          style={{ ...inputSurface, paddingLeft: '8px', paddingRight: '16px', paddingTop: '12px', paddingBottom: '12px' }}
+                          style={{ ...inputSurface, paddingLeft: '12px', paddingRight: '16px', paddingTop: '14px', paddingBottom: '14px', minHeight: '48px' }}
                           onFocus={(e) => { e.currentTarget.style.borderColor = 'rgba(91,141,238,0.6)'; }}
                           onBlur={(e)  => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.14)'; }}
                         />
@@ -290,7 +280,7 @@ export const ContactSection = () => {
                       required
                       rows={5}
                       className="w-full rounded-md text-sm outline-none resize-none text-white placeholder:text-slate-500 transition-all duration-200"
-                      style={{ ...inputSurface, paddingLeft: '8px', paddingRight: '16px', paddingTop: '12px', paddingBottom: '12px' }}
+                      style={{ ...inputSurface, paddingLeft: '12px', paddingRight: '16px', paddingTop: '14px', paddingBottom: '14px', minHeight: '120px' }}
                       onFocus={(e) => { e.currentTarget.style.borderColor = 'rgba(91,141,238,0.6)'; }}
                       onBlur={(e)  => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.14)'; }}
                     />
@@ -338,9 +328,9 @@ export const ContactSection = () => {
                     )}
                   </motion.button>
                 </form>
-              </motion.div>
-            </motion.div>
-          </motion.div>
+              </div>
+            </div>
+          </div>
         </motion.div>
       </div>
     </section>
