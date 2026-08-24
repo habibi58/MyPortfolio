@@ -1,11 +1,11 @@
-import { GoogleGenAI } from '@google/genai';
+import Groq from 'groq-sdk';
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { portfolioSystemInstruction } from '../src/lib/data/portfolioContext.js';
+import { portfolioSystemInstruction as JASON_PERSONA } from '../src/lib/data/portfolioContext.js';
 
-type GeminiRole = 'user' | 'model';
+type ChatRole = 'user' | 'assistant';
 
 type HistoryMessage = {
-  role: GeminiRole;
+  role: ChatRole;
   text: string;
 };
 
@@ -51,7 +51,7 @@ function isHistoryMessage(value: unknown): value is HistoryMessage {
   if (!value || typeof value !== 'object') return false;
   const message = value as Record<string, unknown>;
   return (
-    (message.role === 'user' || message.role === 'model') &&
+    (message.role === 'user' || message.role === 'assistant') &&
     typeof message.text === 'string' &&
     message.text.trim().length > 0 &&
     message.text.length <= MAX_MESSAGE_LENGTH
@@ -88,7 +88,7 @@ function parseRequest(body: unknown): { message: string; history: HistoryMessage
   return {
     message: latestMessage.content.trim(),
     history: messages.slice(0, -1).slice(-MAX_HISTORY_LENGTH).map(({ role, content }) => ({
-      role: role === 'assistant' ? 'model' : role,
+      role,
       text: content.trim(),
     })),
   };
@@ -111,31 +111,31 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     });
   }
 
-  const apiKey = process.env.GEMINI_API_KEY;
+  const apiKey = process.env.GROQ_API_KEY?.trim();
   if (!apiKey) {
-    return res.status(500).json({ error: 'Chat is temporarily unavailable.' });
+    console.error('GROQ_API_KEY is not configured on the server.');
+    return res.status(500).json({ error: 'API key is not configured on the server.' });
   }
 
   try {
-    const ai = new GoogleGenAI({ apiKey });
-    const response = await ai.models.generateContent({
-      model: process.env.GEMINI_MODEL ?? 'gemini-1.5-flash',
-      contents: [
-        ...parsedRequest.history.map(({ role, text }) => ({ role, parts: [{ text }] })),
-        { role: 'user', parts: [{ text: parsedRequest.message }] },
+    const groq = new Groq({ apiKey });
+    const completion = await groq.chat.completions.create({
+      model: process.env.GROQ_MODEL ?? 'llama-3.3-70b-versatile',
+      messages: [
+        { role: 'system', content: JASON_PERSONA },
+        ...parsedRequest.history.map(({ role, text }) => ({ role, content: text })),
+        { role: 'user', content: parsedRequest.message },
       ],
-      config: {
-        systemInstruction: portfolioSystemInstruction,
-        temperature: 0.3,
-        maxOutputTokens: 300,
-      },
+      temperature: 0.3,
+      max_tokens: 300,
     });
 
-    const reply = response.text?.trim();
+    const reply = completion.choices[0]?.message?.content?.trim();
     if (!reply) return res.status(502).json({ error: 'I could not form a response. Please try again.' });
     return res.status(200).json({ reply });
   } catch (error) {
-    console.error('Gemini chat request failed', error);
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    console.error('Groq chat request failed:', errorMessage, error);
     return res.status(502).json({ error: 'I am unavailable right now. Please try again later.' });
   }
 }
