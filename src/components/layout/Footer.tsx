@@ -1,7 +1,7 @@
 // Footer Component
 import { motion } from 'framer-motion';
 import { ChevronUp, MapPin, Phone } from 'lucide-react';
-import { portfolioOwner } from '../data';
+import { portfolioOwner } from '../../data';
 
 export const Footer = () => {
   const scrollToTop = () => {

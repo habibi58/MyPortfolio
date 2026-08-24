@@ -13,7 +13,7 @@ const STYLES = `
   .mss-outer {
     display: none;
   }
-  @media (max-width: 767px) {
+  @media (max-width: 1023px) {
     .mss-outer {
       display: block;
       overflow: hidden;

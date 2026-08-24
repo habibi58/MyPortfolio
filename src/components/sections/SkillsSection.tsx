@@ -1,12 +1,12 @@
 // Skills Section Component
 import { motion, useInView, animate } from 'framer-motion';
 import { useRef, useEffect, useState } from 'react';
-import { skillsData } from '../data';
-import { SectionHeading } from './SectionHeading';
-import { Card } from './Card';
-import { containerVariants, itemVariants } from '../animations/variants';
-import ScrollVelocity from './ScrollVelocity';
-import { MobileSkillsScroll } from './MobileSkillsScroll';
+import { skillsData } from '../../data';
+import { SectionHeading } from '../ui/SectionHeading/SectionHeading';
+import { Card } from '../ui/Card/Card';
+import { containerVariants, itemVariants } from '../../animations/variants';
+import ScrollVelocity from '../ui/ScrollVelocity/ScrollVelocity';
+import { MobileSkillsScroll } from '../ui/MobileSkillsScroll/MobileSkillsScroll';
 import {
   Wrench,
   Download,

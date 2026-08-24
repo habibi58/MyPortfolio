@@ -1,6 +1,6 @@
 // Section Heading Component
 import { motion } from 'framer-motion';
-import { fadeInDown } from '../animations/variants';
+import { fadeInDown } from '../../../animations/variants';
 
 interface SectionHeadingProps {
   title: string;

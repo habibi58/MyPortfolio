@@ -2,10 +2,10 @@
 import { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X } from 'lucide-react';
-import { useScroll } from '../hooks';
-import { navItems } from '../data';
-import GooeyNav from './GooeyNav/GooeyNav';
-import { getLenisInstance } from '../hooks/useLenis';
+import { useScroll } from '../../hooks';
+import { navItems } from '../../data';
+import GooeyNav from '../ui/GooeyNav/GooeyNav';
+import { getLenisInstance } from '../../hooks/useLenis';
 
 export const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);

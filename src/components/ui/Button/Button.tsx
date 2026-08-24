@@ -1,6 +1,6 @@
 // Button Component
 import React from 'react';
-import { cn } from '../utils/cn';
+import { cn } from '../../../utils/cn';
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: 'primary' | 'secondary' | 'outline' | 'ghost';

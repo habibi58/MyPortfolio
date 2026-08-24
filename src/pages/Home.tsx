@@ -9,8 +9,8 @@ import {
   CertificationsSection,
   EducationSection,
   ContactSection,
+  ScrollFloat,
 } from '../components';
-import ScrollFloat from '../components/ScrollFloat';
 
 export const Home = () => {
   useEffect(() => {

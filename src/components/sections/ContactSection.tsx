@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Mail, Phone, MapPin, Send, Clock, CheckCircle2, Handshake } from 'lucide-react';
-import { portfolioOwner } from '../data';
+import { portfolioOwner } from '../../data';
 import toast from 'react-hot-toast';
 
 export const ContactSection = () => {

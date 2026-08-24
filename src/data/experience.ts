@@ -1,10 +1,63 @@
 export const experienceData = [
   {
-    id:            1,
-    position:      'Deskop Support Technician - Intern',
-    company:       'TTEC',
-    duration:      'November 2025 – March 2026',
-    location:      'Cainta, Rizal, Philippines',
+    id: 1,
+    position: 'Software Engineer',
+    company: 'Accenture',
+    duration: 'July 2026 – Present',
+    location: 'Hybrid / Remote · BGC, Mandaluyong & Quezon City, Philippines',
+    isCurrentRole: true,
+    description: [
+      'Gained hands-on experience in Azure Data Engineering, building scalable cloud data pipelines, ETL workflows, and data processing architectures.',
+      'Explored and implemented Agentic AI frameworks, building autonomous AI agents and intelligent multi-agent workflows.',
+      'Optimized cloud database storage, data transformations, and analytics solutions on Microsoft Azure.',
+      'Collaborated in Agile software engineering sprints to architect high-reliability data and AI-driven systems.',
+    ],
+    technologies: [
+      'Azure Data Engineering',
+      'Agentic AI',
+      'Azure Data Factory',
+      'Python / PySpark',
+      'SQL / T-SQL',
+      'LLM Orchestration',
+      'Git / GitHub',
+      'Agile / Scrum',
+    ],
+    stats: [
+      { count: 100, label: 'Data Integrity %' },
+      { count: 100, label: 'Agile Delivery' },
+      { count: 99, label: 'Pipeline Reliability' },
+    ],
+    bars: [
+      { label: 'Azure Data Engineering', value: 95 },
+      { label: 'Agentic AI & AI Systems', value: 90 },
+    ],
+    gallery: [
+      {
+        img: null,
+        emoji: '📊',
+        title: 'Azure Data Engineering',
+        desc: 'Building scalable cloud data pipelines, ETL workflows, and data solutions on Microsoft Azure.',
+      },
+      {
+        img: null,
+        emoji: '🤖',
+        title: 'Agentic AI Systems',
+        desc: 'Developing autonomous AI agents, multi-agent frameworks, and intelligent LLM workflows.',
+      },
+      {
+        img: null,
+        emoji: '⚡',
+        title: 'Agile Data Delivery',
+        desc: 'Collaborating in agile engineering sprints to deliver high-reliability data & AI solutions.',
+      },
+    ],
+  },
+  {
+    id: 2,
+    position: 'Desktop Support Technician - Intern',
+    company: 'TTEC',
+    duration: 'November 2025 – March 2026',
+    location: 'Cainta, Rizal, Philippines',
     isCurrentRole: false,
     description: [
       'Assembled and disassembled desktop computers for maintenance, upgrades, and troubleshooting.',
@@ -14,13 +67,17 @@ export const experienceData = [
       'Escalated complex issues to higher-level support teams.',
       'Maintained high customer satisfaction through clear communication and timely resolution',
     ],
-    technologies: ['Windows OS', 'Microsoft Office 365','IGEL OS', 'Ticketing Systems', 'Hardware & Software Troubleshooting' ],
-
-    /* ── new fields ── */
+    technologies: [
+      'Windows OS',
+      'Microsoft Office 365',
+      'IGEL OS',
+      'Ticketing Systems',
+      'Hardware & Software Troubleshooting',
+    ],
     stats: [
-      { count: 100, label: 'Users Supported'  },
-      { count: 40,  label: '% Faster Resolve' },
-      { count: 98,  label: 'Satisfaction %'   },
+      { count: 100, label: 'Users Supported' },
+      { count: 40, label: '% Faster Resolve' },
+      { count: 98, label: 'Satisfaction %' },
     ],
     bars: [
       { label: 'Technical Support', value: 92 },
@@ -28,24 +85,23 @@ export const experienceData = [
     ],
     gallery: [
       {
-        /* swap emoji for img once you have the file */
-        img:   null,
+        img: null,
         emoji: '🖥️',
         title: 'Desktop Support Dashboard',
-        desc:  'Asknow ticketing system used for managing and tracking support requests, ensuring efficient issue resolution and customer satisfaction.',
+        desc: 'Asknow ticketing system used for managing and tracking support requests, ensuring efficient issue resolution and customer satisfaction.',
       },
       {
-        img:   '/Certificates/certficicatettec.png', // ← drop file in /public/certificates/
+        img: '/Certificates/certficicatettec.png',
         emoji: '📜',
         title: 'Certficate of Completion',
-        desc:  'Successfully completed 500 hours of training and hands-on experience, demonstrating dedication, professionalism, and continuous skill development.',
+        desc: 'Successfully completed 500 hours of training and hands-on experience, demonstrating dedication, professionalism, and continuous skill development.',
       },
       {
-        img:   '/ttecgallery/tttecgal1.jpg',
+        img: '/ttecgallery/tttecgal1.jpg',
         emoji: '🖼️',
         title: 'Workspace Setup',
-        desc:  'The physical desktop support environment.',
-        imgs:  [
+        desc: 'The physical desktop support environment.',
+        imgs: [
           '/ttecgallery/tttecgal1.jpg',
           '/ttecgallery/tttecgal2.jpg',
           '/ttecgallery/tttecgal3.jpg',
@@ -63,5 +119,4 @@ export const experienceData = [
       },
     ],
   },
-
 ];

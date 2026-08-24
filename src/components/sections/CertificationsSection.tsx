@@ -1,10 +1,10 @@
 // Certifications Section Component
 import { motion } from 'framer-motion';
 import { Award, ExternalLink, Calendar, BadgeCheck } from 'lucide-react';
-import { certificationsData } from '../data';
-import { SectionHeading } from './SectionHeading';
-import { Button } from './Button';
-import { containerVariants, itemVariants } from '../animations/variants';
+import { certificationsData } from '../../data';
+import { SectionHeading } from '../ui/SectionHeading/SectionHeading';
+import { Button } from '../ui/Button/Button';
+import { containerVariants, itemVariants } from '../../animations/variants';
 
 const cardAccents = [
   'from-blue-600 to-blue-500',

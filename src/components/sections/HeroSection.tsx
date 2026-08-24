@@ -5,142 +5,30 @@
 import { useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { Download } from 'lucide-react';
-import { heroContent } from '../data';
-import { ParticlesBackground } from './ParticlesBackground';
-import { fadeInUp } from '../animations/variants';
-import BlurText from './BlurText';
-import { SocialIcons } from './SocialIcons';
+import { heroContent } from '../../data';
+import { ParticlesBackground } from '../ui/Particles/ParticlesBackground';
+import { fadeInUp } from '../../animations/variants';
+import BlurText from '../ui/BlurText/BlurText';
+import { SocialIcons } from '../ui/SocialIcons/SocialIcons';
 
 const particleColors = ['#ffffff'];
 
-const ROLES = ['Cloud Engineer', 'Web Developer', 'Software Engineer'];
-const COLORS = ['#60a5fa', '#a78bfa', '#34d399'];
-const ANIMS = ['blur', 'wave', 'carousel', 'depth', 'letter'];
-const HOLD = 2800;
-
-function ease(t: number) { return t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t; }
-function easeOut(t: number) { return 1 - Math.pow(1 - t, 3); }
+const ROLES = ['Data and AI Engineer'];
+const COLORS = ['#a78bfa'];
 
 function useRoleAnimator() {
-  const riRef = useRef(0);
-  const aiRef = useRef(0);
-  const busyRef = useRef(false);
   const rARef = useRef<HTMLSpanElement>(null);
   const rBRef = useRef<HTMLSpanElement>(null);
-  const holdTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  function resetStyle(el: HTMLElement | null) {
-    if (!el) return;
-    Object.assign(el.style, {
-      position: 'absolute', inset: '0', display: 'flex',
-      alignItems: 'center', opacity: '1',
-      transform: 'none', filter: 'none', willChange: 'transform,opacity,filter',
-    });
-  }
-
-  function raf(dur: number, cb: (e: number, p: number) => void, done?: () => void) {
-    const t0 = performance.now();
-    function tick(now: number) {
-      const p = Math.min((now - t0) / dur, 1);
-      cb(ease(p), p);
-      if (p < 1) requestAnimationFrame(tick);
-      else if (done) done();
-    }
-    requestAnimationFrame(tick);
-  }
-
-  const T: Record<string, (prev: HTMLSpanElement, next: HTMLSpanElement, nc: string, done: () => void) => void> = {
-    blur(prev, next, _nc, done) {
-      resetStyle(next); next.style.opacity = '0'; next.style.filter = 'blur(28px)'; next.style.transform = 'scale(1.06)';
-      raf(820, (e) => {
-        prev.style.filter = `blur(${28 * e}px)`; prev.style.opacity = `${1 - e}`; prev.style.transform = `scale(${1 + 0.04 * e})`;
-        next.style.filter = `blur(${28 * (1 - e)}px)`; next.style.opacity = `${e}`; next.style.transform = `scale(${1.06 - 0.06 * e})`;
-      }, done);
-    },
-    wave(prev, next, _nc, done) {
-      resetStyle(next); next.style.opacity = '0'; next.style.transform = 'translateY(48px) scaleX(0.92)';
-      raf(900, (_, p) => {
-        const e = ease(p); const wv = Math.sin(p * Math.PI * 3) * 8 * (1 - p);
-        prev.style.transform = `translateY(${-50 * e + wv}px) scaleX(${1 - 0.08 * e})`; prev.style.opacity = `${1 - e}`;
-        next.style.transform = `translateY(${48 * (1 - e) - wv * 0.5}px) scaleX(${0.92 + 0.08 * e})`; next.style.opacity = `${easeOut(p)}`;
-      }, done);
-    },
-    carousel(prev, next, _nc, done) {
-      resetStyle(next); next.style.opacity = '0.3'; next.style.transform = 'rotateX(88deg) translateY(70px)';
-      raf(750, (e) => {
-        prev.style.transform = `rotateX(${-88 * e}deg) translateY(${-70 * e}px)`; prev.style.opacity = `${1 - e}`;
-        next.style.transform = `rotateX(${88 * (1 - e)}deg) translateY(${70 * (1 - e)}px)`; next.style.opacity = `${0.3 + 0.7 * e}`;
-      }, done);
-    },
-    depth(prev, next, _nc, done) {
-      resetStyle(next); next.style.opacity = '0'; next.style.filter = 'blur(10px)'; next.style.transform = 'scale(0.65)';
-      raf(860, (e) => {
-        prev.style.transform = `scale(${1 + 0.35 * e})`; prev.style.opacity = `${1 - e}`; prev.style.filter = `blur(${12 * e}px)`;
-        next.style.transform = `scale(${0.65 + 0.35 * e})`; next.style.opacity = `${e}`; next.style.filter = `blur(${10 * (1 - e)}px)`;
-      }, done);
-    },
-    letter(prev, next, nc, done) {
-      const pt = prev.textContent, nt = next.textContent;
-      const ml = Math.max(pt.length, nt.length);
-      const RND = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
-      const FRAMES = 34; let f = 0;
-      resetStyle(next); next.style.opacity = '0';
-      function tick() {
-        f++;
-        const p = f / FRAMES; let s = '';
-        for (let i = 0; i < ml; i++) {
-          const pc = pt[i] || '', nc2 = nt[i] || '';
-          const lp = Math.max(0, Math.min(1, (p - i * 0.025) * 2.5));
-          if (pc === ' ' || nc2 === ' ') { s += ' '; continue; }
-          if (lp < 0.45) s += pc || (Math.random() < 0.3 ? RND[Math.floor(Math.random() * RND.length)] : '');
-          else if (lp < 0.7) s += RND[Math.floor(Math.random() * RND.length)];
-          else s += nc2 || '';
-        }
-        prev.textContent = s.trimEnd() || ' ';
-        prev.style.color = p < 0.5 ? COLORS[riRef.current] : nc;
-        if (f >= FRAMES) { prev.textContent = nt; prev.style.color = nc; done(); }
-        else requestAnimationFrame(tick);
-      }
-      requestAnimationFrame(tick);
-    },
-  };
-
-  function runNext() {
-    if (busyRef.current) return;
-    busyRef.current = true;
-    if (holdTimer.current) clearTimeout(holdTimer.current);
-
-    const ni = (riRef.current + 1) % ROLES.length;
-    const nc = COLORS[ni];
-    const key = ANIMS[aiRef.current];
-    const prev = rARef.current;
-    const next = rBRef.current;
-    if (!prev || !next) { busyRef.current = false; return; }
-
-    next.textContent = ROLES[ni];
-    next.style.color = nc;
-    resetStyle(next); next.style.opacity = '0';
-
-    T[key](prev, next, nc, () => {
-      prev.textContent = ROLES[ni]; prev.style.color = nc;
-      resetStyle(prev); prev.style.opacity = '1';
-      next.style.opacity = '0'; resetStyle(next); next.textContent = '';
-      riRef.current = ni;
-      aiRef.current = (aiRef.current + 1) % ANIMS.length;
-      busyRef.current = false;
-      holdTimer.current = setTimeout(runNext, HOLD);
-    });
-  }
 
   useEffect(() => {
     const rA = rARef.current;
     const rB = rBRef.current;
     if (!rA || !rB) return;
     rA.textContent = ROLES[0]; rA.style.color = COLORS[0];
-    resetStyle(rA); rA.style.opacity = '1';
+    rA.style.position = 'absolute'; rA.style.inset = '0'; rA.style.display = 'flex';
+    rA.style.alignItems = 'center'; rA.style.opacity = '1';
+    rA.style.transform = 'none'; rA.style.filter = 'none';
     rB.style.opacity = '0';
-    holdTimer.current = setTimeout(runNext, HOLD);
-    return () => clearTimeout(holdTimer.current!);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -392,11 +280,11 @@ export const HeroSection = () => {
               {(() => {
                 const isMobile = typeof window !== 'undefined' && window.innerWidth <= 767;
                 const stageFontSize = isMobile ? '18px' : 'clamp(24px, 3.5vw, 40px)';
-                const stageWidth = isMobile ? '115px' : '100%';
-                const stageMinWidth = isMobile ? '115px' : '200px';
-                const stageMaxWidth = isMobile ? '115px' : '360px';
-                const stageHeight = isMobile ? '20px' : 'clamp(36px, 4.5vw, 52px)';
-                const stageOverflow = isMobile ? 'visible' : 'hidden';
+                const stageWidth = isMobile ? '100%' : '100%';
+                const stageMinWidth = isMobile ? '220px' : '300px';
+                const stageMaxWidth = isMobile ? '100%' : '600px';
+                const stageHeight = isMobile ? '28px' : 'clamp(36px, 4.5vw, 52px)';
+                const stageOverflow = 'visible';
                 return (
                   <motion.div
                     initial={{ opacity: 0, y: 30 }}
@@ -420,8 +308,8 @@ export const HeroSection = () => {
                         flexWrap: 'nowrap',
                       }}
                     >
-                      {/* "Aspiring" stays fixed */}
-                      <BlurText
+                      {/* "Aspiring" — temporarily disabled */}
+                      {/* <BlurText
                         text="Aspiring"
                         delay={300}
                         stepDuration={1.4}
@@ -430,7 +318,7 @@ export const HeroSection = () => {
                         direction="top"
                         className="hero-aspiring font-display text-2xl font-bold md:text-4xl text-white"
                         style={isMobile ? { fontSize: '13px', whiteSpace: 'nowrap', marginLeft: '12px' } : {}}
-                      />
+                      /> */}
 
                       {/* Animated role stage */}
                       <div

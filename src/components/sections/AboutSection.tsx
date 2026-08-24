@@ -1,12 +1,12 @@
 // About Section Component
 import { motion, useInView, useSpring, useTransform } from 'framer-motion';
 import { useRef, useEffect } from 'react';
-import { stats } from '../data';
-import { SectionHeading } from './SectionHeading';
-import { Card } from './Card';
-import { containerVariants, itemVariants } from '../animations/variants';
-import Lanyard from './Lanyard';
-import ScrollReveal from './ScrollReveal';
+import { stats } from '../../data';
+import { SectionHeading } from '../ui/SectionHeading/SectionHeading';
+import { Card } from '../ui/Card/Card';
+import { containerVariants, itemVariants } from '../../animations/variants';
+import Lanyard from '../ui/Lanyard/Lanyard';
+import ScrollReveal from '../ui/ScrollReveal/ScrollReveal';
 
 const AnimatedCounter = ({ value }: { value: string }) => {
   const ref = useRef<HTMLSpanElement>(null);

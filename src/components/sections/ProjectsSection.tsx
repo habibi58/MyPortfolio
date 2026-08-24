@@ -16,7 +16,7 @@ import {
   Bot,
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
-import { projectsData, type Project } from '../data';
+import { projectsData, type Project } from '../../data';
 
 /* ═══════════════════════════════════════════════════════════════════════
    CONFIG

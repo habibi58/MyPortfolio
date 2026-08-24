@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
-import { SectionHeading } from './SectionHeading';
-import { educationData, type EducationItem } from '../data/education';
+import { SectionHeading } from '../ui/SectionHeading/SectionHeading';
+import { educationData, type EducationItem } from '../../data/education';
 
 /* ═══════════════════════════════════════
    THEME — all blue shades only

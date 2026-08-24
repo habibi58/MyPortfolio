@@ -2,8 +2,8 @@
 import React, { useEffect, useRef, useState, useCallback } from 'react';
 import { createPortal } from 'react-dom';
 import { motion } from 'framer-motion';
-import { experienceData } from '../data';
-import { SectionHeading } from './ui/SectionHeading/SectionHeading';
+import { experienceData } from '../../data';
+import { SectionHeading } from '../ui/SectionHeading/SectionHeading';
 
 /* ─── interfaces ─── */
 interface GalleryItem {
@@ -14,7 +14,7 @@ interface GalleryItem {
   desc: string;
 }
 interface StatItem { count: number; label: string; }
-interface BarItem { label: string; value: number; }
+interface BarItem  { label: string; value: number; }
 interface ExperienceItem {
   id: number;
   position: string;
@@ -45,9 +45,9 @@ interface LightboxState {
 
 /* ─── themes ─── */
 const THEMES: Theme[] = [
-  { accent: '#3b82f6', accent2: '#6366f1', glow: 'rgba(59,130,246,0.1)', border: 'rgba(59,130,246,0.2)', bg: 'rgba(59,130,246,0.03)', text: '#93c5fd', icon: '/Logos/ttec-logo.svg', node: '☁' },
-  { accent: '#8b5cf6', accent2: '#ec4899', glow: 'rgba(139,92,246,0.1)', border: 'rgba(139,92,246,0.2)', bg: 'rgba(139,92,246,0.03)', text: '#c4b5fd', node: '⚡' },
-  { accent: '#14b8a6', accent2: '#3b82f6', glow: 'rgba(20,184,166,0.1)', border: 'rgba(20,184,166,0.2)', bg: 'rgba(20,184,166,0.03)', text: '#5eead4', node: '⚙️' },
+  { accent:'#a100ff', accent2:'#3b82f6', glow:'rgba(161,0,255,0.15)',  border:'rgba(161,0,255,0.3)',  bg:'rgba(161,0,255,0.04)',  text:'#d8b4fe', icon:'/Logos/accenture-logo.svg', node:'⚡' },
+  { accent:'#3b82f6', accent2:'#6366f1', glow:'rgba(59,130,246,0.1)',  border:'rgba(59,130,246,0.2)',  bg:'rgba(59,130,246,0.03)',  text:'#93c5fd', icon:'/Logos/ttec-logo.svg', node:'☁' },
+  { accent:'#14b8a6', accent2:'#3b82f6', glow:'rgba(20,184,166,0.1)',  border:'rgba(20,184,166,0.2)',  bg:'rgba(20,184,166,0.03)',  text:'#5eead4', node:'⚙️' },
 ];
 const getTheme = (i: number): Theme => THEMES[i % THEMES.length];
 
@@ -107,14 +107,14 @@ const LightboxCarousel: React.FC<{ imgs: string[]; title: string }> = ({ imgs, t
   const startX = useRef<number | null>(null);
 
   const clamp = (n: number) => Math.max(0, Math.min(imgs.length - 1, n));
-  const goTo = (n: number) => { setCur(clamp(n)); setDelta(0); };
+  const goTo  = (n: number) => { setCur(clamp(n)); setDelta(0); };
 
   const onTouchStart = (e: React.TouchEvent) => { startX.current = e.touches[0].clientX; setDragging(true); };
-  const onTouchMove = (e: React.TouchEvent) => { if (startX.current === null) return; setDelta(e.touches[0].clientX - startX.current); };
-  const onTouchEnd = () => { if (Math.abs(delta) > 40) goTo(cur + (delta < 0 ? 1 : -1)); else setDelta(0); startX.current = null; setDragging(false); };
-  const onMouseDown = (e: React.MouseEvent) => { startX.current = e.clientX; setDragging(true); };
-  const onMouseMove = (e: React.MouseEvent) => { if (!dragging || startX.current === null) return; setDelta(e.clientX - startX.current); };
-  const onMouseUp = () => { if (Math.abs(delta) > 40) goTo(cur + (delta < 0 ? 1 : -1)); else setDelta(0); startX.current = null; setDragging(false); };
+  const onTouchMove  = (e: React.TouchEvent) => { if (startX.current === null) return; setDelta(e.touches[0].clientX - startX.current); };
+  const onTouchEnd   = () => { if (Math.abs(delta) > 40) goTo(cur + (delta < 0 ? 1 : -1)); else setDelta(0); startX.current = null; setDragging(false); };
+  const onMouseDown  = (e: React.MouseEvent) => { startX.current = e.clientX; setDragging(true); };
+  const onMouseMove  = (e: React.MouseEvent) => { if (!dragging || startX.current === null) return; setDelta(e.clientX - startX.current); };
+  const onMouseUp    = () => { if (Math.abs(delta) > 40) goTo(cur + (delta < 0 ? 1 : -1)); else setDelta(0); startX.current = null; setDragging(false); };
 
   useEffect(() => {
     const h = (e: KeyboardEvent) => { if (e.key === 'ArrowLeft') goTo(cur - 1); if (e.key === 'ArrowRight') goTo(cur + 1); };
@@ -176,7 +176,7 @@ const LightboxCarousel: React.FC<{ imgs: string[]; title: string }> = ({ imgs, t
         </div>
 
         {/* arrows */}
-        <ArrowBtn dir="left" disabled={cur === 0} onClick={(e) => { e.stopPropagation(); goTo(cur - 1); }} />
+        <ArrowBtn dir="left"  disabled={cur === 0}               onClick={(e) => { e.stopPropagation(); goTo(cur - 1); }} />
         <ArrowBtn dir="right" disabled={cur === imgs.length - 1} onClick={(e) => { e.stopPropagation(); goTo(cur + 1); }} />
       </div>
 
@@ -203,47 +203,12 @@ const LightboxCarousel: React.FC<{ imgs: string[]; title: string }> = ({ imgs, t
 /* ══════════════════════════════════════
    Lightbox portal
 ══════════════════════════════════════ */
-const Lightbox: React.FC<{ state: LightboxState; onClose: () => void }> = ({
-  state,
-  onClose,
-}) => {
+const Lightbox: React.FC<{ state: LightboxState; onClose: () => void }> = ({ state, onClose }) => {
   useEffect(() => {
     if (!state.open) return;
-
-    const scrollY = window.scrollY;
-
-    const html = document.documentElement;
-    const body = document.body;
-
-    const originalHtmlStyle = html.style.cssText;
-    const originalBodyStyle = body.style.cssText;
-
-    // 🔒 LOCK SCROLL (robust cross-browser fix)
-    html.style.overflow = "hidden";
-    body.style.overflow = "hidden";
-    body.style.position = "fixed";
-    body.style.top = `-${scrollY}px`;
-    body.style.left = "0";
-    body.style.right = "0";
-    body.style.width = "100%";
-
-    // ESC key close
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape") onClose();
-    };
-
-    window.addEventListener("keydown", handleKeyDown);
-
-    return () => {
-      window.removeEventListener("keydown", handleKeyDown);
-
-      // ♻️ RESTORE ORIGINAL STYLES
-      html.style.cssText = originalHtmlStyle;
-      body.style.cssText = originalBodyStyle;
-
-      // restore scroll position
-      window.scrollTo(0, scrollY);
-    };
+    const h = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose(); };
+    window.addEventListener('keydown', h);
+    return () => window.removeEventListener('keydown', h);
   }, [state.open, onClose]);
 
   if (!state.open) return null;
@@ -252,130 +217,80 @@ const Lightbox: React.FC<{ state: LightboxState; onClose: () => void }> = ({
 
   return createPortal(
     <div
-      onClick={(e) => {
-        if (e.target === e.currentTarget) onClose();
-      }}
+      onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
       style={{
-        position: "fixed",
-        inset: 0,
-        zIndex: 9999,
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        background: "rgba(0,0,0,0.93)",
-        backdropFilter: "blur(16px)",
-        padding: "16px",
-        boxSizing: "border-box",
-        overflow: "hidden",
-        touchAction: "none",
+        position: 'fixed', inset: 0, zIndex: 9999,
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        background: 'rgba(0,0,0,0.93)', backdropFilter: 'blur(16px)',
+        padding: '16px', boxSizing: 'border-box',
+        animation: 'lb-in 0.2s ease forwards',
       }}
     >
       <style>{`
         @keyframes lb-in  { from { opacity:0 } to { opacity:1 } }
         @keyframes lb-up  { from { opacity:0; transform:scale(0.92) translateY(20px) } to { opacity:1; transform:scale(1) translateY(0) } }
-        @media (max-width:600px) {
-          .lb-box { padding:14px 12px !important; border-radius:16px !important; }
-        }
+        @media (max-width:600px) { .lb-box { padding:14px 12px !important; border-radius:16px !important; } }
       `}</style>
 
-      <div
-        className="lb-box"
-        style={{
-          background: "#08101e",
-          border: "0.5px solid rgba(255,255,255,0.13)",
-          borderRadius: 22,
-          padding: "22px",
-          maxWidth: isMulti ? 740 : 620,
-          width: "96%",
-          maxHeight: "92vh",
-          overflowY: "auto",
-          position: "relative",
-          animation: "lb-up 0.32s cubic-bezier(0.22,1,0.36,1) forwards",
-          boxSizing: "border-box",
+      <div className="lb-box" style={{
+        background: '#08101e',
+        border: '0.5px solid rgba(255,255,255,0.13)',
+        borderRadius: 22, padding: '22px',
+        maxWidth: isMulti ? 740 : 620,
+        width: '96%', maxHeight: '92vh', overflowY: 'auto',
+        position: 'relative', fontFamily: 'inherit',
+        animation: 'lb-up 0.32s cubic-bezier(0.22,1,0.36,1) forwards',
+        boxSizing: 'border-box',
+      }}>
+        {/* close */}
+        <button onClick={onClose} style={{
+          position: 'absolute', top: 14, right: 14,
+          width: 32, height: 32, borderRadius: '50%',
+          background: 'rgba(255,255,255,0.07)',
+          border: '0.5px solid rgba(255,255,255,0.14)',
+          color: 'rgba(255,255,255,0.55)', fontSize: 15,
+          cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
+          transition: 'all .2s', zIndex: 2,
         }}
-      >
-        {/* CLOSE BUTTON */}
-        <button
-          onClick={onClose}
-          style={{
-            position: "absolute",
-            top: 14,
-            right: 14,
-            width: 32,
-            height: 32,
-            borderRadius: "50%",
-            background: "rgba(255,255,255,0.07)",
-            border: "0.5px solid rgba(255,255,255,0.14)",
-            color: "rgba(255,255,255,0.55)",
-            cursor: "pointer",
-            zIndex: 2,
-          }}
-        >
-          ✕
-        </button>
+          onMouseEnter={(e) => { e.currentTarget.style.background='rgba(255,255,255,0.16)'; e.currentTarget.style.color='#fff'; }}
+          onMouseLeave={(e) => { e.currentTarget.style.background='rgba(255,255,255,0.07)'; e.currentTarget.style.color='rgba(255,255,255,0.55)'; }}
+        >✕</button>
 
-        {/* CONTENT */}
+        {/* content */}
         {isMulti ? (
           <LightboxCarousel imgs={state.imgs} title={state.title} />
         ) : state.singleSrc ? (
-          <div
-            style={{
-              width: "100%",
-              borderRadius: 12,
-              marginBottom: 16,
-              border: "0.5px solid rgba(255,255,255,0.08)",
-              background: "#06101e",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              minHeight: 180,
-              overflow: "hidden",
-            }}
-          >
+          <div style={{
+            width: '100%', borderRadius: 12, marginBottom: 16,
+            border: '0.5px solid rgba(255,255,255,0.08)',
+            background: '#06101e', display: 'flex',
+            alignItems: 'center', justifyContent: 'center',
+            minHeight: 180, overflow: 'hidden',
+          }}>
             <img
               src={state.singleSrc}
               alt={state.title}
-              style={{
-                maxWidth: "100%",
-                maxHeight: "55vw",
-                objectFit: "contain",
-                borderRadius: 10,
-                display: "block",
+              style={{ maxWidth: '100%', maxHeight: '55vw', objectFit: 'contain', borderRadius: 10, display: 'block' }}
+              onError={(e) => {
+                const wrap = (e.target as HTMLImageElement).parentElement!;
+                wrap.innerHTML = state.emoji || '📄';
+                wrap.style.fontSize = '72px';
               }}
             />
           </div>
         ) : (
-          <div
-            style={{
-              width: "100%",
-              minHeight: 180,
-              borderRadius: 12,
-              marginBottom: 16,
-              background: "linear-gradient(135deg,#0a0f1a,#141c2e)",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              fontSize: 72,
-            }}
-          >
+          <div style={{
+            width: '100%', minHeight: 180, borderRadius: 12, marginBottom: 16,
+            border: '0.5px solid rgba(255,255,255,0.08)',
+            background: 'linear-gradient(135deg,#0a0f1a,#141c2e)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 72,
+          }}>
             {state.emoji}
           </div>
         )}
 
-        <div
-          style={{
-            fontSize: 17,
-            fontWeight: 600,
-            color: "#fff",
-            marginBottom: 6,
-          }}
-        >
-          {state.title}
-        </div>
-
-        <div style={{ fontSize: 13, color: "rgba(255,255,255,0.5)" }}>
-          {state.desc}
-        </div>
+        <div style={{ fontSize: 17, fontWeight: 600, color: '#fff', marginBottom: 6, paddingRight: 36 }}>{state.title}</div>
+        <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.5)', lineHeight: 1.7 }}>{state.desc}</div>
       </div>
     </div>,
     document.body
@@ -405,11 +320,11 @@ const GalleryCarousel: React.FC<GalleryCarouselProps> = ({ gallery, t, openLight
   const goTo = useCallback((n: number) => { setIdx(clamp(n)); setDelta(0); }, [gallery.length]);
 
   const onTouchStart = (e: React.TouchEvent) => { if (!isMulti) return; startX.current = e.touches[0].clientX; setDragging(true); };
-  const onTouchMove = (e: React.TouchEvent) => { if (!isMulti || startX.current === null) return; setDelta(e.touches[0].clientX - startX.current); };
-  const onTouchEnd = () => { if (!isMulti) return; if (Math.abs(delta) > 40) goTo(idx + (delta < 0 ? 1 : -1)); else setDelta(0); startX.current = null; setDragging(false); };
-  const onMouseDown = (e: React.MouseEvent) => { if (!isMulti) return; startX.current = e.clientX; setDragging(true); };
-  const onMouseMove = (e: React.MouseEvent) => { if (!isMulti || !dragging || startX.current === null) return; setDelta(e.clientX - startX.current); };
-  const onMouseUp = () => { if (!isMulti) return; if (Math.abs(delta) > 40) goTo(idx + (delta < 0 ? 1 : -1)); else setDelta(0); startX.current = null; setDragging(false); };
+  const onTouchMove  = (e: React.TouchEvent) => { if (!isMulti || startX.current === null) return; setDelta(e.touches[0].clientX - startX.current); };
+  const onTouchEnd   = () => { if (!isMulti) return; if (Math.abs(delta) > 40) goTo(idx + (delta < 0 ? 1 : -1)); else setDelta(0); startX.current = null; setDragging(false); };
+  const onMouseDown  = (e: React.MouseEvent) => { if (!isMulti) return; startX.current = e.clientX; setDragging(true); };
+  const onMouseMove  = (e: React.MouseEvent) => { if (!isMulti || !dragging || startX.current === null) return; setDelta(e.clientX - startX.current); };
+  const onMouseUp    = () => { if (!isMulti) return; if (Math.abs(delta) > 40) goTo(idx + (delta < 0 ? 1 : -1)); else setDelta(0); startX.current = null; setDragging(false); };
 
   return (
     <div>
@@ -505,7 +420,7 @@ const GalleryCarousel: React.FC<GalleryCarouselProps> = ({ gallery, t, openLight
         {/* left / right arrows for the outer gallery (between the 3 items) */}
         {isMulti && (
           <>
-            <ArrowBtn dir="left" disabled={idx === 0} size={30} onClick={(e) => { e.stopPropagation(); goTo(idx - 1); }} />
+            <ArrowBtn dir="left"  disabled={idx === 0}               size={30} onClick={(e) => { e.stopPropagation(); goTo(idx - 1); }} />
             <ArrowBtn dir="right" disabled={idx === gallery.length - 1} size={30} onClick={(e) => { e.stopPropagation(); goTo(idx + 1); }} />
           </>
         )}
@@ -542,12 +457,12 @@ export const ExperienceSection = () => {
   const openLightbox = useCallback((item: GalleryItem) => {
     const isMulti = !!(item.imgs && item.imgs.length > 1);
     setLightbox({
-      open: true,
-      imgs: isMulti ? item.imgs! : [],
+      open:      true,
+      imgs:      isMulti ? item.imgs! : [],
       singleSrc: isMulti ? null : (item.img ?? null),
-      emoji: item.emoji ?? '📄',
-      title: item.title,
-      desc: item.desc,
+      emoji:     item.emoji ?? '📄',
+      title:     item.title,
+      desc:      item.desc,
     });
   }, []);
 
@@ -564,7 +479,7 @@ export const ExperienceSection = () => {
 
       const io = new IntersectionObserver(([entry]) => {
         if (!entry.isIntersecting) return;
-        row.style.opacity = '1';
+        row.style.opacity   = '1';
         row.style.transform = 'translateY(0)';
         row.querySelectorAll('[data-count]').forEach((el) => {
           const htmlEl = el as HTMLElement;
@@ -582,14 +497,14 @@ export const ExperienceSection = () => {
       const card = row.querySelector('.exp-inner-card') as HTMLElement;
       if (card) {
         card.addEventListener('mouseenter', () => {
-          card.style.boxShadow = `0 0 0 1px ${t.border}, 0 24px 60px ${t.glow}, 0 8px 32px rgba(0,0,0,0.5)`;
+          card.style.boxShadow   = `0 0 0 1px ${t.border}, 0 24px 60px ${t.glow}, 0 8px 32px rgba(0,0,0,0.5)`;
           card.style.borderColor = t.border;
-          card.style.transform = 'translateY(-6px)';
+          card.style.transform   = 'translateY(-6px)';
         });
         card.addEventListener('mouseleave', () => {
-          card.style.boxShadow = 'none';
+          card.style.boxShadow   = 'none';
           card.style.borderColor = 'rgba(255,255,255,0.07)';
-          card.style.transform = 'translateY(0)';
+          card.style.transform   = 'translateY(0)';
         });
       }
     });
@@ -621,9 +536,9 @@ export const ExperienceSection = () => {
         {Array.from({ length: 18 }).map((_, i) => (
           <div key={i} style={{
             position: 'absolute',
-            width: `${Math.random() * 2 + 1}px`,
+            width:  `${Math.random() * 2 + 1}px`,
             height: `${Math.random() * 2 + 1}px`,
-            left: `${Math.random() * 100}%`,
+            left:   `${Math.random() * 100}%`,
             bottom: '-4px', borderRadius: '50%', background: '#fff',
             opacity: Math.random() * 0.12 + 0.03,
             animation: `float-up ${Math.random() * 14 + 10}s ${Math.random() * 8}s linear infinite`,
@@ -654,15 +569,15 @@ export const ExperienceSection = () => {
 
           <div className="space-y-20">
             {experienceData.map((exp: ExperienceItem, index) => {
-              const t = getTheme(index);
+              const t      = getTheme(index);
               const isLeft = index % 2 === 0;
               const gallery = exp.gallery ?? [
-                { emoji: '📄', title: 'Work Sample', desc: 'A key deliverable from this role.' },
-                { emoji: '📜', title: 'Certificate', desc: 'Professional certification earned.' },
-                { emoji: '🏆', title: 'Achievement', desc: 'Award or recognition received.' },
+                { emoji: '📄', title: 'Work Sample',  desc: 'A key deliverable from this role.' },
+                { emoji: '📜', title: 'Certificate',  desc: 'Professional certification earned.' },
+                { emoji: '🏆', title: 'Achievement',  desc: 'Award or recognition received.' },
               ];
-              const stats = exp.stats ?? [{ count: 10, label: 'Projects' }, { count: 95, label: '% Uptime' }, { count: 30, label: '% Improved' }];
-              const bars = exp.bars ?? [];
+              const stats  = exp.stats  ?? [{ count:10, label:'Projects' }, { count:95, label:'% Uptime' }, { count:30, label:'% Improved' }];
+              const bars   = exp.bars   ?? [];
               const skills = exp.skills ?? exp.technologies ?? [];
 
               return (
@@ -683,27 +598,27 @@ export const ExperienceSection = () => {
                   {/* node */}
                   <div className="hidden md:flex flex-col items-center">
                     <motion.div className="relative flex-shrink-0 mt-6"
-                      initial={{ scale: 0, opacity: 0 }}
-                      whileInView={{ scale: 1, opacity: 1 }}
-                      viewport={{ once: true }}
-                      transition={{ delay: index * 0.15, type: 'spring', stiffness: 200 }}
+                      initial={{ scale:0, opacity:0 }}
+                      whileInView={{ scale:1, opacity:1 }}
+                      viewport={{ once:true }}
+                      transition={{ delay: index * 0.15, type:'spring', stiffness:200 }}
                     >
                       <div style={{
-                        width: 52, height: 52, borderRadius: '50%',
-                        display: 'flex', alignItems: 'center', justifyContent: 'center',
-                        fontSize: 22, position: 'relative', zIndex: 2,
-                        background: `linear-gradient(135deg,${t.glow},${t.bg})`,
-                        border: `1.5px solid ${t.border}`,
-                        boxShadow: `0 0 24px ${t.glow}`,
+                        width:52, height:52, borderRadius:'50%',
+                        display:'flex', alignItems:'center', justifyContent:'center',
+                        fontSize:22, position:'relative', zIndex:2,
+                        background:`linear-gradient(135deg,${t.glow},${t.bg})`,
+                        border:`1.5px solid ${t.border}`,
+                        boxShadow:`0 0 24px ${t.glow}`,
                       }}>
                         {t.icon
-                          ? <img src={t.icon} alt="logo" style={{ width: '100%', height: '100%', objectFit: 'contain', padding: 8, borderRadius: '50%' }} />
+                          ? <img src={t.icon} alt="logo" style={{ width:'100%', height:'100%', objectFit:'contain', padding:8, borderRadius:'50%' }} />
                           : t.node}
-                        <div style={{ position: 'absolute', inset: -4, borderRadius: '50%', border: `1px solid ${t.accent}`, opacity: 0.35 }} />
-                        <div style={{ position: 'absolute', inset: 0, borderRadius: '50%', background: `radial-gradient(circle,${t.accent}35,transparent)`, animation: 'exp-node-ping 2.5s ease-out infinite' }} />
+                        <div style={{ position:'absolute', inset:-4, borderRadius:'50%', border:`1px solid ${t.accent}`, opacity:0.35 }} />
+                        <div style={{ position:'absolute', inset:0, borderRadius:'50%', background:`radial-gradient(circle,${t.accent}35,transparent)`, animation:'exp-node-ping 2.5s ease-out infinite' }} />
                       </div>
                     </motion.div>
-                    <div className="flex-1 w-px mt-2" style={{ background: `linear-gradient(180deg,${t.accent}30,transparent)` }} />
+                    <div className="flex-1 w-px mt-2" style={{ background:`linear-gradient(180deg,${t.accent}30,transparent)` }} />
                   </div>
 
                   {!isLeft
@@ -715,11 +630,11 @@ export const ExperienceSection = () => {
           </div>
 
           <motion.div className="flex flex-col items-center mt-16"
-            initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }} transition={{ delay: 0.3 }}
+            initial={{ opacity:0, y:20 }} whileInView={{ opacity:1, y:0 }}
+            viewport={{ once:true }} transition={{ delay:0.3 }}
           >
-            <div style={{ width: 10, height: 10, borderRadius: '50%', background: 'linear-gradient(135deg,#3b82f6,#8b5cf6)', boxShadow: '0 0 18px #3b82f640' }} />
-            <p style={{ fontSize: 10, letterSpacing: 3, textTransform: 'uppercase', color: '#ffffff', marginTop: 12 }}>
+            <div style={{ width:10, height:10, borderRadius:'50%', background:'linear-gradient(135deg,#3b82f6,#8b5cf6)', boxShadow:'0 0 18px #3b82f640' }} />
+            <p style={{ fontSize:10, letterSpacing:3, textTransform:'uppercase', color:'#ffffff', marginTop:12 }}>
               The journey continues
             </p>
           </motion.div>
@@ -745,59 +660,59 @@ const ExperienceCard: React.FC<ExperienceCardProps> = ({ exp, t, gallery, stats,
       background: 'rgba(255,255,255,0.028)', border: '1px solid rgba(255,255,255,0.07)',
       borderRadius: '22px', padding: '26px 24px', position: 'relative', overflow: 'hidden',
     }}>
-      <div style={{ position: 'absolute', top: 0, left: '10%', right: '10%', height: 1, background: `linear-gradient(90deg,transparent,${t.accent}65,transparent)` }} />
+      <div style={{ position:'absolute', top:0, left:'10%', right:'10%', height:1, background:`linear-gradient(90deg,transparent,${t.accent}65,transparent)` }} />
 
       {/* header */}
-      <div style={{ display: 'flex', alignItems: 'flex-start', gap: 14, marginBottom: 16 }}>
-        <div style={{ width: 46, height: 46, borderRadius: '50%', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 22, background: `linear-gradient(135deg,${t.glow},${t.bg})`, border: `0.5px solid ${t.border}` }}>
-          {t.icon ? <img src={t.icon} alt="logo" style={{ width: '100%', height: '100%', objectFit: 'contain', padding: 6, borderRadius: '50%' }} /> : t.node}
+      <div style={{ display:'flex', alignItems:'flex-start', gap:14, marginBottom:16 }}>
+        <div style={{ width:46, height:46, borderRadius:'50%', flexShrink:0, display:'flex', alignItems:'center', justifyContent:'center', fontSize:22, background:`linear-gradient(135deg,${t.glow},${t.bg})`, border:`0.5px solid ${t.border}` }}>
+          {t.icon ? <img src={t.icon} alt="logo" style={{ width:'100%', height:'100%', objectFit:'contain', padding:6, borderRadius:'50%' }} /> : t.node}
         </div>
-        <div style={{ flex: 1, minWidth: 0 }}>
-          <div style={{ fontSize: 17, fontWeight: 700, color: '#fff', letterSpacing: '-0.3px', lineHeight: 1.25 }}>{exp.position}</div>
-          <div style={{ fontSize: 13, fontWeight: 500, color: t.accent, marginTop: 2 }}>{exp.company}</div>
+        <div style={{ flex:1, minWidth:0 }}>
+          <div style={{ fontSize:17, fontWeight:700, color:'#fff', letterSpacing:'-0.3px', lineHeight:1.25 }}>{exp.position}</div>
+          <div style={{ fontSize:13, fontWeight:500, color:t.accent, marginTop:2 }}>{exp.company}</div>
         </div>
         {exp.isCurrentRole && (
-          <div style={{ padding: '4px 12px', borderRadius: 30, flexShrink: 0, fontSize: 10, fontWeight: 600, letterSpacing: '1.5px', textTransform: 'uppercase', background: `${t.accent}12`, color: t.text, border: `0.5px solid ${t.border}` }}>
+          <div style={{ padding:'4px 12px', borderRadius:30, flexShrink:0, fontSize:10, fontWeight:600, letterSpacing:'1.5px', textTransform:'uppercase', background:`${t.accent}12`, color:t.text, border:`0.5px solid ${t.border}` }}>
             CURRENT
           </div>
         )}
       </div>
 
       {/* meta */}
-      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px 18px', marginBottom: 16 }}>
-        {exp.duration && <span style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 12, color: 'rgba(255,255,255,0.4)' }}><span>📅</span>{exp.duration}</span>}
-        {exp.location && <span style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 12, color: 'rgba(255,255,255,0.4)' }}><span>📍</span>{exp.location}</span>}
+      <div style={{ display:'flex', flexWrap:'wrap', gap:'6px 18px', marginBottom:16 }}>
+        {exp.duration && <span style={{ display:'flex', alignItems:'center', gap:5, fontSize:12, color:'rgba(255,255,255,0.4)' }}><span>📅</span>{exp.duration}</span>}
+        {exp.location && <span style={{ display:'flex', alignItems:'center', gap:5, fontSize:12, color:'rgba(255,255,255,0.4)' }}><span>📍</span>{exp.location}</span>}
       </div>
 
       {/* stats */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 8, marginBottom: 16 }}>
+      <div style={{ display:'grid', gridTemplateColumns:'repeat(3,1fr)', gap:8, marginBottom:16 }}>
         {stats.map((s, i) => (
-          <div key={i} style={{ background: 'rgba(255,255,255,0.032)', border: '0.5px solid rgba(255,255,255,0.06)', borderRadius: 12, padding: '10px 8px', textAlign: 'center' }}>
-            <div data-count={s.count} style={{ fontSize: 22, fontWeight: 700, letterSpacing: '-1px', color: t.accent, lineHeight: 1 }}>0</div>
-            <div style={{ fontSize: '9px', color: 'rgba(255,255,255,0.32)', marginTop: 3, letterSpacing: '0.8px', textTransform: 'uppercase' }}>{s.label}</div>
+          <div key={i} style={{ background:'rgba(255,255,255,0.032)', border:'0.5px solid rgba(255,255,255,0.06)', borderRadius:12, padding:'10px 8px', textAlign:'center' }}>
+            <div data-count={s.count} style={{ fontSize:22, fontWeight:700, letterSpacing:'-1px', color:t.accent, lineHeight:1 }}>0</div>
+            <div style={{ fontSize:'9px', color:'rgba(255,255,255,0.32)', marginTop:3, letterSpacing:'0.8px', textTransform:'uppercase' }}>{s.label}</div>
           </div>
         ))}
       </div>
 
       {/* bars */}
       {bars.map((b, i) => (
-        <div key={i} style={{ marginBottom: 10 }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4 }}>
-            <span style={{ fontSize: 11, color: 'rgba(255,255,255,0.42)' }}>{b.label}</span>
-            <span style={{ fontSize: 11, fontWeight: 600, color: t.accent }}>{b.value}%</span>
+        <div key={i} style={{ marginBottom:10 }}>
+          <div style={{ display:'flex', justifyContent:'space-between', marginBottom:4 }}>
+            <span style={{ fontSize:11, color:'rgba(255,255,255,0.42)' }}>{b.label}</span>
+            <span style={{ fontSize:11, fontWeight:600, color:t.accent }}>{b.value}%</span>
           </div>
-          <div style={{ height: 2, background: 'rgba(255,255,255,0.05)', borderRadius: 2, overflow: 'hidden' }}>
-            <div data-w={b.value} style={{ height: '100%', width: '0%', borderRadius: 2, background: `linear-gradient(90deg,${t.accent},${t.accent2})`, transition: 'width 1.3s cubic-bezier(.22,1,.36,1)' }} />
+          <div style={{ height:2, background:'rgba(255,255,255,0.05)', borderRadius:2, overflow:'hidden' }}>
+            <div data-w={b.value} style={{ height:'100%', width:'0%', borderRadius:2, background:`linear-gradient(90deg,${t.accent},${t.accent2})`, transition:'width 1.3s cubic-bezier(.22,1,.36,1)' }} />
           </div>
         </div>
       ))}
 
       {/* bullets */}
       {exp.description?.length > 0 && (
-        <ul style={{ listStyle: 'none', margin: '14px 0' }}>
+        <ul style={{ listStyle:'none', margin:'14px 0' }}>
           {exp.description.map((d, i) => (
-            <li key={i} style={{ display: 'flex', gap: 8, fontSize: 12, color: 'rgba(255,255,255,0.52)', lineHeight: 1.7, marginBottom: 7 }}>
-              <span style={{ width: 4, height: 4, borderRadius: '50%', background: t.accent, flexShrink: 0, marginTop: 6, display: 'block' }} />
+            <li key={i} style={{ display:'flex', gap:8, fontSize:12, color:'rgba(255,255,255,0.52)', lineHeight:1.7, marginBottom:7 }}>
+              <span style={{ width:4, height:4, borderRadius:'50%', background:t.accent, flexShrink:0, marginTop:6, display:'block' }} />
               {d}
             </li>
           ))}
@@ -806,9 +721,9 @@ const ExperienceCard: React.FC<ExperienceCardProps> = ({ exp, t, gallery, stats,
 
       {/* skill tags */}
       {skills.length > 0 && (
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginBottom: 18 }}>
+        <div style={{ display:'flex', flexWrap:'wrap', gap:6, marginBottom:18 }}>
           {skills.map((sk) => (
-            <span key={sk} style={{ padding: '4px 11px', borderRadius: 30, fontSize: 11, fontWeight: 500, color: t.text, background: `${t.accent}0a`, border: `0.5px solid ${t.border}`, letterSpacing: '0.3px' }}>
+            <span key={sk} style={{ padding:'4px 11px', borderRadius:30, fontSize:11, fontWeight:500, color:t.text, background:`${t.accent}0a`, border:`0.5px solid ${t.border}`, letterSpacing:'0.3px' }}>
               {sk}
             </span>
           ))}
