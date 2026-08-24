@@ -1,6 +1,6 @@
 import { GoogleGenAI } from '@google/genai';
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { portfolioSystemInstruction } from '../src/lib/data/portfolioContext';
+import { portfolioSystemInstruction } from '../src/lib/data/portfolioContext.js';
 
 type GeminiRole = 'user' | 'model';
 
@@ -82,7 +82,7 @@ function parseRequest(body: unknown): { message: string; history: HistoryMessage
 
   if (!Array.isArray(request.messages)) return null;
   const messages = request.messages.filter(isFrontendMessage);
-  const latestMessage = messages.at(-1);
+  const latestMessage = messages[messages.length - 1];
   if (!latestMessage || latestMessage.role !== 'user') return null;
 
   return {
