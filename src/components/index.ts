@@ -29,3 +29,4 @@ export { default as ScrollFloat } from './ui/ScrollFloat/ScrollFloat';
 export { default as ScrollReveal } from './ui/ScrollReveal/ScrollReveal';
 export { default as ScrollVelocity } from './ui/ScrollVelocity/ScrollVelocity';
 export { MobileSkillsScroll } from './ui/MobileSkillsScroll/MobileSkillsScroll';
+export { ChatWidget } from './ChatWidget';
