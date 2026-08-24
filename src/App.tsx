@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Toaster } from 'react-hot-toast';
-import { Navbar, Footer, LoadingScreen } from './components';
+import { ChatWidget, Navbar, Footer, LoadingScreen } from './components';
 import { Home } from './pages';
 import { useLenis } from './hooks';
 
@@ -21,6 +21,7 @@ function App() {
           <Navbar />
           <Home />
           <Footer />
+          <ChatWidget />
           <Toaster
             position="bottom-right"
             toastOptions={{
