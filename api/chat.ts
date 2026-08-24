@@ -24,7 +24,14 @@ const MAX_MESSAGE_LENGTH = 1200;
 const MAX_HISTORY_LENGTH = 12;
 const RATE_LIMIT_WINDOW_MS = 60_000;
 const MAX_REQUESTS_PER_WINDOW = 12;
+const MAX_TRACKED_CLIENTS = 10_000;
 const requestLog = new Map<string, number[]>();
+
+function setCorsHeaders(res: VercelResponse): void {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,POST');
+  res.setHeader('Access-Control-Allow-Headers', '*');
+}
 
 function getClientKey(req: VercelRequest): string {
   const forwardedFor = req.headers['x-forwarded-for'];
@@ -36,6 +43,17 @@ function isRateLimited(clientKey: string): boolean {
   const recentRequests = (requestLog.get(clientKey) ?? []).filter(
     (timestamp) => now - timestamp < RATE_LIMIT_WINDOW_MS,
   );
+
+  for (const [key, timestamps] of requestLog) {
+    if (timestamps.every((timestamp) => now - timestamp >= RATE_LIMIT_WINDOW_MS)) {
+      requestLog.delete(key);
+    }
+  }
+
+  if (!requestLog.has(clientKey) && requestLog.size >= MAX_TRACKED_CLIENTS) {
+    const oldestClient = requestLog.keys().next().value;
+    if (typeof oldestClient === 'string') requestLog.delete(oldestClient);
+  }
 
   if (recentRequests.length >= MAX_REQUESTS_PER_WINDOW) {
     requestLog.set(clientKey, recentRequests);
@@ -95,8 +113,14 @@ function parseRequest(body: unknown): { message: string; history: HistoryMessage
 }
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
+  setCorsHeaders(res);
+
+  if (req.method === 'OPTIONS') {
+    return res.status(200).json({ ok: true });
+  }
+
   if (req.method !== 'POST') {
-    res.setHeader('Allow', 'POST');
+    res.setHeader('Allow', 'GET, OPTIONS, POST');
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
@@ -104,7 +128,16 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return res.status(429).json({ error: 'Too many requests. Please try again shortly.' });
   }
 
-  const parsedRequest = parseRequest(req.body);
+  let requestBody: unknown = req.body;
+  if (typeof requestBody === 'string') {
+    try {
+      requestBody = JSON.parse(requestBody) as unknown;
+    } catch {
+      return res.status(400).json({ error: 'Request body must be valid JSON.' });
+    }
+  }
+
+  const parsedRequest = parseRequest(requestBody);
   if (!parsedRequest) {
     return res.status(400).json({
       error: `Send a non-empty message of ${MAX_MESSAGE_LENGTH} characters or fewer.`,
@@ -114,7 +147,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   const apiKey = process.env.GROQ_API_KEY?.trim();
   if (!apiKey) {
     console.error('GROQ_API_KEY is not configured on the server.');
-    return res.status(500).json({ error: 'API key is not configured on the server.' });
+    return res.status(500).json({ error: 'GROQ_API_KEY is not configured on Vercel.' });
   }
 
   try {
@@ -136,6 +169,6 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : String(error);
     console.error('Groq chat request failed:', errorMessage, error);
-    return res.status(502).json({ error: 'I am unavailable right now. Please try again later.' });
+    return res.status(500).json({ error: `Backend Error: ${errorMessage}` });
   }
 }
