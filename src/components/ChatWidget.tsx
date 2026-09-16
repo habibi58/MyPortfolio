@@ -68,10 +68,10 @@ export function ChatWidget({ className }: CopilotChatProps = {}) {
       const messageId = `${Date.now()}-${Math.floor(Math.random() * 1000)}`;
       const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
-      // Natural typing speed: keeps cadence feeling human without making the user wait long
+      // Slower, more natural typing speed
       const totalChars = fullText.length;
-      const targetDuration = Math.min(2200, Math.max(500, totalChars * 16));
-      const stepInterval = 20; // 20ms per step
+      const targetDuration = Math.min(5000, Math.max(800, totalChars * 30));
+      const stepInterval = 30; // 30ms per step
       const totalSteps = Math.max(1, Math.floor(targetDuration / stepInterval));
       const charsPerStep = Math.max(1, Math.ceil(totalChars / totalSteps));
 
