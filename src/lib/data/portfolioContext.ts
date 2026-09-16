@@ -58,6 +58,7 @@ export const portfolioContext = {
     github: 'https://github.com/habibi58',
     linkedin: 'https://www.linkedin.com/in/mohamad-jason-celoza-5787a9395/',
     resume: '/Resume/MohamadjasonCV.pdf',
+    message: 'You can also send me a message using the contact form at the bottom of this page.',
   },
 } as const;
 
