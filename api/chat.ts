@@ -65,15 +65,20 @@ function isRateLimited(clientKey: string): boolean {
   return false;
 }
 
-function isHistoryMessage(value: unknown): value is HistoryMessage {
-  if (!value || typeof value !== 'object') return false;
+const DEFAULT_MODEL = 'openai/gpt-oss-120b';
+const FALLBACK_MODEL = 'qwen/qwen3.8-27b';
+
+function parseHistoryMessage(value: unknown): HistoryMessage | null {
+  if (!value || typeof value !== 'object') return null;
   const message = value as Record<string, unknown>;
-  return (
-    (message.role === 'user' || message.role === 'assistant') &&
-    typeof message.text === 'string' &&
-    message.text.trim().length > 0 &&
-    message.text.length <= MAX_MESSAGE_LENGTH
-  );
+  const rawRole = String(message.role ?? '').toLowerCase();
+  const role: ChatRole | null =
+    rawRole === 'user' ? 'user' : (rawRole === 'assistant' || rawRole === 'model' || rawRole === 'bot') ? 'assistant' : null;
+  if (!role) return null;
+  if (typeof message.text !== 'string') return null;
+  const text = message.text.trim();
+  if (!text || text.length > MAX_MESSAGE_LENGTH) return null;
+  return { role, text };
 }
 
 function isFrontendMessage(value: unknown): value is FrontendMessage {
@@ -93,7 +98,9 @@ function parseRequest(body: unknown): { message: string; history: HistoryMessage
 
   if (typeof request.message === 'string') {
     const message = request.message.trim();
-    const history = Array.isArray(request.history) ? request.history.filter(isHistoryMessage) : [];
+    const history = Array.isArray(request.history)
+      ? (request.history.map(parseHistoryMessage).filter((item): item is HistoryMessage => item !== null))
+      : [];
     if (!message || message.length > MAX_MESSAGE_LENGTH) return null;
     return { message, history: history.slice(-MAX_HISTORY_LENGTH) };
   }
@@ -150,25 +157,42 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return res.status(500).json({ error: 'GROQ_API_KEY is not configured on Vercel.' });
   }
 
+  const primaryModel = process.env.GROQ_MODEL?.trim() || DEFAULT_MODEL;
+  const modelsToTry = primaryModel !== FALLBACK_MODEL ? [primaryModel, FALLBACK_MODEL] : [primaryModel];
+
   try {
     const groq = new Groq({ apiKey });
-    const completion = await groq.chat.completions.create({
-      model: process.env.GROQ_MODEL ?? 'llama-3.3-70b-versatile',
-      messages: [
-        { role: 'system', content: JASON_PERSONA },
-        ...parsedRequest.history.map(({ role, text }) => ({ role, content: text })),
-        { role: 'user', content: parsedRequest.message },
-      ],
-      temperature: 0.3,
-      max_tokens: 300,
-    });
+    let lastError: unknown = null;
 
-    const reply = completion.choices[0]?.message?.content?.trim();
-    if (!reply) return res.status(502).json({ error: 'I could not form a response. Please try again.' });
-    return res.status(200).json({ reply });
+    for (const model of modelsToTry) {
+      try {
+        const completion = await groq.chat.completions.create({
+          model,
+          messages: [
+            { role: 'system', content: JASON_PERSONA },
+            ...parsedRequest.history.map(({ role, text }) => ({ role, content: text })),
+            { role: 'user', content: parsedRequest.message },
+          ],
+          temperature: 0.3,
+          max_tokens: 300,
+        });
+
+        const reply = completion.choices[0]?.message?.content?.trim();
+        if (reply) {
+          return res.status(200).json({ reply });
+        }
+      } catch (attemptError) {
+        lastError = attemptError;
+        console.warn(`Groq chat attempt with model ${model} failed:`, attemptError);
+      }
+    }
+
+    const errorMessage = lastError instanceof Error ? lastError.message : String(lastError);
+    return res.status(502).json({ error: `AI service error: ${errorMessage}` });
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : String(error);
     console.error('Groq chat request failed:', errorMessage, error);
     return res.status(500).json({ error: `Backend Error: ${errorMessage}` });
   }
+}
 }

@@ -73,7 +73,7 @@ export function ChatWidget({ className }: CopilotChatProps = {}) {
         body: JSON.stringify({
           message: text,
           history: conversation.slice(-13, -1).map(({ sender, text: messageText }) => ({
-            role: sender === 'bot' ? 'model' : sender,
+            role: sender === 'bot' ? 'assistant' : 'user',
             text: messageText,
           })),
         }),
