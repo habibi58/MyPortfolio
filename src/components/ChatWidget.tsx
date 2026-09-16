@@ -42,23 +42,73 @@ export function ChatWidget({ className }: CopilotChatProps = {}) {
   const [isOpen, setIsOpen] = useState(false);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [isTyping, setIsTyping] = useState(false);
   const [messages, setMessages] = useState<ChatMessage[]>([
     createMessage('bot', "Hi, I'm Jason's assistant. Ask me about his experience, skills, education, projects, or contact details."),
   ]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const typingIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   useEffect(() => {
     const frameId = window.requestAnimationFrame(() => setIsMounted(true));
-    return () => window.cancelAnimationFrame(frameId);
+    return () => {
+      window.cancelAnimationFrame(frameId);
+      if (typingIntervalRef.current) {
+        clearInterval(typingIntervalRef.current);
+      }
+    };
   }, []);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages, isLoading]);
+  }, [messages, isLoading, isTyping]);
+
+  function typeOutMessage(fullText: string): Promise<void> {
+    return new Promise<void>((resolve) => {
+      const messageId = `${Date.now()}-${Math.floor(Math.random() * 1000)}`;
+      const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+      // Slower, more natural typing speed
+      const totalChars = fullText.length;
+      const targetDuration = Math.min(5000, Math.max(800, totalChars * 30));
+      const stepInterval = 30; // 30ms per step
+      const totalSteps = Math.max(1, Math.floor(targetDuration / stepInterval));
+      const charsPerStep = Math.max(1, Math.ceil(totalChars / totalSteps));
+
+      let currentIndex = 0;
+
+      // Add empty bot message bubble
+      setMessages((current) => [
+        ...current,
+        { id: messageId, sender: 'bot', text: '', time },
+      ]);
+
+      if (typingIntervalRef.current) {
+        clearInterval(typingIntervalRef.current);
+      }
+
+      typingIntervalRef.current = setInterval(() => {
+        currentIndex = Math.min(totalChars, currentIndex + charsPerStep);
+        const currentSlice = fullText.slice(0, currentIndex);
+
+        setMessages((current) =>
+          current.map((msg) => (msg.id === messageId ? { ...msg, text: currentSlice } : msg))
+        );
+
+        if (currentIndex >= totalChars) {
+          if (typingIntervalRef.current) {
+            clearInterval(typingIntervalRef.current);
+            typingIntervalRef.current = null;
+          }
+          resolve();
+        }
+      }, stepInterval);
+    });
+  }
 
   async function sendMessage(textToSend: string): Promise<void> {
     const text = textToSend.trim();
-    if (!text || isLoading || text.length > MAX_MESSAGE_LENGTH) return;
+    if (!text || isLoading || isTyping || text.length > MAX_MESSAGE_LENGTH) return;
 
     const userMessage = createMessage('user', text);
     const conversation = [...messages, userMessage];
@@ -73,19 +123,23 @@ export function ChatWidget({ className }: CopilotChatProps = {}) {
         body: JSON.stringify({
           message: text,
           history: conversation.slice(-13, -1).map(({ sender, text: messageText }) => ({
-            role: sender === 'bot' ? 'model' : sender,
+            role: sender === 'bot' ? 'assistant' : 'user',
             text: messageText,
           })),
         }),
       });
       const data = (await response.json()) as ChatResponse;
       if (!response.ok || !data.reply) throw new Error(data.error ?? 'Unable to send message.');
-      setMessages((current) => [...current, createMessage('bot', data.reply as string)]);
+
+      setIsLoading(false);
+      setIsTyping(true);
+      await typeOutMessage(data.reply as string);
     } catch (requestError) {
       console.error('Chat request failed', requestError);
       setMessages((current) => [...current, createMessage('bot', 'I am unavailable right now. Please try again shortly.', true)]);
     } finally {
       setIsLoading(false);
+      setIsTyping(false);
     }
   }
 
@@ -95,6 +149,12 @@ export function ChatWidget({ className }: CopilotChatProps = {}) {
   }
 
   function clearChat(): void {
+    if (typingIntervalRef.current) {
+      clearInterval(typingIntervalRef.current);
+      typingIntervalRef.current = null;
+    }
+    setIsTyping(false);
+    setIsLoading(false);
     setMessages([createMessage('bot', "Let's start fresh. Ask me about Jason's experience, skills, or projects.")]);
     setInput('');
   }
@@ -168,7 +228,7 @@ export function ChatWidget({ className }: CopilotChatProps = {}) {
                     </div>
                   )}
                       <div className={`flex min-w-0 flex-col ${isAssistant ? 'items-start' : 'items-end'}`} style={{ minWidth: 0, maxWidth: isAssistant ? 'calc(100% - 0px)' : '80%' }}>
-                        <div className={`inline-block w-fit min-w-[48px] max-w-full break-words text-[13px] leading-relaxed ${message.isError ? 'my-1 rounded-xl border border-gray-700 bg-gray-900 text-xs text-gray-300' : isAssistant ? 'rounded-2xl rounded-tl-sm border border-gray-800 bg-gray-900 text-gray-100' : 'rounded-2xl rounded-tr-sm bg-white text-black shadow-sm'}`} style={{ display: 'inline-block', width: 'fit-content', minWidth: 48, maxWidth: '100%', overflowWrap: 'anywhere', whiteSpace: 'normal', boxSizing: 'border-box', padding: message.isError ? 12 : '10px 14px' }}>
+                        <div className={`inline-block w-fit min-w-[48px] max-w-full break-words text-[13px] leading-relaxed ${message.isError ? 'my-1 rounded-xl border border-gray-700 bg-gray-900 text-xs text-gray-300' : isAssistant ? 'rounded-2xl rounded-tl-sm border border-gray-800 bg-gray-900 text-gray-100' : 'rounded-2xl rounded-tr-sm bg-white text-black shadow-sm'}`} style={{ display: 'inline-block', width: 'fit-content', minWidth: 48, maxWidth: '100%', overflowWrap: 'anywhere', whiteSpace: 'pre-wrap', boxSizing: 'border-box', padding: message.isError ? 12 : '10px 14px' }}>
                           {message.text}
                     </div>
                         <span className="text-[10px] text-gray-500" style={{ padding: '0 4px' }}>{message.time}</span>
@@ -195,14 +255,15 @@ export function ChatWidget({ className }: CopilotChatProps = {}) {
 
           {/* Footer */}
           <footer className="shrink-0 border-t border-gray-800 bg-black" style={{ flexShrink: 0, boxSizing: 'border-box', overflow: 'hidden', padding: '12px 16px', width: '100%' }}>
-            {messages.length === 1 && !isLoading && (
+            {messages.length === 1 && !isLoading && !isTyping && (
               <div className="flex max-w-full flex-wrap gap-2 border-b border-gray-800 bg-black" style={{ padding: '4px 0 10px', gap: 8, maxWidth: '100%', overflow: 'hidden' }}>
                 {quickPrompts.map((prompt) => (
                   <button
                     type="button"
                     key={prompt}
                     onClick={() => void sendMessage(prompt)}
-                    className="max-w-full rounded-full border border-gray-700 bg-gray-900 text-left text-gray-200 transition-colors hover:border-white hover:text-white"
+                    disabled={isLoading || isTyping}
+                    className="max-w-full rounded-full border border-gray-700 bg-gray-900 text-left text-gray-200 transition-colors hover:border-white hover:text-white disabled:pointer-events-none disabled:opacity-40"
                     style={{ maxWidth: '100%', padding: '6px 10px', fontSize: 11, lineHeight: 1.25, whiteSpace: 'normal', overflowWrap: 'anywhere', boxSizing: 'border-box' }}
                   >
                     {prompt}
@@ -221,7 +282,7 @@ export function ChatWidget({ className }: CopilotChatProps = {}) {
                   onChange={(event) => setInput(event.target.value)}
                   placeholder="Message Jason's assistant..."
                   maxLength={MAX_MESSAGE_LENGTH}
-                  disabled={isLoading}
+                  disabled={isLoading || isTyping}
                   aria-label="Message"
                   className="min-w-0 flex-1 bg-transparent px-2 text-sm text-white outline-none placeholder:text-gray-500"
                   style={{ minWidth: 0, flex: '1 1 auto', paddingLeft: 8, paddingRight: 8 }}
@@ -229,7 +290,7 @@ export function ChatWidget({ className }: CopilotChatProps = {}) {
                 <button
                   type="submit"
                   aria-label="Send message"
-                  disabled={!input.trim() || isLoading}
+                  disabled={!input.trim() || isLoading || isTyping}
                   className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-white text-black transition-all hover:bg-gray-300 active:scale-95 disabled:pointer-events-none disabled:opacity-30"
                 >
                   <Send size={15} />
