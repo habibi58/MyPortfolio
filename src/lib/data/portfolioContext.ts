@@ -7,7 +7,7 @@ export const portfolioContext = {
     age: '22', // Please update with your actual age if different
   },
   background:
-    "I'm an IT graduate from Binangonan Catholic College (graduated Cum Laude!) currently working at Accenture as an Azure Data Engineer trainee, with hands-on background in desktop IT support from TTEC, web development, and cloud data pipelines.",
+    "I'm an IT graduate from Binangonan Catholic College (graduated Cum Laude!) currently working at Accenture as an Azure Data Engineer trainee. I've learned about agentic AI and AI engineering, which helped me build this AI chatbot, and I also have hands‑on experience in desktop IT support from TTEC, web development, and cloud data pipelines.",
   education: [
     {
       school: 'Binangonan Catholic College',
