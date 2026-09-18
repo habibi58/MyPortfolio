@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import type { FormEvent } from 'react';
 import * as ReactDOM from 'react-dom';
 import { Bot, MessageSquare, RefreshCw, Send, Sparkles, X } from 'lucide-react';
+import ReactMarkdown from 'react-markdown';
 
 export interface ChatMessage {
   id: string;
@@ -48,6 +49,7 @@ export function ChatWidget({ className }: CopilotChatProps = {}) {
   ]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const typingIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     const frameId = window.requestAnimationFrame(() => setIsMounted(true));
@@ -70,8 +72,8 @@ export function ChatWidget({ className }: CopilotChatProps = {}) {
 
       // Slower, more natural typing speed
       const totalChars = fullText.length;
-      const targetDuration = Math.min(5000, Math.max(800, totalChars * 30));
-      const stepInterval = 30; // 30ms per step
+      const targetDuration = Math.min(10000, Math.max(1500, totalChars * 60));
+      const stepInterval = 50; // 50ms per step
       const totalSteps = Math.max(1, Math.floor(targetDuration / stepInterval));
       const charsPerStep = Math.max(1, Math.ceil(totalChars / totalSteps));
 
@@ -229,7 +231,19 @@ export function ChatWidget({ className }: CopilotChatProps = {}) {
                   )}
                       <div className={`flex min-w-0 flex-col ${isAssistant ? 'items-start' : 'items-end'}`} style={{ minWidth: 0, maxWidth: isAssistant ? 'calc(100% - 0px)' : '80%' }}>
                         <div className={`inline-block w-fit min-w-[48px] max-w-full break-words text-[13px] leading-relaxed ${message.isError ? 'my-1 rounded-xl border border-gray-700 bg-gray-900 text-xs text-gray-300' : isAssistant ? 'rounded-2xl rounded-tl-sm border border-gray-800 bg-gray-900 text-gray-100' : 'rounded-2xl rounded-tr-sm bg-white text-black shadow-sm'}`} style={{ display: 'inline-block', width: 'fit-content', minWidth: 48, maxWidth: '100%', overflowWrap: 'anywhere', whiteSpace: 'pre-wrap', boxSizing: 'border-box', padding: message.isError ? 12 : '10px 14px' }}>
-                          {message.text}
+                          {isAssistant ? (
+                            <ReactMarkdown
+                              components={{
+                                strong: ({ children }) => <strong className="font-bold">{children}</strong>,
+                                em: ({ children }) => <em className="italic">{children}</em>,
+                                p: ({ children }) => <p className="mb-1 last:mb-0">{children}</p>,
+                              }}
+                            >
+                              {message.text}
+                            </ReactMarkdown>
+                          ) : (
+                            message.text
+                          )}
                     </div>
                         <span className="text-[10px] text-gray-500" style={{ padding: '0 4px' }}>{message.time}</span>
                   </div>
@@ -271,18 +285,18 @@ export function ChatWidget({ className }: CopilotChatProps = {}) {
                 ))}
               </div>
             )}
-            <div style={{ paddingTop: 12, width: '100%', boxSizing: 'border-box' }}>
+            <div style={{ paddingTop: 16, width: '100%', boxSizing: 'border-box' }}>
               <form
                 className="flex items-center gap-2 rounded-2xl border border-gray-700 bg-gray-900 transition-colors focus-within:border-white focus-within:ring-2 focus-within:ring-gray-700"
                 onSubmit={handleSubmit}
                 style={{ padding: '6px 6px 6px 12px', gap: 8 }}
               >
                 <input
+                  ref={inputRef}
                   value={input}
                   onChange={(event) => setInput(event.target.value)}
                   placeholder="Message Jason's assistant..."
                   maxLength={MAX_MESSAGE_LENGTH}
-                  disabled={isLoading || isTyping}
                   aria-label="Message"
                   className="min-w-0 flex-1 bg-transparent px-2 text-sm text-white outline-none placeholder:text-gray-500"
                   style={{ minWidth: 0, flex: '1 1 auto', paddingLeft: 8, paddingRight: 8 }}
@@ -296,8 +310,8 @@ export function ChatWidget({ className }: CopilotChatProps = {}) {
                   <Send size={15} />
                 </button>
               </form>
-              <p className="mt-2 text-center text-[10px] text-gray-500">Conversations are not saved after the session.</p>
             </div>
+            <p className="px-4 py-3 text-center text-[10px] text-gray-500">Conversations are not saved after the session.</p>
           </footer>
         </section>
       )}

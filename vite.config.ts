@@ -60,7 +60,7 @@ export default defineConfig(({ mode }) => {
                       { role: 'user', content: message },
                     ],
                     temperature: 0.3,
-                    max_tokens: 300,
+                    max_tokens: 800,
                   });
 
                   const reply = completion.choices[0]?.message?.content?.trim();
