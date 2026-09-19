@@ -103,6 +103,13 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return res.status(500).json({ error: 'Email service is not configured.' });
   }
 
+  const configuredSender = (process.env.CONTACT_EMAIL ?? 'onboarding@resend.dev').trim();
+  if (configuredSender.toLowerCase().endsWith('@gmail.com')) {
+    return res.status(400).json({
+      error: 'Your sender email uses Gmail, but Resend requires a verified custom domain. Add and verify your domain at https://resend.com/domains, then set CONTACT_EMAIL to something like hello@yourdomain.com in Vercel.',
+    });
+  }
+
   try {
     const response = await fetch('https://api.resend.com/emails', {
       method: 'POST',
@@ -152,6 +159,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       } catch {
         errorMessage = text || errorMessage;
       }
+
+      if (/gmail\.com.*not verified|domain.*not verified|not verified/i.test(errorMessage)) {
+        errorMessage = 'Your Resend sender domain is not verified. Add and verify your domain at https://resend.com/domains, then set CONTACT_EMAIL to an address on that domain (for example: hello@yourdomain.com).';
+      }
+
       return res.status(response.status).json({ error: errorMessage });
     }
 
