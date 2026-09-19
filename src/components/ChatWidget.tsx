@@ -22,10 +22,19 @@ type ChatResponse = {
 };
 
 const MAX_MESSAGE_LENGTH = 1200;
-const quickPrompts = [
+const allQuickPrompts = [
   "What are Jason's top skills?",
-  'Show me recent projects',
+  'Tell me about Jason\'s projects',
   'How can I contact Jason?',
+  'What does Jason do at Accenture?',
+  'What are Jason\'s hobbies?',
+  'Tell me about Jason\'s education',
+  'What games does Jason play?',
+  'What\'s Jason\'s favorite football team?',
+  'How can I reach Jason on LinkedIn?',
+  'What is Jason studying?',
+  'Tell me about Jason\'s internship',
+  'What\'s Jason\'s favorite Marvel character?',
 ];
 
 function createMessage(sender: ChatMessage['sender'], text: string, isError = false): ChatMessage {
@@ -45,14 +54,18 @@ export function ChatWidget({ className }: CopilotChatProps = {}) {
   const [isLoading, setIsLoading] = useState(false);
   const [isTyping, setIsTyping] = useState(false);
   const [messages, setMessages] = useState<ChatMessage[]>([
-    createMessage('bot', "Hi, I'm Jason's assistant. Ask me about his experience, skills, education, projects, or contact details."),
+    createMessage('bot', "Hi, I'm Jason's AI assistant. I can tell you about his experience, skills, education, projects, or contact details."),
   ]);
+  const [quickPrompts, setQuickPrompts] = useState<string[]>([]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const typingIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     const frameId = window.requestAnimationFrame(() => setIsMounted(true));
+    // Randomly select 4 prompts from allQuickPrompts
+    const shuffled = [...allQuickPrompts].sort(() => 0.5 - Math.random());
+    setQuickPrompts(shuffled.slice(0, 4));
     return () => {
       window.cancelAnimationFrame(frameId);
       if (typingIntervalRef.current) {
@@ -135,7 +148,9 @@ export function ChatWidget({ className }: CopilotChatProps = {}) {
 
       setIsLoading(false);
       setIsTyping(true);
-      await typeOutMessage(data.reply as string);
+      // Post-process to remove em dashes and replace with proper punctuation
+      const cleanedReply = (data.reply as string).replace(/—/g, ', ').replace(/–/g, '-');
+      await typeOutMessage(cleanedReply);
     } catch (requestError) {
       console.error('Chat request failed', requestError);
       setMessages((current) => [...current, createMessage('bot', 'I am unavailable right now. Please try again shortly.', true)]);
@@ -159,6 +174,9 @@ export function ChatWidget({ className }: CopilotChatProps = {}) {
     setIsLoading(false);
     setMessages([createMessage('bot', "Let's start fresh. Ask me about Jason's experience, skills, or projects.")]);
     setInput('');
+    // Regenerate random prompts
+    const shuffled = [...allQuickPrompts].sort(() => 0.5 - Math.random());
+    setQuickPrompts(shuffled.slice(0, 4));
   }
 
   if (!isMounted) return null;
@@ -192,7 +210,7 @@ export function ChatWidget({ className }: CopilotChatProps = {}) {
             </div>
             <div className="min-w-0 flex-1 overflow-hidden">
               <h2 className="flex items-center gap-1.5 text-base font-semibold tracking-tight text-white">
-                Jason's Assistant
+                Jason's AI Assistant
                 <Sparkles size={13} className="shrink-0 text-white" />
               </h2>
               <p className="mt-0.5 flex items-center gap-1.5 text-xs text-gray-500"><span className="h-1.5 w-1.5 rounded-full bg-gray-500" />Online - replies in seconds</p>
@@ -237,6 +255,7 @@ export function ChatWidget({ className }: CopilotChatProps = {}) {
                                 strong: ({ children }) => <strong className="font-bold">{children}</strong>,
                                 em: ({ children }) => <em className="italic">{children}</em>,
                                 p: ({ children }) => <p className="mb-1 last:mb-0">{children}</p>,
+                                a: ({ href, children }) => <a href={href} className="text-cyan-400 hover:text-cyan-300 underline" target="_blank" rel="noopener noreferrer">{children}</a>,
                               }}
                             >
                               {message.text}
@@ -270,15 +289,23 @@ export function ChatWidget({ className }: CopilotChatProps = {}) {
           {/* Footer */}
           <footer className="shrink-0 border-t border-gray-800 bg-black" style={{ flexShrink: 0, boxSizing: 'border-box', overflow: 'hidden', padding: '12px 16px', width: '100%' }}>
             {messages.length === 1 && !isLoading && !isTyping && (
-              <div className="flex max-w-full flex-wrap gap-2 border-b border-gray-800 bg-black" style={{ padding: '4px 0 10px', gap: 8, maxWidth: '100%', overflow: 'hidden' }}>
-                {quickPrompts.map((prompt) => (
+              <div className="grid grid-cols-2 gap-2 border-b border-gray-800 bg-black" style={{ padding: '4px 0 10px', maxWidth: '100%', overflow: 'hidden' }}>
+                {quickPrompts.map((prompt, index) => (
                   <button
                     type="button"
                     key={prompt}
                     onClick={() => void sendMessage(prompt)}
                     disabled={isLoading || isTyping}
-                    className="max-w-full rounded-full border border-gray-700 bg-gray-900 text-left text-gray-200 transition-colors hover:border-white hover:text-white disabled:pointer-events-none disabled:opacity-40"
-                    style={{ maxWidth: '100%', padding: '6px 10px', fontSize: 11, lineHeight: 1.25, whiteSpace: 'normal', overflowWrap: 'anywhere', boxSizing: 'border-box' }}
+                    className="rounded-lg border border-gray-700 bg-gray-900 text-left text-gray-200 transition-colors hover:border-white hover:text-white disabled:pointer-events-none disabled:opacity-40 animate-fade-in"
+                    style={{
+                      padding: '8px 10px',
+                      fontSize: 11,
+                      lineHeight: 1.25,
+                      whiteSpace: 'normal',
+                      overflowWrap: 'anywhere',
+                      boxSizing: 'border-box',
+                      animation: `fadeInUp 0.3s ease-out ${index * 0.1}s both`
+                    }}
                   >
                     {prompt}
                   </button>
@@ -295,7 +322,7 @@ export function ChatWidget({ className }: CopilotChatProps = {}) {
                   ref={inputRef}
                   value={input}
                   onChange={(event) => setInput(event.target.value)}
-                  placeholder="Message Jason's assistant..."
+                  placeholder="Message Jason's AI assistant..."
                   maxLength={MAX_MESSAGE_LENGTH}
                   aria-label="Message"
                   className="min-w-0 flex-1 bg-transparent px-2 text-sm text-white outline-none placeholder:text-gray-500"
