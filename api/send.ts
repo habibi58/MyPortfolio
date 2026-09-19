@@ -6,20 +6,8 @@ const requestLog = new Map<string, number[]>();
 
 function setCorsHeaders(req: VercelRequest, res: VercelResponse): void {
   const requestOrigin = typeof req.headers.origin === 'string' ? req.headers.origin : '';
-  const allowedOrigins = [
-    process.env.APP_URL,
-    process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : '',
-    'http://localhost:5173',
-    'http://localhost:3000',
-    'http://127.0.0.1:5173',
-    'http://127.0.0.1:3000',
-  ].filter((value): value is string => Boolean(value));
 
-  const isAllowedOrigin = requestOrigin !== '' && (
-    allowedOrigins.includes(requestOrigin) || requestOrigin.endsWith('.vercel.app')
-  );
-
-  if (isAllowedOrigin) {
+  if (requestOrigin) {
     res.setHeader('Access-Control-Allow-Origin', requestOrigin);
   }
 
@@ -103,10 +91,12 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return res.status(500).json({ error: 'Email service is not configured.' });
   }
 
-  const configuredSender = (process.env.CONTACT_EMAIL ?? 'onboarding@resend.dev').trim();
+  const configuredSender = (process.env.CONTACT_FROM_EMAIL ?? process.env.CONTACT_EMAIL ?? 'onboarding@resend.dev').trim();
+  const recipientEmail = (process.env.CONTACT_TO_EMAIL ?? process.env.CONTACT_EMAIL ?? 'jasonceloza90@gmail.com').trim();
+
   if (configuredSender.toLowerCase().endsWith('@gmail.com')) {
     return res.status(400).json({
-      error: 'Your sender email uses Gmail, but Resend requires a verified custom domain. Add and verify your domain at https://resend.com/domains, then set CONTACT_EMAIL to something like hello@yourdomain.com in Vercel.',
+      error: 'Your sender email uses Gmail, but Resend requires a verified custom domain. Add and verify your domain at https://resend.com/domains, then set CONTACT_FROM_EMAIL (or CONTACT_EMAIL) to something like hello@yourdomain.com in Vercel.',
     });
   }
 
@@ -118,8 +108,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         Authorization: `Bearer ${apiKey}`,
       },
       body: JSON.stringify({
-        from: `Portfolio Contact <${process.env.CONTACT_EMAIL ?? 'onboarding@resend.dev'}>`,
-        to: [process.env.CONTACT_EMAIL ?? 'jasonceloza90@gmail.com'],
+        from: `Portfolio Contact <${configuredSender}>`,
+        to: [recipientEmail],
         reply_to: trimmedEmail,
         subject: `New message from ${trimmedName}`,
         html: `
