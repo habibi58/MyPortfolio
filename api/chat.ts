@@ -27,10 +27,27 @@ const MAX_REQUESTS_PER_WINDOW = 12;
 const MAX_TRACKED_CLIENTS = 10_000;
 const requestLog = new Map<string, number[]>();
 
-function setCorsHeaders(res: VercelResponse): void {
-  res.setHeader('Access-Control-Allow-Origin', '*');
+function setCorsHeaders(req: VercelRequest, res: VercelResponse): void {
+  const requestOrigin = typeof req.headers.origin === 'string' ? req.headers.origin : '';
+  const allowedOrigins = [
+    process.env.APP_URL,
+    process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : '',
+    'http://localhost:5173',
+    'http://localhost:3000',
+    'http://127.0.0.1:5173',
+    'http://127.0.0.1:3000',
+  ].filter((value): value is string => Boolean(value));
+
+  const isAllowedOrigin = requestOrigin !== '' && (
+    allowedOrigins.includes(requestOrigin) || requestOrigin.endsWith('.vercel.app')
+  );
+
+  if (isAllowedOrigin) {
+    res.setHeader('Access-Control-Allow-Origin', requestOrigin);
+  }
+
   res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,POST');
-  res.setHeader('Access-Control-Allow-Headers', '*');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
 }
 
 function getClientKey(req: VercelRequest): string {
@@ -120,7 +137,7 @@ function parseRequest(body: unknown): { message: string; history: HistoryMessage
 }
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
-  setCorsHeaders(res);
+  setCorsHeaders(req, res);
 
   if (req.method === 'OPTIONS') {
     return res.status(200).json({ ok: true });
@@ -153,8 +170,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
   const apiKey = process.env.GROQ_API_KEY?.trim();
   if (!apiKey) {
-    console.error('GROQ_API_KEY is not configured on the server.');
-    return res.status(500).json({ error: 'GROQ_API_KEY is not configured on Vercel.' });
+    console.error('GROQ_API_KEY is missing on the server.');
+    return res.status(500).json({ error: 'AI service is not configured.' });
   }
 
   const primaryModel = process.env.GROQ_MODEL?.trim() || DEFAULT_MODEL;
@@ -188,11 +205,14 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     }
 
     const errorMessage = lastError instanceof Error ? lastError.message : String(lastError);
-    return res.status(502).json({ error: `AI service error: ${errorMessage}` });
+    const safeErrorMessage = errorMessage.includes('api key') || errorMessage.includes('API key')
+      ? 'AI service authentication failed.'
+      : 'AI service temporarily unavailable.';
+    return res.status(502).json({ error: safeErrorMessage });
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : String(error);
-    console.error('Groq chat request failed:', errorMessage, error);
-    return res.status(500).json({ error: `Backend Error: ${errorMessage}` });
+    console.error('Groq chat request failed:', { message: errorMessage });
+    return res.status(500).json({ error: 'Backend error.' });
   }
 }
 
