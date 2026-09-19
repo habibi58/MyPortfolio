@@ -3,6 +3,7 @@ import type { FormEvent } from 'react';
 import * as ReactDOM from 'react-dom';
 import { Bot, MessageSquare, RefreshCw, Send, Sparkles, X } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
+import { getLenisInstance } from '../hooks/useLenis';
 
 export interface ChatMessage {
   id: string;
@@ -91,13 +92,52 @@ export function ChatWidget({ className }: CopilotChatProps = {}) {
 
   useEffect(() => {
     const isMobileViewport = typeof window !== 'undefined' && window.innerWidth <= 767;
-    const shouldLockBackground = (isOpen || isClosing) && (isMobileViewport || isChatHovering);
+    if (!(isOpen || isClosing) || !isMobileViewport) {
+      return undefined;
+    }
+
+    const lenis = getLenisInstance();
+    if (lenis) {
+      lenis.stop();
+    }
+
+    const preventScroll = (event: Event) => {
+      const target = event.target as HTMLElement | null;
+      if (target && target.closest('[data-chat-scroll], [data-chat-panel]')) {
+        return;
+      }
+      event.preventDefault();
+    };
+
+    const preventKeyboardScroll = (event: KeyboardEvent) => {
+      if (['ArrowDown', 'ArrowUp', 'PageDown', 'PageUp', 'Space'].includes(event.key)) {
+        event.preventDefault();
+      }
+    };
+
+    window.addEventListener('wheel', preventScroll, { passive: false });
+    window.addEventListener('touchmove', preventScroll, { passive: false });
+    window.addEventListener('keydown', preventKeyboardScroll);
+
+    return () => {
+      if (lenis) {
+        lenis.start();
+      }
+      window.removeEventListener('wheel', preventScroll);
+      window.removeEventListener('touchmove', preventScroll);
+      window.removeEventListener('keydown', preventKeyboardScroll);
+    };
+  }, [isOpen, isClosing]);
+
+  useEffect(() => {
+    const isMobileViewport = typeof window !== 'undefined' && window.innerWidth <= 767;
+    const shouldLockBackground = (isOpen || isClosing) && isMobileViewport;
 
     if (!shouldLockBackground) return undefined;
 
     const preventScroll = (event: Event) => {
       const target = event.target as HTMLElement | null;
-      if (target && target.closest('[data-chat-scroll]')) {
+      if (target && target.closest('[data-chat-scroll], [data-chat-panel]')) {
         return;
       }
       event.preventDefault();
@@ -118,7 +158,7 @@ export function ChatWidget({ className }: CopilotChatProps = {}) {
       window.removeEventListener('touchmove', preventScroll);
       window.removeEventListener('keydown', preventKeyboardScroll);
     };
-  }, [isOpen, isChatHovering]);
+  }, [isOpen, isChatHovering, isClosing]);
 
   function typeOutMessage(fullText: string): Promise<void> {
     return new Promise<void>((resolve) => {
@@ -272,6 +312,7 @@ export function ChatWidget({ className }: CopilotChatProps = {}) {
         <section
           className="mb-4 flex flex-col overflow-hidden rounded-[24px] border border-gray-800 bg-black text-white shadow-[0_25px_50px_-12px_rgba(0,0,0,0.6)]"
           aria-label="Chat with Jason's assistant"
+          data-chat-panel
           onMouseEnter={() => setIsChatHovering(true)}
           onMouseLeave={() => setIsChatHovering(false)}
           style={{
@@ -325,7 +366,7 @@ export function ChatWidget({ className }: CopilotChatProps = {}) {
           </header>
 
           {/* Messages */}
-          <div className="min-h-0 flex-1 space-y-3 overflow-y-auto bg-gray-950" aria-live="polite" style={{ minHeight: 0, flex: '1 1 auto', overflowY: 'auto', overflowX: 'hidden', boxSizing: 'border-box', padding: '16px 16px 20px' }}>
+          <div className="min-h-0 flex-1 space-y-3 overflow-y-auto bg-gray-950" data-chat-scroll aria-live="polite" style={{ minHeight: 0, flex: '1 1 auto', overflowY: 'auto', overflowX: 'hidden', boxSizing: 'border-box', padding: '16px 16px 20px', scrollbarWidth: 'auto', msOverflowStyle: 'auto' }}>
             {messages.map((message) => {
               const isAssistant = message.sender === 'bot';
               return (
