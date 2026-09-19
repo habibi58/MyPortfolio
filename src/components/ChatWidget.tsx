@@ -50,6 +50,7 @@ function createMessage(sender: ChatMessage['sender'], text: string, isError = fa
 export function ChatWidget({ className }: CopilotChatProps = {}) {
   const [isMounted, setIsMounted] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
+  const [isChatHovering, setIsChatHovering] = useState(false);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [isTyping, setIsTyping] = useState(false);
@@ -77,6 +78,37 @@ export function ChatWidget({ className }: CopilotChatProps = {}) {
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages, isLoading, isTyping]);
+
+  useEffect(() => {
+    const isMobileViewport = typeof window !== 'undefined' && window.innerWidth <= 767;
+    const shouldLockBackground = isOpen && (isMobileViewport || isChatHovering);
+
+    if (!shouldLockBackground) return undefined;
+
+    const preventScroll = (event: Event) => {
+      const target = event.target as HTMLElement | null;
+      if (target && target.closest('[data-chat-scroll]')) {
+        return;
+      }
+      event.preventDefault();
+    };
+
+    const preventKeyboardScroll = (event: KeyboardEvent) => {
+      if (['ArrowDown', 'ArrowUp', 'PageDown', 'PageUp', 'Space'].includes(event.key)) {
+        event.preventDefault();
+      }
+    };
+
+    window.addEventListener('wheel', preventScroll, { passive: false });
+    window.addEventListener('touchmove', preventScroll, { passive: false });
+    window.addEventListener('keydown', preventKeyboardScroll);
+
+    return () => {
+      window.removeEventListener('wheel', preventScroll);
+      window.removeEventListener('touchmove', preventScroll);
+      window.removeEventListener('keydown', preventKeyboardScroll);
+    };
+  }, [isOpen, isChatHovering]);
 
   function typeOutMessage(fullText: string): Promise<void> {
     return new Promise<void>((resolve) => {
@@ -191,6 +223,8 @@ export function ChatWidget({ className }: CopilotChatProps = {}) {
         <section
           className="mb-4 flex flex-col overflow-hidden rounded-[24px] border border-gray-800 bg-black text-white shadow-[0_25px_50px_-12px_rgba(0,0,0,0.6)]"
           aria-label="Chat with Jason's assistant"
+          onMouseEnter={() => setIsChatHovering(true)}
+          onMouseLeave={() => setIsChatHovering(false)}
           style={{
             position: 'static',
             width: 'min(360px, calc(100vw - 32px))',
