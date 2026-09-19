@@ -165,10 +165,10 @@ export function ChatWidget({ className }: CopilotChatProps = {}) {
       const messageId = `${Date.now()}-${Math.floor(Math.random() * 1000)}`;
       const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
-      // Slower, more natural typing speed
+      // Faster typing for a snappier open experience
       const totalChars = fullText.length;
-      const targetDuration = Math.min(10000, Math.max(1500, totalChars * 60));
-      const stepInterval = 50; // 50ms per step
+      const targetDuration = Math.min(5000, Math.max(800, totalChars * 22));
+      const stepInterval = 24;
       const totalSteps = Math.max(1, Math.floor(targetDuration / stepInterval));
       const charsPerStep = Math.max(1, Math.ceil(totalChars / totalSteps));
 
@@ -310,7 +310,7 @@ export function ChatWidget({ className }: CopilotChatProps = {}) {
       >
       {shouldRenderPanel && (
         <section
-          className="mb-4 flex flex-col overflow-hidden rounded-[24px] border border-gray-800 bg-black text-white shadow-[0_25px_50px_-12px_rgba(0,0,0,0.6)]"
+          className="mb-4 flex flex-col overflow-hidden rounded-[24px] border border-gray-800 bg-[#000000] text-white shadow-[0_25px_50px_-12px_rgba(0,0,0,0.6)]"
           aria-label="Chat with Jason's assistant"
           data-chat-panel
           onMouseEnter={() => setIsChatHovering(true)}
