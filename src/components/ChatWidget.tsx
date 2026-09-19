@@ -22,6 +22,7 @@ type ChatResponse = {
 };
 
 const MAX_MESSAGE_LENGTH = 1200;
+const welcomeMessage = "Hi, I'm Jason's AI assistant. I can tell you about his experience, skills, education, projects, or contact details.";
 const allQuickPrompts = [
   "What are Jason's top skills?",
   'Tell me about Jason\'s projects',
@@ -50,13 +51,12 @@ function createMessage(sender: ChatMessage['sender'], text: string, isError = fa
 export function ChatWidget({ className }: CopilotChatProps = {}) {
   const [isMounted, setIsMounted] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
+  const [isClosing, setIsClosing] = useState(false);
   const [isChatHovering, setIsChatHovering] = useState(false);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [isTyping, setIsTyping] = useState(false);
-  const [messages, setMessages] = useState<ChatMessage[]>([
-    createMessage('bot', "Hi, I'm Jason's AI assistant. I can tell you about his experience, skills, education, projects, or contact details."),
-  ]);
+  const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [quickPrompts, setQuickPrompts] = useState<string[]>([]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const typingIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
@@ -80,8 +80,18 @@ export function ChatWidget({ className }: CopilotChatProps = {}) {
   }, [messages, isLoading, isTyping]);
 
   useEffect(() => {
+    if (!isOpen || isLoading || isTyping || messages.length > 0) return;
+
+    const timer = window.setTimeout(() => {
+      void typeOutMessage(welcomeMessage);
+    }, 260);
+
+    return () => window.clearTimeout(timer);
+  }, [isOpen, isLoading, isTyping, messages.length]);
+
+  useEffect(() => {
     const isMobileViewport = typeof window !== 'undefined' && window.innerWidth <= 767;
-    const shouldLockBackground = isOpen && (isMobileViewport || isChatHovering);
+    const shouldLockBackground = (isOpen || isClosing) && (isMobileViewport || isChatHovering);
 
     if (!shouldLockBackground) return undefined;
 
@@ -204,22 +214,61 @@ export function ChatWidget({ className }: CopilotChatProps = {}) {
     }
     setIsTyping(false);
     setIsLoading(false);
-    setMessages([createMessage('bot', "Let's start fresh. Ask me about Jason's experience, skills, or projects.")]);
+    setMessages([]);
     setInput('');
     // Regenerate random prompts
     const shuffled = [...allQuickPrompts].sort(() => 0.5 - Math.random());
     setQuickPrompts(shuffled.slice(0, 4));
   }
 
+  function closeChat(): void {
+    if (isClosing) return;
+    setIsClosing(true);
+    window.setTimeout(() => {
+      setIsOpen(false);
+      setIsClosing(false);
+    }, 260);
+  }
+
   if (!isMounted) return null;
 
+  const shouldRenderPanel = isOpen || isClosing;
+
   return ReactDOM.createPortal(
-    <div
-      className={`fixed bottom-6 right-6 z-[999999] flex flex-col items-end${className ? ` ${className}` : ''}`}
-      data-lenis-prevent
-      style={{ position: 'fixed', bottom: 24, right: 24, zIndex: 999999, pointerEvents: 'auto', width: 'max-content', maxWidth: 'calc(100vw - 32px)', boxSizing: 'border-box' }}
-    >
-      {isOpen && (
+    <>
+      <style>{`
+        @keyframes chat-in {
+          0% {
+            opacity: 0;
+            transform: translateY(26px) scale(0.9);
+          }
+          60% {
+            opacity: 1;
+            transform: translateY(-4px) scale(1.01);
+          }
+          100% {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+          }
+        }
+
+        @keyframes chat-out {
+          0% {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+          }
+          100% {
+            opacity: 0;
+            transform: translateY(20px) scale(0.96);
+          }
+        }
+      `}</style>
+      <div
+        className={`fixed bottom-6 right-6 z-[999999] flex flex-col items-end${className ? ` ${className}` : ''}`}
+        data-lenis-prevent
+        style={{ position: 'fixed', bottom: 24, right: 24, zIndex: 999999, pointerEvents: 'auto', width: 'max-content', maxWidth: 'calc(100vw - 32px)', boxSizing: 'border-box' }}
+      >
+      {shouldRenderPanel && (
         <section
           className="mb-4 flex flex-col overflow-hidden rounded-[24px] border border-gray-800 bg-black text-white shadow-[0_25px_50px_-12px_rgba(0,0,0,0.6)]"
           aria-label="Chat with Jason's assistant"
@@ -228,13 +277,18 @@ export function ChatWidget({ className }: CopilotChatProps = {}) {
           style={{
             position: 'static',
             width: 'min(360px, calc(100vw - 32px))',
-            height: 'min(520px, calc(100dvh - 48px))',
+            height: 'min(620px, calc(100dvh - 32px))',
             maxWidth: 'calc(100vw - 32px)',
-            maxHeight: 'calc(100dvh - 48px)',
+            maxHeight: 'calc(100dvh - 32px)',
             display: 'flex',
             flexDirection: 'column',
             overflow: 'hidden',
             boxSizing: 'border-box',
+            opacity: 1,
+            transform: 'translateY(0) scale(1)',
+            transformOrigin: 'bottom right',
+            willChange: 'transform, opacity',
+            animation: isClosing ? 'chat-out 0.3s cubic-bezier(0.2, 0, 0.2, 1) both' : 'chat-in 0.45s cubic-bezier(0.22, 1, 0.36, 1) both',
           }}
         >
           <header className="relative z-10 flex min-w-0 shrink-0 items-center gap-3 overflow-hidden border-b border-gray-800 bg-black" style={{ position: 'relative', zIndex: 10, backgroundColor: '#000000', overflow: 'hidden', flexShrink: 0, padding: '12px 16px', boxSizing: 'border-box' }}>
@@ -262,7 +316,7 @@ export function ChatWidget({ className }: CopilotChatProps = {}) {
               <button
                 className="rounded-xl p-2 text-gray-400 transition-colors hover:bg-gray-800 hover:text-white"
                 type="button"
-                onClick={() => setIsOpen(false)}
+                onClick={closeChat}
                 aria-label="Close chat"
               >
                 <X size={18} />
@@ -298,7 +352,7 @@ export function ChatWidget({ className }: CopilotChatProps = {}) {
                             message.text
                           )}
                     </div>
-                        <span className="text-[10px] text-gray-500" style={{ padding: '0 4px' }}>{message.time}</span>
+                        <span className="text-[10px] text-gray-500" style={{ padding: '4px 4px 0' }}>{message.time}</span>
                   </div>
                 </div>
               );
@@ -372,23 +426,32 @@ export function ChatWidget({ className }: CopilotChatProps = {}) {
                 </button>
               </form>
             </div>
-            <p className="px-4 py-3 text-center text-[10px] text-gray-500">Conversations are not saved after the session.</p>
+            <p
+              className="px-4 text-center text-[11px] leading-relaxed text-gray-500"
+              style={{ marginTop: 6, paddingBottom: 1, paddingTop: 0 }}
+            >
+              Conversations are not saved after the session.
+            </p>
           </footer>
         </section>
       )}
 
-      {!isOpen && (
+      {!isOpen && !isClosing && (
         <button
           className="group relative grid h-14 w-14 place-items-center rounded-full bg-black text-white shadow-[0_18px_35px_-12px_rgba(0,0,0,0.55)] transition-transform duration-300 hover:scale-105 active:scale-95"
           type="button"
-          onClick={() => setIsOpen(true)}
+          onClick={() => {
+            setIsClosing(false);
+            setIsOpen(true);
+          }}
           aria-label="Open chat assistant"
         >
           <span className="absolute inset-0 rounded-full bg-gray-500/30 opacity-0 blur-md transition-opacity group-hover:opacity-100" />
           <MessageSquare className="relative" size={22} />
         </button>
       )}
-    </div>,
+      </div>
+    </>,
     document.body,
   );
 }
