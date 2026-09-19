@@ -26,7 +26,7 @@ export const SectionHeading = ({
       {subtitle && (
         <div className={`flex items-center gap-4 mb-4 ${align === 'center' ? 'justify-center' : 'justify-start'}`}>
           <span className="h-1 w-12 md:w-16 rounded-full bg-slate-600" />
-          <p className="text-4xl md:text-5xl lg:text-6xl font-extrabold uppercase tracking-[0.2em] text-slate-400">
+          <p className="text-2xl sm:text-3xl md:text-5xl lg:text-6xl font-extrabold uppercase tracking-[0.12em] sm:tracking-[0.2em] text-slate-400">
             {subtitle}
           </p>
           <span className="h-1 w-12 md:w-16 rounded-full bg-slate-600" />
