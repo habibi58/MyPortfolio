@@ -531,29 +531,6 @@ export const ExperienceSection = () => {
         backgroundSize: '60px 60px',
       }} />
 
-      {/* particles */}
-      <div className="pointer-events-none absolute inset-0 overflow-hidden">
-        {Array.from({ length: 18 }).map((_, i) => (
-          <div key={i} style={{
-            position: 'absolute',
-            width:  `${Math.random() * 2 + 1}px`,
-            height: `${Math.random() * 2 + 1}px`,
-            left:   `${Math.random() * 100}%`,
-            bottom: '-4px', borderRadius: '50%', background: '#fff',
-            opacity: Math.random() * 0.12 + 0.03,
-            animation: `float-up ${Math.random() * 14 + 10}s ${Math.random() * 8}s linear infinite`,
-          }} />
-        ))}
-        <style>{`
-          @keyframes float-up {
-            0%   { transform:translateY(0) translateX(0); opacity:0; }
-            15%  { opacity:1; }
-            85%  { opacity:0.3; }
-            100% { transform:translateY(-100vh) translateX(25px); opacity:0; }
-          }
-        `}</style>
-      </div>
-
       {/* lightbox */}
       <Lightbox state={lightbox} onClose={closeLightbox} />
 
