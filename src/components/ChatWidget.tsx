@@ -479,7 +479,7 @@ export function ChatWidget({ className }: CopilotChatProps = {}) {
 
       {!isOpen && !isClosing && (
         <button
-          className="group relative grid h-14 w-14 place-items-center rounded-full bg-black text-white shadow-[0_18px_35px_-12px_rgba(0,0,0,0.55)] transition-transform duration-300 hover:scale-105 active:scale-95"
+          className="group relative grid h-14 w-14 place-items-center rounded-full border border-white/20 bg-black/30 text-white shadow-[0_18px_35px_-12px_rgba(0,0,0,0.55)] backdrop-blur-md transition-transform duration-300 hover:scale-105 active:scale-95"
           type="button"
           onClick={() => {
             setIsClosing(false);
@@ -487,7 +487,7 @@ export function ChatWidget({ className }: CopilotChatProps = {}) {
           }}
           aria-label="Open chat assistant"
         >
-          <span className="absolute inset-0 rounded-full bg-gray-500/30 opacity-0 blur-md transition-opacity group-hover:opacity-100" />
+          <span className="absolute inset-0 rounded-full bg-white/10 opacity-0 blur-md transition-opacity group-hover:opacity-100" />
           <MessageSquare className="relative" size={22} />
         </button>
       )}

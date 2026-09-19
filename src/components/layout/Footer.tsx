@@ -1,13 +1,9 @@
 // Footer Component
 import { motion } from 'framer-motion';
-import { ChevronUp, MapPin, Phone } from 'lucide-react';
+import { MapPin, Phone } from 'lucide-react';
 import { portfolioOwner } from '../../data';
 
 export const Footer = () => {
-  const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
-
   const socialLinks: any[] = [];
 
   const quickLinks = ['About', 'Projects', 'Skills', 'Contact'];
@@ -35,25 +31,7 @@ export const Footer = () => {
   };
 
   return (
-    <footer className="relative bg-black text-white overflow-hidden py-16 sm:py-24">
-      {/* Subtle floating particles */}
-      <div className="absolute inset-0 pointer-events-none overflow-hidden">
-        {Array.from({ length: 15 }).map((_, i) => (
-          <div
-            key={i}
-            className="absolute rounded-full bg-white"
-            style={{
-              width: `${Math.random() * 1.5 + 0.5}px`,
-              height: `${Math.random() * 1.5 + 0.5}px`,
-              left: `${Math.random() * 100}%`,
-              bottom: '-4px',
-              opacity: Math.random() * 0.1 + 0.02,
-              animation: `float-up ${Math.random() * 20 + 15}s ${Math.random() * 10}s linear infinite`,
-            }}
-          />
-        ))}
-      </div>
-
+    <footer className="relative bg-transparent/30 backdrop-blur-[2px] text-white overflow-hidden py-16 sm:py-24">
       {/* Ambient glow */}
       <div className="absolute top-0 left-1/2 w-[600px] h-[600px] rounded-full bg-blue-400/[0.02] blur-[120px] -translate-x-1/2 pointer-events-none" />
       <div className="absolute bottom-0 right-0 w-[400px] h-[400px] rounded-full bg-purple-500/[0.02] blur-[100px] pointer-events-none" />
@@ -186,32 +164,6 @@ export const Footer = () => {
           </div>
         </div>
       </div>
-
-      {/* Floating Back to Top Button */}
-      <motion.button
-        onClick={scrollToTop}
-        initial={{ opacity: 0, scale: 0 }}
-        whileInView={{ opacity: 1, scale: 1 }}
-        viewport={{ once: true }}
-        whileHover={{ y: -6, scale: 1.1 }}
-        whileTap={{ scale: 0.9 }}
-        className="fixed bottom-4 right-4 sm:bottom-8 sm:right-8 p-2.5 sm:p-3 rounded-full transition-all duration-300 z-50 flex items-center justify-center"
-        style={{
-          background: 'rgba(59, 130, 246, 0.15)',
-          border: '0.5px solid rgba(255,255,255,0.15)',
-          color: '#3b82f6',
-          boxShadow: '0 0 20px rgba(59,130,246,0.2)',
-        }}
-        onMouseEnter={(e) => {
-          e.currentTarget.style.boxShadow = '0 0 40px rgba(59,130,246,0.4)';
-        }}
-        onMouseLeave={(e) => {
-          e.currentTarget.style.boxShadow = '0 0 20px rgba(59,130,246,0.2)';
-        }}
-        aria-label="Scroll to top"
-      >
-        <ChevronUp size={18} className="sm:w-5 sm:h-5" />
-      </motion.button>
 
       {/* float-up keyframe */}
       <style>{`
