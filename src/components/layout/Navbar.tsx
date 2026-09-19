@@ -25,23 +25,38 @@ export const Navbar = () => {
   }, [activeSection]);
 
   useEffect(() => {
+    let frameId = 0;
+
     const handleScroll = () => {
-      const sections = navItems.map((item) => item.id);
-      for (const section of sections) {
-        const element = document.getElementById(section);
-        if (element) {
+      cancelAnimationFrame(frameId);
+      frameId = requestAnimationFrame(() => {
+        const sections = navItems.map((item) => item.id);
+        let activeId = sections[0] ?? 'home';
+        let currentBest = Number.POSITIVE_INFINITY;
+
+        for (const section of sections) {
+          const element = document.getElementById(section);
+          if (!element) continue;
+
           const rect = element.getBoundingClientRect();
-          if (rect.top <= 100 && rect.bottom >= 100) {
-            setActiveSection(section);
-            break;
+          const distance = Math.abs(rect.top - 100);
+          if (distance < currentBest) {
+            currentBest = distance;
+            activeId = section;
           }
         }
-      }
+
+        setActiveSection((previous) => (previous === activeId ? previous : activeId));
+      });
     };
 
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', handleScroll, { passive: true });
     handleScroll();
-    return () => window.removeEventListener('scroll', handleScroll);
+
+    return () => {
+      cancelAnimationFrame(frameId);
+      window.removeEventListener('scroll', handleScroll);
+    };
   }, []);
 
   const handleNavClick = (href: string) => {

@@ -107,8 +107,14 @@ const Particles = ({
     const container = containerRef.current;
     if (!container) return;
 
+    const reducedMotion = typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
+    const effectivePixelRatio = reducedMotion || isMobile ? 1 : pixelRatio;
+    const effectiveCount = reducedMotion || isMobile ? Math.min(particleCount, 48) : particleCount;
+    const effectiveSpeed = reducedMotion || isMobile ? 0.02 : speed;
+
     const renderer = new Renderer({
-      dpr: pixelRatio,
+      dpr: effectivePixelRatio,
       depth: false,
       alpha: true
     });
@@ -139,7 +145,7 @@ const Particles = ({
       window.addEventListener('mousemove', handleMouseMove, true);
     }
 
-    const count = particleCount;
+    const count = effectiveCount;
     const positions = new Float32Array(count * 3);
     const randoms = new Float32Array(count * 4);
     const colors = new Float32Array(count * 3);
@@ -194,7 +200,7 @@ const Particles = ({
 
       program.uniforms.uTime.value = elapsed * 0.001;
 
-      if (moveParticlesOnHover) {
+      if (moveParticlesOnHover && !reducedMotion && !isMobile) {
         particles.position.x = -mouseRef.current.x * particleHoverFactor;
         particles.position.y = -mouseRef.current.y * particleHoverFactor;
       } else {
@@ -202,10 +208,10 @@ const Particles = ({
         particles.position.y = 0;
       }
 
-      if (!disableRotation) {
+      if (!disableRotation && !reducedMotion && !isMobile) {
         particles.rotation.x = Math.sin(elapsed * 0.0002) * 0.1;
         particles.rotation.y = Math.cos(elapsed * 0.0005) * 0.15;
-        particles.rotation.z += 0.01 * speed;
+        particles.rotation.z += 0.01 * effectiveSpeed;
       }
 
       renderer.render({ scene: particles, camera });

@@ -190,6 +190,11 @@ export const HeroSection = () => {
   const stageRef = useRef(null);
   const { rARef, rBRef } = useRoleAnimator();
 
+  const prefersReducedMotion = typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
+  const particleCount = prefersReducedMotion || isMobile ? 40 : 180;
+  const particleSpeed = prefersReducedMotion || isMobile ? 0.04 : 0.15;
+
   const scrollToProjects = () => {
     const projectsSection = document.getElementById('projects');
     if (projectsSection) projectsSection.scrollIntoView({ behavior: 'smooth' });
@@ -200,22 +205,24 @@ export const HeroSection = () => {
       {/* Mobile-only style injection */}
       <style dangerouslySetInnerHTML={{ __html: HERO_MOBILE_STYLES }} />
 
-      <div className="fixed inset-0 z-0">
-        <ParticlesBackground
-          key="particles-dark"
-          particleColors={particleColors}
-          particleCount={500}
-          particleSpread={20}
-          speed={0.15}
-          particleBaseSize={150}
-          moveParticlesOnHover
-          particleHoverFactor={1}
-          alphaParticles={false}
-          disableRotation={false}
-          pixelRatio={typeof window !== 'undefined' ? Math.min(window.devicePixelRatio, 2) : 1}
-          overlayClassName=""
-        />
-      </div>
+      {!isMobile && (
+        <div className="fixed inset-0 z-0">
+          <ParticlesBackground
+            key="particles-dark"
+            particleColors={particleColors}
+            particleCount={particleCount}
+            particleSpread={20}
+            speed={particleSpeed}
+            particleBaseSize={150}
+            moveParticlesOnHover={!prefersReducedMotion}
+            particleHoverFactor={1}
+            alphaParticles={false}
+            disableRotation={prefersReducedMotion}
+            pixelRatio={typeof window !== 'undefined' ? Math.min(window.devicePixelRatio, 2) : 1}
+            overlayClassName=""
+          />
+        </div>
+      )}
 
       <section
         id="home"
