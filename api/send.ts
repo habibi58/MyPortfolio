@@ -56,6 +56,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
+  const clientKey = getClientKey(req);
+  if (isRateLimited(clientKey)) {
+    return res.status(429).json({ error: 'Too many messages. Please wait a minute and try again.' });
+  }
+
   let body: unknown = req.body;
   if (typeof body === 'string') {
     try {
@@ -79,8 +84,20 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   }
 
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const blockedSenders = new Set([
+    'jasonceloza90@gmail.com',
+    'jasonceloza@gmail.com',
+    'habibi58@gmail.com',
+    'hello@jasonceloza.com',
+    'hello@yourdomain.com',
+  ].map((value) => value.toLowerCase()));
+
   if (!emailRegex.test(trimmedEmail) || trimmedName.length > 100 || trimmedMessage.length > 2000) {
     return res.status(400).json({ error: 'Invalid form data.' });
+  }
+
+  if (blockedSenders.has(trimmedEmail.toLowerCase())) {
+    return res.status(400).json({ error: 'This email address is not allowed for contact submissions.' });
   }
 
   const apiKey = process.env.RESEND_API_KEY?.trim();
