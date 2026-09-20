@@ -144,10 +144,6 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         errorMessage = text || errorMessage;
       }
 
-      if (/gmail\.com.*not verified|domain.*not verified|not verified/i.test(errorMessage)) {
-        errorMessage = 'Your Resend sender domain is not verified. Add and verify your domain at https://resend.com/domains, then set CONTACT_EMAIL to an address on that domain (for example: hello@yourdomain.com).';
-      }
-
       return res.status(response.status).json({ error: errorMessage });
     }
 
