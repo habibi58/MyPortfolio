@@ -70,8 +70,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         Authorization: `Bearer ${process.env.RESEND_API_KEY}`,
       },
       body: JSON.stringify({
-        from: `Portfolio Contact <${process.env.CONTACT_EMAIL ?? 'onboarding@resend.dev'}>`,
-        to: [process.env.CONTACT_EMAIL ?? 'jasonceloza90@gmail.com'],
+        from: 'Portfolio Contact <onboarding@resend.dev>',
+        to: [process.env.CONTACT_TO_EMAIL ?? process.env.CONTACT_EMAIL ?? 'jasonceloza90@gmail.com'],
         subject: `New message from ${name}`,
         html: `
           <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 24px; background: #0f172a; color: #e2e8f0; border-radius: 12px;">
