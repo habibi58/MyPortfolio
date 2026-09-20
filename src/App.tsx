@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Toaster } from 'react-hot-toast';
 import { ChatWidget, Navbar, Footer, LoadingScreen } from './components';
 import { Home } from './pages';
@@ -7,6 +7,16 @@ import { useLenis } from './hooks';
 function App() {
   useLenis();
   const [loading, setLoading] = useState(true);
+  const [isMobile, setIsMobile] = useState(() => (typeof window !== 'undefined' ? window.innerWidth < 768 : false));
+
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 768);
+
+    handleResize();
+    window.addEventListener('resize', handleResize);
+
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   return (
     <>
@@ -23,7 +33,7 @@ function App() {
           <Footer />
           <ChatWidget />
           <Toaster
-            position="bottom-right"
+            position={isMobile ? 'top-center' : 'top-right'}
             toastOptions={{
               duration: 4000,
               style: {
@@ -33,6 +43,10 @@ function App() {
                 border: '1px solid rgba(148, 163, 184, 0.1)',
                 boxShadow: '0 20px 40px rgba(0, 0, 0, 0.3)',
                 fontFamily: 'Inter, sans-serif',
+                maxWidth: isMobile ? 'calc(100vw - 20px)' : '420px',
+                width: isMobile ? 'calc(100vw - 20px)' : 'auto',
+                marginTop: isMobile ? '0' : '60px',
+                marginRight: isMobile ? '0' : '90px',
               },
             }}
           />
