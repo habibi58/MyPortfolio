@@ -17,6 +17,7 @@ import {
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import { projectsData, type Project } from '../../data';
+import { GithubContributions } from '../ui/GithubContributions/GithubContributions';
 
 /* ═══════════════════════════════════════════════════════════════════════
    CONFIG
@@ -618,7 +619,7 @@ export const ProjectsSection = () => {
 
       {/* ── Two-Column Layout ── */}
       <div
-        className="pss-list px-3 sm:px-4 sm:px-6 lg:px-8 pb-32"
+        className="pss-list px-3 sm:px-4 sm:px-6 lg:px-8 pb-20"
         style={{ maxWidth: '64rem', marginLeft: 'auto', marginRight: 'auto' }}
       >
         {projectsData.map((project, index) => (
@@ -705,6 +706,13 @@ export const ProjectsSection = () => {
             </div>
           </motion.div>
         ))}
+      </div>
+
+      <div
+        className="px-3 pb-8 sm:px-4 sm:px-6 lg:px-8"
+        style={{ maxWidth: '64rem', margin: '5.5rem auto 0' }}
+      >
+        <GithubContributions username="habibi58" />
       </div>
 
       {/* ── Mobile progress dots (hidden on desktop via CSS) ── */}

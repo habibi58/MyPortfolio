@@ -23,6 +23,7 @@ export { ParticlesBackground } from './ui/Particles/ParticlesBackground';
 export { default as GooeyNav } from './ui/GooeyNav/GooeyNav';
 export { default as LoadingScreen } from './ui/LoadingScreen/LoadingScreen';
 export { SocialIcons } from './ui/SocialIcons/SocialIcons';
+export { GithubContributions } from './ui/GithubContributions/GithubContributions';
 export { default as BlurText } from './ui/BlurText/BlurText';
 export { default as Lanyard } from './ui/Lanyard/Lanyard';
 export { default as ScrollFloat } from './ui/ScrollFloat/ScrollFloat';

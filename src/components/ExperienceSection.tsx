@@ -645,7 +645,7 @@ export const ExperienceSection = () => {
       {/* body */}
       <div className="relative max-w-6xl mx-auto px-3 sm:px-6 lg:px-8">
         <div style={{ marginBottom: '60px' }}>
-          <SectionHeading subtitle="CAREER PATH" title="Experience" description="My professional journey" />
+          <SectionHeading title="Experience" description="My professional journey" />
         </div>
 
         <div className="relative">
