@@ -94,12 +94,6 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   const configuredSender = (process.env.CONTACT_FROM_EMAIL ?? process.env.CONTACT_EMAIL ?? 'onboarding@resend.dev').trim();
   const recipientEmail = (process.env.CONTACT_TO_EMAIL ?? process.env.CONTACT_EMAIL ?? 'jasonceloza90@gmail.com').trim();
 
-  if (configuredSender.toLowerCase().endsWith('@gmail.com')) {
-    return res.status(400).json({
-      error: 'Your sender email uses Gmail, but Resend requires a verified custom domain. Add and verify your domain at https://resend.com/domains, then set CONTACT_FROM_EMAIL (or CONTACT_EMAIL) to something like hello@yourdomain.com in Vercel.',
-    });
-  }
-
   try {
     const response = await fetch('https://api.resend.com/emails', {
       method: 'POST',
