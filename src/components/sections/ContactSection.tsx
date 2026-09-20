@@ -169,6 +169,10 @@ export const ContactSection = () => {
               <motion.div variants={fadeUpVariants} className="flex flex-col gap-3">
                 {contactMethods.map((method, index) => {
                   const Icon = method.icon;
+                  const isEmail = method.label === 'Email';
+                  const isPhone = method.label === 'Phone';
+                  const href = isEmail ? `mailto:${method.value}` : isPhone ? `tel:${method.value}` : undefined;
+                  
                   return (
                     <motion.div
                       key={index}
@@ -193,9 +197,19 @@ export const ContactSection = () => {
                         >
                           {method.label.toUpperCase()}
                         </span>
-                        <span className="text-sm font-medium" style={{ color: 'rgba(255,255,255,0.75)' }}>
-                          {method.value}
-                        </span>
+                        {href ? (
+                          <a
+                            href={href}
+                            className="text-sm font-medium hover:underline transition-all"
+                            style={{ color: 'rgba(255,255,255,0.75)' }}
+                          >
+                            {method.value}
+                          </a>
+                        ) : (
+                          <span className="text-sm font-medium" style={{ color: 'rgba(255,255,255,0.75)' }}>
+                            {method.value}
+                          </span>
+                        )}
                       </div>
                     </motion.div>
                   );

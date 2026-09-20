@@ -40,6 +40,12 @@ function useRoleAnimator() {
    Every rule is inside @media (max-width: 767px) — desktop untouched.
    ═══════════════════════════════════════════════════════════════════════ */
 const HERO_MOBILE_STYLES = `
+@keyframes role-shine {
+  0%   { background-position: 200% 0; }
+  50%  { background-position: 0% 0; }
+  100% { background-position: -200% 0; }
+}
+
 @media (max-width: 767px) {
 
   /* Left column — center everything */
@@ -55,7 +61,7 @@ const HERO_MOBILE_STYLES = `
   /* Name (BlurText wrapper) */
   .hero-name {
     text-align: center !important;
-    font-size: 1.35rem !important;
+    font-size: 1.8rem !important;
     line-height: 1.2 !important;
     margin-bottom: 16px !important;
     display: flex !important;
@@ -84,9 +90,9 @@ const HERO_MOBILE_STYLES = `
   /* Animated role stage — wide enough for longest role */
   .hero-role-stage {
     min-width: 0 !important;
-    max-width: 220px !important;
-    width: 220px !important;
-    height: 28px !important;
+    max-width: 260px !important;
+    width: 260px !important;
+    height: 34px !important;
     margin: 0 !important;
     flex-shrink: 1 !important;
     overflow: visible !important;
@@ -94,9 +100,15 @@ const HERO_MOBILE_STYLES = `
 
   /* Role slot font size */
   .hero-role-slot {
-    font-size: 16px !important;
-    justify-content: flex-start !important;
+    font-size: 18px !important;
+    justify-content: center !important;
+    text-align: center !important;
     white-space: nowrap !important;
+  }
+
+  .hero-role-stage > span {
+    justify-content: center !important;
+    text-align: center !important;
   }
 
   /* Description — hidden on mobile */
@@ -190,6 +202,11 @@ export const HeroSection = () => {
   const stageRef = useRef(null);
   const { rARef, rBRef } = useRoleAnimator();
 
+  const prefersReducedMotion = typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
+  const particleCount = prefersReducedMotion || isMobile ? 90 : 180;
+  const particleSpeed = prefersReducedMotion ? 0.06 : isMobile ? 0.5 : 0.15;
+
   const scrollToProjects = () => {
     const projectsSection = document.getElementById('projects');
     if (projectsSection) projectsSection.scrollIntoView({ behavior: 'smooth' });
@@ -204,14 +221,14 @@ export const HeroSection = () => {
         <ParticlesBackground
           key="particles-dark"
           particleColors={particleColors}
-          particleCount={500}
-          particleSpread={20}
-          speed={0.15}
-          particleBaseSize={150}
-          moveParticlesOnHover
+          particleCount={particleCount}
+          particleSpread={isMobile ? 12 : 20}
+          speed={particleSpeed}
+          particleBaseSize={isMobile ? 120 : 150}
+          moveParticlesOnHover={!prefersReducedMotion && !isMobile}
           particleHoverFactor={1}
           alphaParticles={false}
-          disableRotation={false}
+          disableRotation={prefersReducedMotion || isMobile}
           pixelRatio={typeof window !== 'undefined' ? Math.min(window.devicePixelRatio, 2) : 1}
           overlayClassName=""
         />
@@ -279,10 +296,10 @@ export const HeroSection = () => {
               {/* ── Role Animator ── */}
               {(() => {
                 const isMobile = typeof window !== 'undefined' && window.innerWidth <= 767;
-                const stageFontSize = isMobile ? '18px' : 'clamp(24px, 3.5vw, 40px)';
-                const stageWidth = isMobile ? '100%' : '100%';
-                const stageMinWidth = isMobile ? '220px' : '300px';
-                const stageMaxWidth = isMobile ? '100%' : '600px';
+                const stageFontSize = isMobile ? '24px' : 'clamp(24px, 3.5vw, 40px)';
+                const stageWidth = isMobile ? '100%' : 'auto';
+                const stageMinWidth = isMobile ? '220px' : '420px';
+                const stageMaxWidth = isMobile ? '100%' : 'max-content';
                 const stageHeight = isMobile ? '28px' : 'clamp(36px, 4.5vw, 52px)';
                 const stageOverflow = 'visible';
                 return (
@@ -323,6 +340,7 @@ export const HeroSection = () => {
                       {/* Animated role stage */}
                       <div
                         ref={stageRef}
+                        className="hero-role-stage hero-role-slot"
                         style={{
                           position: 'relative',
                           display: 'inline-block',
@@ -334,6 +352,7 @@ export const HeroSection = () => {
                           perspective: '800px',
                           transformStyle: 'preserve-3d',
                           flexShrink: 0,
+                          whiteSpace: 'nowrap',
                         }}
                       >
                         {/* Slot A */}
@@ -341,11 +360,18 @@ export const HeroSection = () => {
                           ref={rARef}
                           style={{
                             position: 'absolute', inset: 0,
-                            display: 'flex', alignItems: 'center',
+                            display: 'flex', alignItems: 'center', justifyContent: isMobile ? 'center' : 'flex-start',
                             fontSize: stageFontSize,
                             fontWeight: 700, letterSpacing: '-1px',
                             whiteSpace: 'nowrap',
+                            textAlign: 'center',
                             color: COLORS[0],
+                            background: 'linear-gradient(120deg, #d8b4fe 0%, #a78bfa 25%, #f5d0fe 50%, #a78bfa 75%, #d8b4fe 100%)',
+                            backgroundSize: '220% 100%',
+                            backgroundClip: 'text',
+                            WebkitBackgroundClip: 'text',
+                            WebkitTextFillColor: 'transparent',
+                            animation: 'role-shine 7s linear infinite',
                             fontFamily: 'inherit',
                           }}
                         />
@@ -354,11 +380,18 @@ export const HeroSection = () => {
                           ref={rBRef}
                           style={{
                             position: 'absolute', inset: 0,
-                            display: 'flex', alignItems: 'center',
+                            display: 'flex', alignItems: 'center', justifyContent: isMobile ? 'center' : 'flex-start',
                             fontSize: stageFontSize,
                             fontWeight: 700, letterSpacing: '-1px',
                             whiteSpace: 'nowrap',
+                            textAlign: 'center',
                             opacity: 0,
+                            background: 'linear-gradient(120deg, #d8b4fe 0%, #a78bfa 25%, #f5d0fe 50%, #a78bfa 75%, #d8b4fe 100%)',
+                            backgroundSize: '220% 100%',
+                            backgroundClip: 'text',
+                            WebkitBackgroundClip: 'text',
+                            WebkitTextFillColor: 'transparent',
+                            animation: 'role-shine 7s linear infinite',
                             fontFamily: 'inherit',
                           }}
                         />

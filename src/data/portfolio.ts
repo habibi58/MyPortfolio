@@ -29,6 +29,7 @@ export const portfolioOwner = {
     facebook: 'https://www.facebook.com/mdjason.celoza/',
     twitter: 'https://www.instagram.com/mdjason_celoza/',
     instagram: 'https://www.instagram.com/mdjason_celoza/',
+    tiktok: 'https://www.tiktok.com/@mdjason.dev?is_from_webapp=1&sender_device=pc',
     youtube: 'https://youtube.com',
     email: 'jasonceloza90@gmail.com',
   },

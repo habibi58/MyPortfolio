@@ -8,6 +8,7 @@ import {
   FaLinkedinIn,
   FaGithub,
 } from 'react-icons/fa';
+import { FaTiktok } from 'react-icons/fa6';
 import { portfolioOwner } from '../../../data';
 
 interface SocialLink {
@@ -32,6 +33,13 @@ const socialLinks: SocialLink[] = [
     Icon: FaInstagram,
     brandColor: '#E4405F',
     glowColor: 'rgba(228, 64, 95, 0.45)',
+  },
+  {
+    label: 'TikTok',
+    url: portfolioOwner.social.tiktok ?? 'https://www.tiktok.com',
+    Icon: FaTiktok,
+    brandColor: '#000000',
+    glowColor: 'rgba(0, 0, 0, 0.4)',
   },
   {
     label: 'LinkedIn',

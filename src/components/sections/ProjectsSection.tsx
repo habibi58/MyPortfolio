@@ -512,53 +512,57 @@ export const ProjectsSection = () => {
   const [activeIndex, setActiveIndex] = useState(0);
   const itemRefs = useRef<(HTMLDivElement | null)[]>([]);
 
-  /* ── Scroll-based active detection ──
-     Uses scroll position + element offsets instead of IntersectionObserver
-     so only ONE project is active at a time with no jitter.
-     On scroll, finds which project's center is closest to the viewport center.  ── */
+  /* ── Active project detection ──
+     Keep the highlighted project synced with the card closest to the viewport center.
+     This is throttled to one animation frame so it stays responsive without running
+     expensive DOM measurement on every raw scroll event. */
   useEffect(() => {
-    let rafId: number;
-    let lastActive = 0;
+    let rafId = 0;
+    let lastActive = -1;
 
     const getActive = () => {
       const viewportCenter = window.innerHeight / 2;
-      let closest = 0;
-      let closestDist = Infinity;
+      let closestIndex = 0;
+      let closestDistance = Number.POSITIVE_INFINITY;
 
-      itemRefs.current.forEach((el, i) => {
+      itemRefs.current.forEach((el, index) => {
         if (!el) return;
+
         const rect = el.getBoundingClientRect();
-        const elCenter = rect.top + rect.height / 2;
-        const dist = Math.abs(elCenter - viewportCenter);
-        if (dist < closestDist) {
-          closestDist = dist;
-          closest = i;
+        const center = rect.top + rect.height / 2;
+        const distance = Math.abs(center - viewportCenter);
+
+        if (distance < closestDistance) {
+          closestDistance = distance;
+          closestIndex = index;
         }
       });
 
-      return closest;
+      return closestIndex;
     };
+
+    const updateActive = () => {
+      const next = getActive();
+      if (next !== lastActive) {
+        lastActive = next;
+        setActiveIndex(next);
+      }
+    };
+
+    updateActive();
 
     const onScroll = () => {
       cancelAnimationFrame(rafId);
-      rafId = requestAnimationFrame(() => {
-        const next = getActive();
-        if (next !== lastActive) {
-          lastActive = next;
-          setActiveIndex(next);
-        }
-      });
+      rafId = requestAnimationFrame(updateActive);
     };
 
-    // Set initial active on mount
-    const initial = getActive();
-    lastActive = initial;
-    setActiveIndex(initial);
-
     window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll);
+
     return () => {
-      window.removeEventListener('scroll', onScroll);
       cancelAnimationFrame(rafId);
+      window.removeEventListener('scroll', onScroll);
+      window.removeEventListener('resize', onScroll);
     };
   }, []);
 
