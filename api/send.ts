@@ -44,60 +44,22 @@ function escapeHtml(value: string): string {
 }
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
-  setCorsHeaders(req, res);
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET,POST,OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
 
   if (req.method === 'OPTIONS') {
-    return res.status(200).json({ ok: true });
+    return res.status(200).end();
   }
 
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  if (isRateLimited(getClientKey(req))) {
-    return res.status(429).json({ error: 'Too many messages. Please try again shortly.' });
-  }
+  const { name, email, message } = req.body;
 
-  let body: unknown = req.body;
-  if (typeof body === 'string') {
-    try {
-      body = JSON.parse(body) as unknown;
-    } catch {
-      return res.status(400).json({ error: 'Request body must be valid JSON.' });
-    }
-  }
-
-  if (!body || typeof body !== 'object') {
-    return res.status(400).json({ error: 'Missing request body.' });
-  }
-
-  const { name, email, message } = body as Record<string, unknown>;
-  const trimmedName = typeof name === 'string' ? name.trim() : '';
-  const trimmedEmail = typeof email === 'string' ? email.trim() : '';
-  const trimmedMessage = typeof message === 'string' ? message.trim() : '';
-
-  if (!trimmedName || !trimmedEmail || !trimmedMessage) {
-    return res.status(400).json({ error: 'Missing required fields.' });
-  }
-
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  if (!emailRegex.test(trimmedEmail) || trimmedName.length > 100 || trimmedMessage.length > 2000) {
-    return res.status(400).json({ error: 'Invalid form data.' });
-  }
-
-  const apiKey = process.env.RESEND_API_KEY?.trim();
-  if (!apiKey) {
-    console.error('RESEND_API_KEY is missing on the server.');
-    return res.status(500).json({ error: 'Email service is not configured.' });
-  }
-
-  const configuredSender = (process.env.CONTACT_FROM_EMAIL ?? process.env.CONTACT_EMAIL ?? 'onboarding@resend.dev').trim();
-  const recipientEmail = (process.env.CONTACT_TO_EMAIL ?? process.env.CONTACT_EMAIL ?? 'jasonceloza90@gmail.com').trim();
-
-  if (configuredSender.toLowerCase().endsWith('@gmail.com')) {
-    return res.status(400).json({
-      error: 'Your sender email uses Gmail, but Resend requires a verified custom domain. Add and verify your domain at https://resend.com/domains, then set CONTACT_FROM_EMAIL (or CONTACT_EMAIL) to something like hello@yourdomain.com in Vercel.',
-    });
+  if (!name || !email || !message) {
+    return res.status(400).json({ error: 'Missing required fields' });
   }
 
   try {
@@ -105,32 +67,31 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${apiKey}`,
+        Authorization: `Bearer ${process.env.RESEND_API_KEY}`,
       },
       body: JSON.stringify({
-        from: `Portfolio Contact <${configuredSender}>`,
-        to: [recipientEmail],
-        reply_to: trimmedEmail,
-        subject: `New message from ${trimmedName}`,
+        from: `Portfolio Contact <${process.env.CONTACT_EMAIL ?? 'onboarding@resend.dev'}>`,
+        to: [process.env.CONTACT_EMAIL ?? 'jasonceloza90@gmail.com'],
+        subject: `New message from ${name}`,
         html: `
           <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 24px; background: #0f172a; color: #e2e8f0; border-radius: 12px;">
             <h2 style="color: #7aabff; margin-bottom: 24px;">New Portfolio Contact</h2>
 
             <div style="margin-bottom: 16px;">
               <p style="color: #94a3b8; font-size: 12px; letter-spacing: 0.1em; margin: 0 0 4px;">NAME</p>
-              <p style="font-size: 16px; margin: 0;">${escapeHtml(trimmedName)}</p>
+              <p style="font-size: 16px; margin: 0;">${name}</p>
             </div>
 
             <div style="margin-bottom: 16px;">
               <p style="color: #94a3b8; font-size: 12px; letter-spacing: 0.1em; margin: 0 0 4px;">EMAIL</p>
               <p style="font-size: 16px; margin: 0;">
-                <a href="mailto:${encodeURIComponent(trimmedEmail)}" style="color: #7aabff;">${escapeHtml(trimmedEmail)}</a>
+                <a href="mailto:${email}" style="color: #7aabff;">${email}</a>
               </p>
             </div>
 
             <div style="margin-bottom: 24px;">
               <p style="color: #94a3b8; font-size: 12px; letter-spacing: 0.1em; margin: 0 0 4px;">MESSAGE</p>
-              <p style="font-size: 15px; line-height: 1.6; margin: 0; white-space: pre-wrap;">${escapeHtml(trimmedMessage)}</p>
+              <p style="font-size: 15px; line-height: 1.6; margin: 0; white-space: pre-wrap;">${message}</p>
             </div>
 
             <hr style="border: none; border-top: 1px solid rgba(255,255,255,0.1); margin-bottom: 16px;" />
@@ -141,26 +102,16 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     });
 
     const text = await response.text();
+    console.log('Resend status:', response.status, 'body:', text);
+
     if (!response.ok) {
       let errorMessage = 'Failed to send email';
-      try {
-        const parsed = JSON.parse(text) as { message?: string; name?: string };
-        errorMessage = parsed.message || parsed.name || errorMessage;
-      } catch {
-        errorMessage = text || errorMessage;
-      }
-
-      if (/gmail\.com.*not verified|domain.*not verified|not verified/i.test(errorMessage)) {
-        errorMessage = 'Your Resend sender domain is not verified. Add and verify your domain at https://resend.com/domains, then set CONTACT_EMAIL to an address on that domain (for example: hello@yourdomain.com).';
-      }
-
+      try { const e = JSON.parse(text); errorMessage = e.message || e.name || errorMessage; } catch { errorMessage = text || errorMessage; }
       return res.status(response.status).json({ error: errorMessage });
     }
 
     return res.status(200).json({ success: true });
-  } catch (error) {
-    const errorMessage = error instanceof Error ? error.message : 'Internal server error';
-    console.error('Contact form email failed:', { message: errorMessage });
-    return res.status(500).json({ error: 'Failed to send email.' });
+  } catch (err: any) {
+    return res.status(500).json({ error: err.message || 'Internal server error' });
   }
 }
