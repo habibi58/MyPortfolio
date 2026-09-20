@@ -44,18 +44,16 @@ function escapeHtml(value: string): string {
 }
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
-  setCorsHeaders(req, res);
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET,POST,OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
 
   if (req.method === 'OPTIONS') {
-    return res.status(200).json({ ok: true });
+    return res.status(200).end();
   }
 
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
-  }
-
-  if (isRateLimited(getClientKey(req))) {
-    return res.status(429).json({ error: 'Too many messages. Please try again shortly.' });
   }
 
   let body: unknown = req.body;
@@ -91,9 +89,6 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return res.status(500).json({ error: 'Email service is not configured.' });
   }
 
-  const configuredSender = (process.env.CONTACT_FROM_EMAIL ?? process.env.CONTACT_EMAIL ?? 'onboarding@resend.dev').trim();
-  const recipientEmail = (process.env.CONTACT_TO_EMAIL ?? process.env.CONTACT_EMAIL ?? 'jasonceloza90@gmail.com').trim();
-
   try {
     const response = await fetch('https://api.resend.com/emails', {
       method: 'POST',
@@ -102,8 +97,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         Authorization: `Bearer ${apiKey}`,
       },
       body: JSON.stringify({
-        from: `Portfolio Contact <${configuredSender}>`,
-        to: [recipientEmail],
+        from: 'Portfolio Contact <onboarding@resend.dev>',
+        to: [process.env.CONTACT_TO_EMAIL ?? process.env.CONTACT_EMAIL ?? 'jasonceloza90@gmail.com'],
         reply_to: trimmedEmail,
         subject: `New message from ${trimmedName}`,
         html: `
@@ -135,6 +130,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     });
 
     const text = await response.text();
+    console.log('Resend status:', response.status, 'body:', text);
+
     if (!response.ok) {
       let errorMessage = 'Failed to send email';
       try {
@@ -143,7 +140,6 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       } catch {
         errorMessage = text || errorMessage;
       }
-
       return res.status(response.status).json({ error: errorMessage });
     }
 
