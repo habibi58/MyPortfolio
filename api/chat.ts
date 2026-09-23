@@ -242,7 +242,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
             { role: 'user', content: parsedRequest.message },
           ],
           temperature: 0.3,
-          max_tokens: 300,
+          max_tokens: 1500,
         });
 
         const reply = completion.choices[0]?.message?.content?.trim();

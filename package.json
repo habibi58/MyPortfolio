@@ -11,6 +11,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@iconify-json/logos": "^1.2.14",
     "@lobehub/icons": "^5.8.0",
     "@react-three/drei": "^10.7.7",
     "@react-three/fiber": "^9.6.1",
@@ -33,6 +34,7 @@
     "react-markdown": "^10.1.0",
     "react-router-dom": "^7.15.1",
     "resend": "^6.12.4",
+    "simple-icons": "^16.32.0",
     "three": "^0.184.0"
   },
   "devDependencies": {

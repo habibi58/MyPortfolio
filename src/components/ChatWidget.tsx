@@ -377,14 +377,14 @@ export function ChatWidget({ className }: CopilotChatProps = {}) {
           <header className="relative z-10 flex min-w-0 shrink-0 items-center gap-3 overflow-hidden border-b border-gray-800 bg-black" style={{ position: 'relative', zIndex: 10, backgroundColor: '#000000', overflow: 'hidden', flexShrink: 0, padding: '12px 16px', boxSizing: 'border-box' }}>
             <div className="relative grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-black">
               <Bot size={17} className="text-white" />
-              <span className="absolute -bottom-1 -right-1 h-3 w-3 rounded-full border-2 border-white bg-gray-500" />
+              <span className="absolute -bottom-1 -right-1 h-3 w-3 rounded-full border-2 border-white bg-green-500 shadow-[0_0_10px_rgba(34,197,94,0.9)]" />
             </div>
             <div className="min-w-0 flex-1 overflow-hidden">
               <h2 className="flex items-center gap-1.5 text-base font-semibold tracking-tight text-white">
                 Jason's AI Assistant
                 <Sparkles size={13} className="shrink-0 text-white" />
               </h2>
-              <p className="mt-0.5 flex items-center gap-1.5 text-xs text-gray-500"><span className="h-1.5 w-1.5 rounded-full bg-gray-500" />Online - replies in seconds</p>
+              <p className="mt-0.5 flex items-center gap-1.5 text-xs text-green-400"><span className="h-1.5 w-1.5 rounded-full bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.8)]" />Online - replies in seconds</p>
             </div>
             <div className="flex shrink-0 items-center gap-1">
               <button
@@ -459,6 +459,9 @@ export function ChatWidget({ className }: CopilotChatProps = {}) {
 
           {/* Footer */}
           <footer className="shrink-0 border-t border-gray-800 bg-black" style={{ flexShrink: 0, boxSizing: 'border-box', overflow: 'hidden', padding: '12px 16px', width: '100%' }}>
+            <div className="mb-2 flex justify-center text-center text-[10px] font-medium uppercase tracking-[0.18em] text-gray-400">
+              Developed by Jason
+            </div>
             {messages.length === 1 && !isLoading && !isTyping && (
               <div className="grid grid-cols-2 gap-2 border-b border-gray-800 bg-black" style={{ padding: '4px 0 10px', maxWidth: '100%', overflow: 'hidden' }}>
                 {quickPrompts.map((prompt, index) => (
@@ -496,8 +499,22 @@ export function ChatWidget({ className }: CopilotChatProps = {}) {
                   placeholder="Message Jason's AI assistant..."
                   maxLength={MAX_MESSAGE_LENGTH}
                   aria-label="Message"
-                  className="min-w-0 flex-1 bg-transparent px-2 text-sm text-white outline-none placeholder:text-gray-500"
-                  style={{ minWidth: 0, flex: '1 1 auto', paddingLeft: 8, paddingRight: 8 }}
+                  autoComplete="off"
+                  spellCheck={false}
+                  className="min-w-0 flex-1 bg-transparent px-2 text-sm text-slate-700 outline-none placeholder:text-slate-500"
+                  style={{
+                    minWidth: 0,
+                    flex: '1 1 auto',
+                    paddingLeft: 8,
+                    paddingRight: 8,
+                    WebkitAppearance: 'none',
+                    appearance: 'none',
+                    WebkitTextFillColor: '#334155',
+                    color: '#334155',
+                    background: 'transparent',
+                    caretColor: '#334155',
+                    opacity: 1,
+                  }}
                 />
                 <button
                   type="submit"

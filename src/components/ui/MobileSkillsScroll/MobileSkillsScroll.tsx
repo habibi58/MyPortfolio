@@ -3,10 +3,10 @@
 // Features: auto-scroll, swipe/drag to scroll, pause on touch/click.
 
 import { useRef, useEffect } from 'react';
-import {
-  Wrench, Download, Network, Headphones,
-} from 'lucide-react';
-import { ClaudeCode, Antigravity, Cursor, Windsurf, Microsoft, Github } from '@lobehub/icons';
+import { ClaudeCode, Antigravity, Cursor, Windsurf, Github, Azure, Dbrx } from '@lobehub/icons';
+import powerBiIcon from '../../../assets/icons/Powerbi.svg';
+import sqlServerIcon from '../../../assets/icons/Azure SQL Database.svg';
+import sqlIcon from '../../../assets/icons/sql.png';
 
 /* ── Styles ── */
 const STYLES = `
@@ -121,32 +121,32 @@ const STYLES = `
 
 /* ── Item definitions ── */
 const ROW1 = [
-  { label: 'Technical Support', icon: <Wrench    style={{ width: 28, height: 28, color: '#60a5fa' }} /> },
-  { label: 'Software Install',  icon: <Download  style={{ width: 28, height: 28, color: '#60a5fa' }} /> },
-  { label: 'Networking Basics', icon: <Network   style={{ width: 28, height: 28, color: '#60a5fa' }} /> },
-  { label: 'Windows OS',        icon: <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/windows8/windows8-original.svg" alt="Windows" style={{ width: 30, height: 30 }} /> },
-  { label: 'Microsoft Office',  icon: <Microsoft.Color size={32} /> },
-  { label: 'Customer Service',  icon: <Headphones style={{ width: 28, height: 28, color: '#60a5fa' }} /> },
-  { label: 'Claude Code',       icon: <ClaudeCode.Color size={32} /> },
-  { label: 'Cursor AI',         icon: <Cursor.Avatar size={30} /> },
-  { label: 'Windsurf',          icon: <Windsurf.Avatar size={30} /> },
-  { label: 'Antigravity',       icon: <Antigravity.Color size={32} /> },
-  { label: 'VS Code',           icon: <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/vscode/vscode-original.svg" alt="VS Code" style={{ width: 30, height: 30 }} /> },
-  { label: 'GitHub',            icon: <Github size={32} /> },
+  { label: 'Windows OS',   icon: <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/windows8/windows8-original.svg" alt="Windows" style={{ width: 30, height: 30 }} /> },
+  { label: 'Claude Code',  icon: <ClaudeCode.Color size={32} /> },
+  { label: 'Cursor AI',    icon: <Cursor.Avatar size={30} /> },
+  { label: 'Windsurf',     icon: <Windsurf.Avatar size={30} /> },
+  { label: 'Antigravity',  icon: <Antigravity.Color size={32} /> },
+  { label: 'VS Code',      icon: <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/vscode/vscode-original.svg" alt="VS Code" style={{ width: 30, height: 30 }} /> },
+  { label: 'GitHub',       icon: <Github size={32} /> },
+  { label: 'Azure',        icon: <Azure.Color size={32} /> },
+  { label: 'Databricks',   icon: <Dbrx.Color size={32} /> },
+  { label: 'Power BI',     icon: <img src={powerBiIcon} alt="Power BI" style={{ width: 30, height: 30 }} /> },
+  { label: 'SQL Server',   icon: <img src={sqlServerIcon} alt="SQL Server" style={{ width: 30, height: 30 }} /> },
 ];
 
 const ROW2 = [
-  { label: 'HTML',         icon: <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/html5/html5-original.svg"            alt="HTML"     style={{ width: 30, height: 30 }} /> },
-  { label: 'CSS',          icon: <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/css3/css3-original.svg"              alt="CSS"      style={{ width: 30, height: 30 }} /> },
-  { label: 'JavaScript',   icon: <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/javascript/javascript-original.svg"  alt="JS"       style={{ width: 30, height: 30 }} /> },
-  { label: 'React.js',     icon: <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/react/react-original.svg"            alt="React"    style={{ width: 30, height: 30 }} /> },
-  { label: 'Vite',         icon: <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/vitejs/vitejs-original.svg"          alt="Vite"     style={{ width: 30, height: 30 }} /> },
-  { label: 'PHP',          icon: <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/php/php-original.svg"                alt="PHP"      style={{ width: 30, height: 30 }} /> },
-  { label: 'MySQL',        icon: <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/mysql/mysql-original.svg"            alt="MySQL"    style={{ width: 30, height: 30 }} /> },
-  { label: 'C#',           icon: <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/csharp/csharp-original.svg"          alt="C#"       style={{ width: 30, height: 30 }} /> },
-  { label: 'VB.NET',       icon: <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/visualbasic/visualbasic-original.svg" alt="VB.NET" style={{ width: 30, height: 30 }} /> },
-  { label: 'Tailwind CSS', icon: <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/tailwindcss/tailwindcss-original.svg" alt="Tailwind" style={{ width: 30, height: 30 }} /> },
-  { label: 'TypeScript',   icon: <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/typescript/typescript-original.svg"  alt="TS"       style={{ width: 30, height: 30 }} /> },
+  { label: 'HTML',         icon: <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/html5/html5-original.svg"            alt="HTML"         style={{ width: 30, height: 30 }} /> },
+  { label: 'CSS',          icon: <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/css3/css3-original.svg"              alt="CSS"          style={{ width: 30, height: 30 }} /> },
+  { label: 'JavaScript',   icon: <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/javascript/javascript-original.svg"  alt="JavaScript"   style={{ width: 30, height: 30 }} /> },
+  { label: 'React.js',     icon: <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/react/react-original.svg"            alt="React.js"     style={{ width: 30, height: 30 }} /> },
+  { label: 'Vite',         icon: <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/vitejs/vitejs-original.svg"          alt="Vite"         style={{ width: 30, height: 30 }} /> },
+  { label: 'Python',       icon: <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/python/python-original.svg"          alt="Python"       style={{ width: 30, height: 30 }} /> },
+  { label: 'PHP',          icon: <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/php/php-original.svg"                alt="PHP"          style={{ width: 30, height: 30 }} /> },
+  { label: 'SQL',          icon: <img src={sqlIcon} alt="SQL" style={{ width: 30, height: 30, objectFit: 'contain' }} /> },
+  { label: 'C#',           icon: <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/csharp/csharp-original.svg"          alt="C#"           style={{ width: 30, height: 30 }} /> },
+  { label: 'VB.NET',       icon: <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/visualbasic/visualbasic-original.svg" alt="VB.NET"     style={{ width: 30, height: 30 }} /> },
+  { label: 'Tailwind CSS', icon: <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/tailwindcss/tailwindcss-original.svg" alt="Tailwind CSS" style={{ width: 30, height: 30 }} /> },
+  { label: 'TypeScript',   icon: <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/typescript/typescript-original.svg"  alt="TypeScript"   style={{ width: 30, height: 30 }} /> },
 ];
 
 /* ── Scroll hook with swipe + pause ── */
