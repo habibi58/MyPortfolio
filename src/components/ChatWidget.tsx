@@ -23,6 +23,8 @@ type ChatResponse = {
 };
 
 const MAX_MESSAGE_LENGTH = 1200;
+const MAX_SAVED_MESSAGES = 25;
+const CHAT_SESSION_KEY = 'jason-ai-chat-session';
 const welcomeMessage = "Hi, I'm Jason's AI assistant. I can tell you about his experience, skills, education, projects, or contact details.";
 const allQuickPrompts = [
   "What are Jason's top skills?",
@@ -49,6 +51,36 @@ function createMessage(sender: ChatMessage['sender'], text: string, isError = fa
   };
 }
 
+function loadSessionMessages(): ChatMessage[] {
+  if (typeof window === 'undefined') return [];
+
+  try {
+    const raw = window.sessionStorage.getItem(CHAT_SESSION_KEY);
+    if (!raw) return [];
+
+    const parsed = JSON.parse(raw) as unknown;
+    if (!Array.isArray(parsed)) return [];
+
+    return parsed
+      .filter((item): item is Record<string, unknown> => !!item && typeof item === 'object' && 'id' in item && 'sender' in item && 'text' in item && 'time' in item)
+      .map((item) => {
+        const senderValue = item.sender;
+        const sender: ChatMessage['sender'] = senderValue === 'bot' ? 'bot' : 'user';
+
+        return {
+          id: String(item.id),
+          sender,
+          text: String(item.text),
+          time: String(item.time),
+          ...(item.isError ? { isError: true } : {}),
+        } satisfies ChatMessage;
+      })
+      .slice(-MAX_SAVED_MESSAGES);
+  } catch {
+    return [];
+  }
+}
+
 export function ChatWidget({ className }: CopilotChatProps = {}) {
   const [isMounted, setIsMounted] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
@@ -57,7 +89,7 @@ export function ChatWidget({ className }: CopilotChatProps = {}) {
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [isTyping, setIsTyping] = useState(false);
-  const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const [messages, setMessages] = useState<ChatMessage[]>(() => loadSessionMessages());
   const [quickPrompts, setQuickPrompts] = useState<string[]>([]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const typingIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
@@ -75,6 +107,13 @@ export function ChatWidget({ className }: CopilotChatProps = {}) {
       }
     };
   }, []);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+
+    const trimmedMessages = messages.slice(-MAX_SAVED_MESSAGES);
+    window.sessionStorage.setItem(CHAT_SESSION_KEY, JSON.stringify(trimmedMessages));
+  }, [messages]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -255,6 +294,9 @@ export function ChatWidget({ className }: CopilotChatProps = {}) {
     setIsTyping(false);
     setIsLoading(false);
     setMessages([]);
+    if (typeof window !== 'undefined') {
+      window.sessionStorage.removeItem(CHAT_SESSION_KEY);
+    }
     setInput('');
     // Regenerate random prompts
     const shuffled = [...allQuickPrompts].sort(() => 0.5 - Math.random());
