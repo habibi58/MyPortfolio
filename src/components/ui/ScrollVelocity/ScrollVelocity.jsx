@@ -117,7 +117,7 @@ export const ScrollVelocity = ({
   }
 
   return (
-    <section>
+    <section className="flex flex-col gap-6 md:gap-8">
       {texts.map((text, index) => (
         <VelocityText
           key={index}

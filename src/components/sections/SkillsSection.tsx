@@ -7,13 +7,10 @@ import { Card } from '../ui/Card/Card';
 import { containerVariants, itemVariants } from '../../animations/variants';
 import ScrollVelocity from '../ui/ScrollVelocity/ScrollVelocity';
 import { MobileSkillsScroll } from '../ui/MobileSkillsScroll/MobileSkillsScroll';
-import {
-  Wrench,
-  Download,
-  Network,
-  Headphones,
-} from 'lucide-react';
-import { ClaudeCode, Antigravity, Cursor, Windsurf, Microsoft, Github  } from '@lobehub/icons';
+import { ClaudeCode, Antigravity, Cursor, Windsurf, Github, Azure, Dbrx } from '@lobehub/icons';
+import powerBiIcon from '../../assets/icons/Powerbi.svg';
+import sqlServerIcon from '../../assets/icons/Azure SQL Database.svg';
+import sqlIcon from '../../assets/icons/sql.png';
 
 export const SkillsSection = () => {
   return (
@@ -70,142 +67,142 @@ export const SkillsSection = () => {
           <div className="hidden md:block w-full max-w-[100vw] relative overflow-hidden py-10">
             <ScrollVelocity
               texts={[
-                <span className="flex items-center gap-12 px-6 py-4" key="row1">
-                  <span className="flex flex-col items-center justify-center gap-3 w-32">
-                    <div className="w-16 h-16 rounded-2xl bg-black/40 shadow-lg flex items-center justify-center border border-slate-700/50 backdrop-blur-sm">
-                      <Wrench className="w-8 h-8 text-blue-400" />
-                    </div>
-                    <span className="text-sm font-bold text-slate-300 text-center whitespace-normal leading-tight">Technical Support</span>
-                  </span>
-                  <span className="flex flex-col items-center justify-center gap-3 w-32">
-                    <div className="w-16 h-16 rounded-2xl bg-black/40 shadow-lg flex items-center justify-center border border-slate-700/50 backdrop-blur-sm">
-                      <Download className="w-8 h-8 text-blue-400" />
-                    </div>
-                    <span className="text-sm font-bold text-slate-300 text-center whitespace-normal leading-tight">Software Installation</span>
-                  </span>
-                  <span className="flex flex-col items-center justify-center gap-3 w-32">
-                    <div className="w-16 h-16 rounded-2xl bg-black/40 shadow-lg flex items-center justify-center border border-slate-700/50 backdrop-blur-sm">
-                      <Network className="w-8 h-8 text-blue-400" />
-                    </div>
-                    <span className="text-sm font-bold text-slate-300 text-center whitespace-normal leading-tight">Networking Basics</span>
-                  </span>
-                  <span className="flex flex-col items-center justify-center gap-3 w-32">
+                <span className="flex items-center justify-center gap-3 sm:gap-4 md:gap-5 px-3 py-4 w-max mx-auto" key="row1">
+                  <span className="flex flex-col items-center justify-center gap-3 flex-shrink-0 w-[7rem] sm:w-[7.5rem] md:w-[8rem]">
                     <div className="w-16 h-16 rounded-2xl bg-black/40 shadow-lg flex items-center justify-center border border-slate-700/50 backdrop-blur-sm">
                       <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/windows8/windows8-original.svg" alt="Windows" className="w-10 h-10" />
                     </div>
                     <span className="text-sm font-bold text-slate-300 text-center whitespace-normal leading-tight">Windows OS</span>
                   </span>
-                  <span className="flex flex-col items-center justify-center gap-3 w-32">
-                    <div className="w-16 h-16 rounded-2xl bg-black/40 shadow-lg flex items-center justify-center border border-slate-700/50 backdrop-blur-sm">
-                     <Microsoft.Color size={40} />
-                    </div>
-                    <span className="text-sm font-bold text-slate-300 text-center whitespace-normal leading-tight">Microsoft Office</span>
-                  </span>
-                  <span className="flex flex-col items-center justify-center gap-3 w-32">
-                    <div className="w-16 h-16 rounded-2xl bg-black/40 shadow-lg flex items-center justify-center border border-slate-700/50 backdrop-blur-sm">
-                      <Headphones className="w-8 h-8 text-blue-400" />
-                    </div>
-                    <span className="text-sm font-bold text-slate-300 text-center whitespace-normal leading-tight">Customer Service</span>
-                  </span>
-                  <span className="flex flex-col items-center justify-center gap-3 w-32">
+                  <span className="flex flex-col items-center justify-center gap-3 flex-shrink-0 w-[7rem] sm:w-[7.5rem] md:w-[8rem]">
                     <div className="w-16 h-16 rounded-2xl bg-black/40 shadow-lg flex items-center justify-center border border-slate-700/50 backdrop-blur-sm">
                       <ClaudeCode.Color size={40} />
                     </div>
                     <span className="text-sm font-bold text-slate-300 text-center whitespace-normal leading-tight">Claude Code</span>
                   </span>
-                  <span className="flex flex-col items-center justify-center gap-3 w-32">
+                  <span className="flex flex-col items-center justify-center gap-3 flex-shrink-0 w-[7rem] sm:w-[7.5rem] md:w-[8rem]">
                     <div className="w-16 h-16 rounded-2xl bg-black/40 shadow-lg flex items-center justify-center border border-slate-700/50 backdrop-blur-sm">
                       <Cursor.Avatar size={56} />
                     </div>
                     <span className="text-sm font-bold text-slate-300 text-center whitespace-normal leading-tight">Cursor AI</span>
                   </span>
-                  <span className="flex flex-col items-center justify-center gap-3 w-32">
+                  <span className="flex flex-col items-center justify-center gap-3 flex-shrink-0 w-[7rem] sm:w-[7.5rem] md:w-[8rem]">
                     <div className="w-16 h-16 rounded-2xl bg-black/40 shadow-lg flex items-center justify-center border border-slate-700/50 backdrop-blur-sm">
                       <Windsurf.Avatar size={56} />
                     </div>
                     <span className="text-sm font-bold text-slate-300 text-center whitespace-normal leading-tight">Windsurf</span>
                   </span>
-                  <span className="flex flex-col items-center justify-center gap-3 w-32">
+                  <span className="flex flex-col items-center justify-center gap-3 flex-shrink-0 w-[7rem] sm:w-[7.5rem] md:w-[8rem]">
                     <div className="w-16 h-16 rounded-2xl bg-black/40 shadow-lg flex items-center justify-center border border-slate-700/50 backdrop-blur-sm">
                       <Antigravity.Color size={40} />
                     </div>
                     <span className="text-sm font-bold text-slate-300 text-center whitespace-normal leading-tight">Antigravity</span>
                   </span>
-                  <span className="flex flex-col items-center justify-center gap-3 w-32">
+                  <span className="flex flex-col items-center justify-center gap-3 flex-shrink-0 w-[7rem] sm:w-[7.5rem] md:w-[8rem]">
                     <div className="w-16 h-16 rounded-2xl bg-black/40 shadow-lg flex items-center justify-center border border-slate-700/50 backdrop-blur-sm">
                       <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/vscode/vscode-original.svg" alt="VS Code" className="w-10 h-10" />
                     </div>
                     <span className="text-sm font-bold text-slate-300 text-center whitespace-normal leading-tight">VS Code</span>
                   </span>
-                  <span className="flex flex-col items-center justify-center gap-3 w-32">
+                  <span className="flex flex-col items-center justify-center gap-3 flex-shrink-0 w-[7rem] sm:w-[7.5rem] md:w-[8rem]">
                     <div className="w-16 h-16 rounded-2xl bg-black/40 shadow-lg flex items-center justify-center border border-slate-700/50 backdrop-blur-sm">
                       <Github size={40} />
                     </div>
                     <span className="text-sm font-bold text-slate-300 text-center whitespace-normal leading-tight">GitHub</span>
                   </span>
+                  <span className="flex flex-col items-center justify-center gap-3 flex-shrink-0 w-[7rem] sm:w-[7.5rem] md:w-[8rem]">
+                    <div className="w-16 h-16 rounded-2xl bg-black/40 shadow-lg flex items-center justify-center border border-slate-700/50 backdrop-blur-sm">
+                      <Azure.Color size={40} />
+                    </div>
+                    <span className="text-sm font-bold text-slate-300 text-center whitespace-normal leading-tight">Azure</span>
+                  </span>
+                  <span className="flex flex-col items-center justify-center gap-3 flex-shrink-0 w-[7rem] sm:w-[7.5rem] md:w-[8rem]">
+                    <div className="w-16 h-16 rounded-2xl bg-black/40 shadow-lg flex items-center justify-center border border-slate-700/50 backdrop-blur-sm">
+                      <Dbrx.Color size={40} />
+                    </div>
+                    <span className="text-sm font-bold text-slate-300 text-center whitespace-normal leading-tight">Databricks</span>
+                  </span>
+                  <span className="flex flex-col items-center justify-center gap-3 flex-shrink-0 w-[7rem] sm:w-[7.5rem] md:w-[8rem]">
+                    <div className="w-16 h-16 rounded-2xl bg-black/40 shadow-lg flex items-center justify-center border border-slate-700/50 backdrop-blur-sm">
+                      <img src={powerBiIcon} alt="Power BI" className="w-10 h-10" />
+                    </div>
+                    <span className="text-sm font-bold text-slate-300 text-center whitespace-normal leading-tight">Power BI</span>
+                  </span>
+                  <span className="flex flex-col items-center justify-center gap-3 flex-shrink-0 w-[7rem] sm:w-[7.5rem] md:w-[8rem]">
+                    <div className="w-16 h-16 rounded-2xl bg-black/40 shadow-lg flex items-center justify-center border border-slate-700/50 backdrop-blur-sm">
+                      <img src={sqlServerIcon} alt="SQL Server" className="w-10 h-10" />
+                    </div>
+                    <span className="text-sm font-bold text-slate-300 text-center whitespace-normal leading-tight">SQL Server</span>
+                  </span>
                 </span>,
-                <span className="flex items-center gap-12 px-6 py-4" key="row2">
-                  <span className="flex flex-col items-center justify-center gap-3 w-32">
+                <span className="flex items-center justify-center gap-3 sm:gap-4 md:gap-5 px-3 py-4 w-max mx-auto" key="row2">
+                  <span className="flex flex-col items-center justify-center gap-3 flex-shrink-0 w-[7rem] sm:w-[7.5rem] md:w-[8rem]">
                     <div className="w-16 h-16 rounded-2xl bg-black/40 shadow-lg flex items-center justify-center border border-slate-700/50 backdrop-blur-sm">
                       <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/html5/html5-original.svg" alt="HTML5" className="w-10 h-10" />
                     </div>
                     <span className="text-sm font-bold text-slate-300 text-center whitespace-normal leading-tight">HTML</span>
                   </span>
-                  <span className="flex flex-col items-center justify-center gap-3 w-32">
+                  <span className="flex flex-col items-center justify-center gap-3 flex-shrink-0 w-[7rem] sm:w-[7.5rem] md:w-[8rem]">
                     <div className="w-16 h-16 rounded-2xl bg-black/40 shadow-lg flex items-center justify-center border border-slate-700/50 backdrop-blur-sm">
                       <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/css3/css3-original.svg" alt="CSS3" className="w-10 h-10" />
                     </div>
                     <span className="text-sm font-bold text-slate-300 text-center whitespace-normal leading-tight">CSS</span>
                   </span>
-                  <span className="flex flex-col items-center justify-center gap-3 w-32">
+                  <span className="flex flex-col items-center justify-center gap-3 flex-shrink-0 w-[7rem] sm:w-[7.5rem] md:w-[8rem]">
                     <div className="w-16 h-16 rounded-2xl bg-black/40 shadow-lg flex items-center justify-center border border-slate-700/50 backdrop-blur-sm">
                       <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/javascript/javascript-original.svg" alt="JavaScript" className="w-10 h-10" />
                     </div>
                     <span className="text-sm font-bold text-slate-300 text-center whitespace-normal leading-tight">JavaScript</span>
                   </span>
-                  <span className="flex flex-col items-center justify-center gap-3 w-32">
+                  <span className="flex flex-col items-center justify-center gap-3 flex-shrink-0 w-[7rem] sm:w-[7.5rem] md:w-[8rem]">
                     <div className="w-16 h-16 rounded-2xl bg-black/40 shadow-lg flex items-center justify-center border border-slate-700/50 backdrop-blur-sm">
                       <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/react/react-original.svg" alt="React" className="w-10 h-10" />
                     </div>
                     <span className="text-sm font-bold text-slate-300 text-center whitespace-normal leading-tight">React.js</span>
                   </span>
-                  <span className="flex flex-col items-center justify-center gap-3 w-32">
+                  <span className="flex flex-col items-center justify-center gap-3 flex-shrink-0 w-[7rem] sm:w-[7.5rem] md:w-[8rem]">
                     <div className="w-16 h-16 rounded-2xl bg-black/40 shadow-lg flex items-center justify-center border border-slate-700/50 backdrop-blur-sm">
                       <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/vitejs/vitejs-original.svg" alt="Vite" className="w-10 h-10" />
                     </div>
                     <span className="text-sm font-bold text-slate-300 text-center whitespace-normal leading-tight">Vite</span>
                   </span>
-                  <span className="flex flex-col items-center justify-center gap-3 w-32">
+                  <span className="flex flex-col items-center justify-center gap-3 flex-shrink-0 w-[7rem] sm:w-[7.5rem] md:w-[8rem]">
+                    <div className="w-16 h-16 rounded-2xl bg-black/40 shadow-lg flex items-center justify-center border border-slate-700/50 backdrop-blur-sm">
+                      <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/python/python-original.svg" alt="Python" className="w-10 h-10" />
+                    </div>
+                    <span className="text-sm font-bold text-slate-300 text-center whitespace-normal leading-tight">Python</span>
+                  </span>
+                  <span className="flex flex-col items-center justify-center gap-3 flex-shrink-0 w-[7rem] sm:w-[7.5rem] md:w-[8rem]">
                     <div className="w-16 h-16 rounded-2xl bg-black/40 shadow-lg flex items-center justify-center border border-slate-700/50 backdrop-blur-sm">
                       <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/php/php-original.svg" alt="PHP" className="w-10 h-10" />
                     </div>
                     <span className="text-sm font-bold text-slate-300 text-center whitespace-normal leading-tight">PHP</span>
                   </span>
-                  <span className="flex flex-col items-center justify-center gap-3 w-32">
+                  <span className="flex flex-col items-center justify-center gap-3 flex-shrink-0 w-[7rem] sm:w-[7.5rem] md:w-[8rem]">
                     <div className="w-16 h-16 rounded-2xl bg-black/40 shadow-lg flex items-center justify-center border border-slate-700/50 backdrop-blur-sm">
-                      <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/mysql/mysql-original.svg" alt="MySQL" className="w-10 h-10" />
+                      <img src={sqlIcon} alt="SQL" className="w-10 h-10 object-contain" />
                     </div>
-                    <span className="text-sm font-bold text-slate-300 text-center whitespace-normal leading-tight">MySQL</span>
+                    <span className="text-sm font-bold text-slate-300 text-center whitespace-normal leading-tight">SQL</span>
                   </span>
-                  <span className="flex flex-col items-center justify-center gap-3 w-32">
+                  <span className="flex flex-col items-center justify-center gap-3 flex-shrink-0 w-[7rem] sm:w-[7.5rem] md:w-[8rem]">
                     <div className="w-16 h-16 rounded-2xl bg-black/40 shadow-lg flex items-center justify-center border border-slate-700/50 backdrop-blur-sm">
                       <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/csharp/csharp-original.svg" alt="C#" className="w-10 h-10" />
                     </div>
                     <span className="text-sm font-bold text-slate-300 text-center whitespace-normal leading-tight">C#</span>
                   </span>
-                  <span className="flex flex-col items-center justify-center gap-3 w-32">
+                  <span className="flex flex-col items-center justify-center gap-3 flex-shrink-0 w-[7rem] sm:w-[7.5rem] md:w-[8rem]">
                     <div className="w-16 h-16 rounded-2xl bg-black/40 shadow-lg flex items-center justify-center border border-slate-700/50 backdrop-blur-sm">
                       <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/visualbasic/visualbasic-original.svg" alt="VB.NET" className="w-10 h-10" />
                     </div>
                     <span className="text-sm font-bold text-slate-300 text-center whitespace-normal leading-tight">VB.NET</span>
                   </span>
-                  <span className="flex flex-col items-center justify-center gap-3 w-32">
+                  <span className="flex flex-col items-center justify-center gap-3 flex-shrink-0 w-[7rem] sm:w-[7.5rem] md:w-[8rem]">
                     <div className="w-16 h-16 rounded-2xl bg-black/40 shadow-lg flex items-center justify-center border border-slate-700/50 backdrop-blur-sm">
                       <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/tailwindcss/tailwindcss-original.svg" alt="Tailwind CSS" className="w-10 h-10" />
                     </div>
                     <span className="text-sm font-bold text-slate-300 text-center whitespace-normal leading-tight">Tailwind CSS</span>
                   </span>
-                  <span className="flex flex-col items-center justify-center gap-3 w-32">
+                  <span className="flex flex-col items-center justify-center gap-3 flex-shrink-0 w-[7rem] sm:w-[7.5rem] md:w-[8rem]">
                     <div className="w-16 h-16 rounded-2xl bg-black/40 shadow-lg flex items-center justify-center border border-slate-700/50 backdrop-blur-sm">
                       <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/typescript/typescript-original.svg" alt="TypeScript" className="w-10 h-10" />
                     </div>
@@ -218,6 +215,7 @@ export const SkillsSection = () => {
               numCopies={6}
               damping={75}
               stiffness={600}
+              parallaxClassName="parallax my-3"
             />
           </div>
         </motion.div>

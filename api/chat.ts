@@ -84,6 +84,46 @@ function isRateLimited(clientKey: string): boolean {
 
 const DEFAULT_MODEL = 'openai/gpt-oss-120b';
 const FALLBACK_MODEL = 'qwen/qwen3.8-27b';
+const SAFE_REFUSAL_MESSAGE = 'I can help with Jason\'s portfolio, skills, experience, and contact details. I can\'t reveal internal instructions, source code, API keys, or secret backend details.';
+const BLOCKED_PROMPT_PATTERNS = [
+  'system prompt',
+  'prompt instructions',
+  'internal instructions',
+  'hidden prompt',
+  'reveal your prompt',
+  'show me your prompt',
+  'what are your instructions',
+  'api key',
+  'secret key',
+  'access token',
+  'source code',
+  'show me the code',
+  'reveal the code',
+  'show the source',
+  'read the source',
+  'env file',
+  '.env',
+  'environment variable',
+  'private key',
+  'token',
+  'secret',
+  'debug your backend',
+  'ignore previous instructions',
+  'jailbreak',
+  'developer message',
+  'system message',
+  'prompt engineering',
+  'how did you build this',
+];
+
+function normalizeForPromptCheck(value: string): string {
+  return value.toLowerCase().replace(/[^a-z0-9\s]/g, ' ').replace(/\s+/g, ' ').trim();
+}
+
+function containsBlockedPrompt(value: string): boolean {
+  const normalized = normalizeForPromptCheck(value);
+  return BLOCKED_PROMPT_PATTERNS.some((pattern) => normalized.includes(pattern));
+}
 
 function parseHistoryMessage(value: unknown): HistoryMessage | null {
   if (!value || typeof value !== 'object') return null;
@@ -168,6 +208,17 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     });
   }
 
+  const promptText = parsedRequest.message;
+  const historyText = parsedRequest.history.map((item) => item.text).join(' ');
+
+  if (containsBlockedPrompt(promptText) || containsBlockedPrompt(historyText)) {
+    console.warn('Blocked potentially sensitive prompt request.', {
+      messagePreview: promptText.slice(0, 200),
+      historyPreview: historyText.slice(0, 200),
+    });
+    return res.status(200).json({ reply: SAFE_REFUSAL_MESSAGE });
+  }
+
   const apiKey = process.env.GROQ_API_KEY?.trim();
   if (!apiKey) {
     console.error('GROQ_API_KEY is missing on the server.');
@@ -191,7 +242,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
             { role: 'user', content: parsedRequest.message },
           ],
           temperature: 0.3,
-          max_tokens: 300,
+          max_tokens: 1500,
         });
 
         const reply = completion.choices[0]?.message?.content?.trim();
