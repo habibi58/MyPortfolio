@@ -11,6 +11,14 @@ export interface Certification {
   image?: string;
 }
 
+export const certificationNotice = {
+  message: 'Some certifications are not listed here. Additional credentials are available on Credly and LinkedIn.',
+  links: [
+    { label: 'Credly', url: 'https://www.credly.com/' },
+    { label: 'LinkedIn', url: 'https://www.linkedin.com/' },
+  ],
+};
+
 export const certificationsData: Certification[] = [
   {
     id: 'Civil-Service-Exam',
