@@ -321,6 +321,45 @@ export function ChatWidget({ className }: CopilotChatProps = {}) {
   return ReactDOM.createPortal(
     <>
       <style>{`
+        .chat-panel {
+          width: min(360px, calc(100vw - 48px - env(safe-area-inset-left) - env(safe-area-inset-right)));
+          height: min(620px, calc(100dvh - 40px - env(safe-area-inset-top) - env(safe-area-inset-bottom)));
+        }
+
+        @media (min-width: 768px) and (max-width: 1023px) {
+          .chat-panel {
+            width: min(440px, calc(100vw - 48px - env(safe-area-inset-left) - env(safe-area-inset-right)));
+            height: min(740px, calc(100dvh - 40px - env(safe-area-inset-top) - env(safe-area-inset-bottom)));
+          }
+
+          .chat-launcher {
+            width: 64px;
+            height: 64px;
+          }
+
+          .chat-launcher svg {
+            width: 25px;
+            height: 25px;
+          }
+        }
+
+        @media (min-width: 1024px) {
+          .chat-panel {
+            width: min(480px, calc(100vw - 48px - env(safe-area-inset-left) - env(safe-area-inset-right)));
+            height: min(760px, calc(100dvh - 40px - env(safe-area-inset-top) - env(safe-area-inset-bottom)));
+          }
+
+          .chat-launcher {
+            width: 68px;
+            height: 68px;
+          }
+
+          .chat-launcher svg {
+            width: 27px;
+            height: 27px;
+          }
+        }
+
         @keyframes chat-in {
           0% {
             opacity: 0;
@@ -354,15 +393,13 @@ export function ChatWidget({ className }: CopilotChatProps = {}) {
       >
       {shouldRenderPanel && (
         <section
-          className="mb-4 flex flex-col overflow-hidden rounded-[24px] border border-gray-800 bg-[#000000] text-white shadow-[0_25px_50px_-12px_rgba(0,0,0,0.6)]"
+          className="chat-panel mb-4 flex flex-col overflow-hidden rounded-[24px] border border-gray-800 bg-[#000000] text-white shadow-[0_25px_50px_-12px_rgba(0,0,0,0.6)]"
           aria-label="Chat with Jason's assistant"
           data-chat-panel
           onMouseEnter={() => setIsChatHovering(true)}
           onMouseLeave={() => setIsChatHovering(false)}
           style={{
             position: 'static',
-            width: 'min(360px, calc(100vw - 48px - env(safe-area-inset-left) - env(safe-area-inset-right)))',
-            height: 'min(620px, calc(100dvh - 40px - env(safe-area-inset-top) - env(safe-area-inset-bottom)))',
             maxWidth: 'calc(100vw - 48px - env(safe-area-inset-left) - env(safe-area-inset-right))',
             maxHeight: 'calc(100dvh - 40px - env(safe-area-inset-top) - env(safe-area-inset-bottom))',
             display: 'flex',
@@ -541,7 +578,7 @@ export function ChatWidget({ className }: CopilotChatProps = {}) {
 
       {!isOpen && !isClosing && (
         <button
-          className="group relative grid h-14 w-14 place-items-center rounded-full border border-white/20 bg-black/30 text-white shadow-[0_18px_35px_-12px_rgba(0,0,0,0.55)] backdrop-blur-md transition-transform duration-300 hover:scale-105 active:scale-95"
+          className="chat-launcher group relative grid h-14 w-14 place-items-center rounded-full border border-white/20 bg-black/30 text-white shadow-[0_18px_35px_-12px_rgba(0,0,0,0.55)] backdrop-blur-md transition-transform duration-300 hover:scale-105 active:scale-95"
           type="button"
           onClick={() => {
             setIsClosing(false);
