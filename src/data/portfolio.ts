@@ -51,15 +51,15 @@ export const stats = [
   },
   {
     label: 'Certifications',
-    value: '1',
+    value: '4',
   },
   {
     label: 'Years IT Experience',
-    value: '0.5',
+    value: '0.8',
   },
   {
     label: 'Users Supported',
-    value: '50+',
+    value: '100',
   },
 ];
 
