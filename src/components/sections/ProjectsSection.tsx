@@ -116,7 +116,7 @@ const MOBILE_STYLES = `
 
   /* "Portfolio" eyebrow */
   .pss-eyebrow {
-    font-size: 10px !important;
+    font-size: 14px !important;
     margin-bottom: 10px !important;
   }
 
@@ -128,7 +128,7 @@ const MOBILE_STYLES = `
 
   /* Subtitle paragraph */
   .pss-subtitle {
-    font-size: 13px !important;
+    font-size: 14px !important;
     margin-bottom: 20px !important;
   }
 
@@ -187,7 +187,7 @@ const MOBILE_STYLES = `
 
   /* Individual badges */
   .pss-badge {
-    font-size: 11px !important;
+    font-size: 14px !important;
     padding: 5px 10px !important;
     gap: 5px !important;
   }
@@ -293,7 +293,7 @@ const MOBILE_STYLES = `
 }
 
 .pss-fintra-card .pss-card-heading > span {
-  font-size: 0.75rem !important;
+  font-size: 14px !important;
 }
 
 .pss-fintra-card .pss-card-heading h3 {
@@ -303,7 +303,7 @@ const MOBILE_STYLES = `
 
 .pss-fintra-card .pss-description {
   margin-bottom: 9px !important;
-  font-size: 0.75rem !important;
+  font-size: 14px !important;
   line-height: 1.5 !important;
 }
 
@@ -314,7 +314,7 @@ const MOBILE_STYLES = `
 
 .pss-fintra-card .pss-feature {
   gap: 7px !important;
-  font-size: 0.72rem !important;
+  font-size: 14px !important;
   line-height: 1.45 !important;
 }
 
@@ -332,7 +332,7 @@ const MOBILE_STYLES = `
 .pss-fintra-card .pss-badge {
   gap: 4px !important;
   padding: 4px 8px !important;
-  font-size: 0.65rem !important;
+  font-size: 14px !important;
 }
 
 .pss-fintra-card .pss-badge img {
@@ -488,7 +488,7 @@ const ScrollStackItem = ({
                 style={{
                   width: '100%',
                   height: '100%',
-                  objectFit: 'cover',
+                  objectFit: 'contain',
                   borderRadius: '12px',
                   display: 'block',
                 }}

@@ -71,7 +71,7 @@
 .gooey-nav-container nav ul li a {
   display: inline-block;
   padding: 0.5em 0.85em;
-  font-size: 0.8125rem;
+  font-size: 0.875rem;
   font-weight: 500;
   white-space: nowrap;
   text-decoration: none;
@@ -131,7 +131,7 @@
 .gooey-nav-container .effect.text {
   color: white;
   transition: color 0.3s ease;
-  font-size: 0.8125rem;
+  font-size: 0.875rem;
   font-weight: 500;
   white-space: nowrap;
 }

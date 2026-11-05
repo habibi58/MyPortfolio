@@ -85,6 +85,7 @@ export function ChatWidget({ className }: CopilotChatProps = {}) {
   const [isMounted, setIsMounted] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
+  const [isContactVisible, setIsContactVisible] = useState(false);
   const [isChatHovering, setIsChatHovering] = useState(false);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -105,6 +106,29 @@ export function ChatWidget({ className }: CopilotChatProps = {}) {
       if (typingIntervalRef.current) {
         clearInterval(typingIntervalRef.current);
       }
+    };
+  }, []);
+
+  useEffect(() => {
+    const contact = document.getElementById('contact');
+    if (!contact) return;
+
+    const updateVisibility = () => {
+      const { top, bottom } = contact.getBoundingClientRect();
+      const isContactVisible = window.matchMedia('(max-width: 1279px)').matches
+        && bottom > 0
+        && top < window.innerHeight;
+      setIsContactVisible(isContactVisible);
+    };
+
+    const observer = new IntersectionObserver(updateVisibility);
+    observer.observe(contact);
+    window.addEventListener('resize', updateVisibility);
+    updateVisibility();
+
+    return () => {
+      observer.disconnect();
+      window.removeEventListener('resize', updateVisibility);
     };
   }, []);
 
@@ -502,7 +526,7 @@ export function ChatWidget({ className }: CopilotChatProps = {}) {
                   aria-label="Message"
                   autoComplete="off"
                   spellCheck={false}
-                  className="min-w-0 flex-1 bg-transparent px-2 text-sm text-slate-700 outline-none placeholder:text-slate-500"
+                  className="min-w-0 flex-1 bg-transparent px-2 text-base text-slate-700 outline-none placeholder:text-slate-500 sm:text-sm"
                   style={{
                     minWidth: 0,
                     flex: '1 1 auto',
@@ -539,13 +563,15 @@ export function ChatWidget({ className }: CopilotChatProps = {}) {
 
       {!isOpen && !isClosing && (
         <button
-          className="group relative grid h-14 w-14 place-items-center rounded-full border border-white/20 bg-black/30 text-white shadow-[0_18px_35px_-12px_rgba(0,0,0,0.55)] backdrop-blur-md transition-transform duration-300 hover:scale-105 active:scale-95"
+          className={`group relative grid h-14 w-14 place-items-center rounded-full border border-white/20 bg-black/30 text-white shadow-[0_18px_35px_-12px_rgba(0,0,0,0.55)] backdrop-blur-md transition-transform duration-300 hover:scale-105 active:scale-95${isContactVisible ? ' invisible pointer-events-none xl:visible xl:pointer-events-auto' : ''}`}
           type="button"
           onClick={() => {
             setIsClosing(false);
             setIsOpen(true);
           }}
           aria-label="Open chat assistant"
+          aria-hidden={isContactVisible}
+          tabIndex={isContactVisible ? -1 : 0}
         >
           <span className="absolute inset-0 rounded-full bg-white/10 opacity-0 blur-md transition-opacity group-hover:opacity-100" />
           <MessageSquare className="relative" size={22} />

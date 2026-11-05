@@ -211,7 +211,7 @@ const HERO_MOBILE_STYLES = `
   }
 }
 
-@media (max-width: 360px) {
+@media (max-width: 430px) {
   .hero-cta {
     grid-template-columns: 1fr !important;
   }

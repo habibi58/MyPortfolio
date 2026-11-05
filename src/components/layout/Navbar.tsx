@@ -1,5 +1,5 @@
 // Navbar Component
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X } from 'lucide-react';
 import { useScroll } from '../../hooks';
@@ -10,6 +10,7 @@ import { getLenisInstance } from '../../hooks/useLenis';
 export const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [activeSection, setActiveSection] = useState('home');
+  const pendingNavigationRef = useRef<string | null>(null);
   const { scrollY } = useScroll();
 
   const hasScrolled = scrollY > 10;
@@ -27,32 +28,58 @@ export const Navbar = () => {
   useEffect(() => {
     if (!isOpen) return;
 
-    const scrollY = window.scrollY;
     const body = document.body;
-    const previousPosition = body.style.position;
-    const previousTop = body.style.top;
-    const previousWidth = body.style.width;
+    const root = document.documentElement;
+    const previousBodyOverflow = body.style.overflow;
+    const previousRootOverflow = root.style.overflow;
     const lenis = getLenisInstance();
 
     lenis?.stop();
-    body.style.position = 'fixed';
-    body.style.top = `-${scrollY}px`;
-    body.style.width = '100%';
+    body.style.overflow = 'hidden';
+    root.style.overflow = 'hidden';
 
     const closeOnEscape = (event: KeyboardEvent) => {
       if (event.key === 'Escape') setIsOpen(false);
     };
+    const preventBackgroundScroll = (event: Event) => {
+      const target = event.target as HTMLElement | null;
+      if (target?.closest('#mobile-navigation')) return;
+      event.preventDefault();
+    };
 
     window.addEventListener('keydown', closeOnEscape);
+    window.addEventListener('wheel', preventBackgroundScroll, { passive: false });
+    window.addEventListener('touchmove', preventBackgroundScroll, { passive: false });
 
     return () => {
       window.removeEventListener('keydown', closeOnEscape);
-      body.style.position = previousPosition;
-      body.style.top = previousTop;
-      body.style.width = previousWidth;
-      window.scrollTo(0, scrollY);
+      window.removeEventListener('wheel', preventBackgroundScroll);
+      window.removeEventListener('touchmove', preventBackgroundScroll);
+      body.style.overflow = previousBodyOverflow;
+      root.style.overflow = previousRootOverflow;
       lenis?.start();
     };
+  }, [isOpen]);
+
+  useEffect(() => {
+    if (isOpen || !pendingNavigationRef.current) return;
+
+    const id = pendingNavigationRef.current;
+    pendingNavigationRef.current = null;
+    const element = document.getElementById(id);
+    if (!element) return;
+
+    const navHeight = document.querySelector('.site-navbar > .container-custom')?.getBoundingClientRect().height ?? 64;
+    const lenis = getLenisInstance();
+
+    if (lenis) {
+      lenis.scrollTo(element, { offset: -navHeight - 16 });
+    } else {
+      element.scrollIntoView({
+        behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth',
+        block: 'start',
+      });
+    }
   }, [isOpen]);
 
   useEffect(() => {
@@ -100,28 +127,28 @@ export const Navbar = () => {
   }, []);
 
   const handleNavClick = (href: string) => {
-    setIsOpen(false);
     const id = href.replace('#', '');
     setActiveSection(id);
+    if (isOpen) {
+      pendingNavigationRef.current = id;
+      setIsOpen(false);
+      return;
+    }
+
+    setIsOpen(false);
     const element = document.getElementById(id);
     if (element) {
-      const scrollToSection = () => {
-        const navHeight = document.querySelector('.site-navbar')?.getBoundingClientRect().height ?? 64;
-        const offset = element.getBoundingClientRect().top + window.scrollY - navHeight - 16;
-        const lenis = getLenisInstance();
+      const navHeight = document.querySelector('.site-navbar > .container-custom')?.getBoundingClientRect().height ?? 64;
+      const lenis = getLenisInstance();
 
-        if (lenis) {
-          lenis.scrollTo(offset);
-        } else {
-          window.scrollTo({
-            top: offset,
-            behavior: 'smooth',
-          });
-        }
-      };
-
-      if (isOpen) window.requestAnimationFrame(scrollToSection);
-      else scrollToSection();
+      if (lenis) {
+        lenis.scrollTo(element, { offset: -navHeight - 16 });
+      } else {
+        element.scrollIntoView({
+          behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth',
+          block: 'start',
+        });
+      }
     }
   };
 
@@ -198,7 +225,7 @@ export const Navbar = () => {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
-            className="pointer-events-auto max-h-[calc(100dvh-5rem)] overflow-y-auto overscroll-contain border-t border-white/10 bg-black/60 lg:hidden"
+            className="pointer-events-auto max-h-[calc(100dvh-5rem)] overflow-y-auto overscroll-contain border-t border-white/10 bg-black lg:hidden"
             style={{ zIndex: 100, maxHeight: 'calc(100dvh - 5rem - env(safe-area-inset-top))' }}
           >
             <div className="container-custom space-y-1 py-4">

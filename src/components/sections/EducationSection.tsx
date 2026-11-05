@@ -61,14 +61,14 @@ const STYLES = `
   }
 
   .edu-badge {
-    font-size: 9px; font-weight: 700;
+    font-size: 14px; font-weight: 700;
     padding: 2px 9px; border-radius: 99px;
     letter-spacing: 0.07em; text-transform: uppercase;
     display: inline-block;
   }
 
   .edu-course {
-    font-size: 12px; color: rgba(255,255,255,0.48);
+    font-size: 14px; color: rgba(255,255,255,0.48);
     margin-bottom: 10px; line-height: 1.5;
   }
 
@@ -80,11 +80,11 @@ const STYLES = `
 
   .edu-loc {
     display: flex; align-items: center; gap: 5px;
-    font-size: 11px; color: rgba(255,255,255,0.35);
+    font-size: 14px; color: rgba(255,255,255,0.35);
   }
 
   .edu-years {
-    font-size: 11px; font-weight: 600;
+    font-size: 14px; font-weight: 600;
     color: rgba(255,255,255,0.22);
     letter-spacing: 0.04em;
   }
@@ -187,8 +187,8 @@ const STYLES = `
     .edu-desktop { display: none; }
     .edu-mobile  { display: block; }
     .edu-card-inner { padding: 14px 14px; border-radius: 14px; }
-    .edu-school { font-size: 13px; }
-    .edu-course { font-size: 11px; margin-bottom: 8px; }
+    .edu-school { font-size: 14px; }
+    .edu-course { font-size: 14px; margin-bottom: 8px; }
     .edu-icon-box { width: 34px; height: 34px; font-size: 16px; border-radius: 10px; }
     .edu-header { gap: 10px; margin-bottom: 8px; }
   }

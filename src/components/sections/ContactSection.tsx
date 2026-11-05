@@ -270,7 +270,7 @@ export const ContactSection = () => {
                           onChange={handleChange}
                           placeholder={field.placeholder}
                           required
-                          className="w-full rounded-md text-sm outline-none text-white placeholder:text-slate-500 transition-all duration-200"
+                          className="w-full rounded-md text-base text-white outline-none placeholder:text-slate-500 transition-all duration-200 sm:text-sm"
                           style={{ ...inputSurface, paddingLeft: '12px', paddingRight: '16px', paddingTop: '14px', paddingBottom: '14px', minHeight: '48px' }}
                           onFocus={(e) => { e.currentTarget.style.borderColor = 'rgba(91,141,238,0.6)'; }}
                           onBlur={(e)  => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.14)'; }}
@@ -293,7 +293,7 @@ export const ContactSection = () => {
                       placeholder="Tell me about your project or opportunity..."
                       required
                       rows={5}
-                      className="w-full rounded-md text-sm outline-none resize-none text-white placeholder:text-slate-500 transition-all duration-200"
+                      className="w-full resize-none rounded-md text-base text-white outline-none placeholder:text-slate-500 transition-all duration-200 sm:text-sm"
                       style={{ ...inputSurface, paddingLeft: '12px', paddingRight: '16px', paddingTop: '14px', paddingBottom: '14px', minHeight: '120px' }}
                       onFocus={(e) => { e.currentTarget.style.borderColor = 'rgba(91,141,238,0.6)'; }}
                       onBlur={(e)  => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.14)'; }}

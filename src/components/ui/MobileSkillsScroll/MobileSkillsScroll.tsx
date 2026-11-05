@@ -83,7 +83,7 @@ const STYLES = `
     }
 
     .mss-label {
-      font-size: 10px;
+      font-size: 14px;
       font-weight: 700;
       color: #cbd5e1;
       text-align: center;
