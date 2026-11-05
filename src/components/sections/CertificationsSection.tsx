@@ -198,10 +198,12 @@ const CertificationCard = ({ cert, index }: CertificationCardProps) => {
           )}
 
           {/* ── Date ── */}
-          <div className="flex items-center gap-2 text-sm text-slate-500">
-            <Calendar size={14} />
-            {cert.date}
-          </div>
+          {cert.date && (
+            <div className="flex items-center gap-2 text-sm text-slate-500">
+              <Calendar size={14} />
+              {cert.date}
+            </div>
+          )}
 
           {/* ── Credential ID ── */}
           {cert.credentialId && (
@@ -216,7 +218,7 @@ const CertificationCard = ({ cert, index }: CertificationCardProps) => {
               variant="outline"
               size="sm"
               className="w-full"
-              onClick={() => window.open(cert.image, '_blank')}
+              onClick={() => window.open(cert.credentialUrl ?? cert.image, '_blank', 'noopener,noreferrer')}
             >
               <ExternalLink size={14} />
               View Credential

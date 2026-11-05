@@ -16,6 +16,8 @@ import {
   Monitor,
   Wifi,
   Bot,
+  ChevronLeft,
+  ChevronRight,
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import { projectsData, type Project } from '../../data';
@@ -93,12 +95,30 @@ const badgeVariants = {
 };
 
 /* ═══════════════════════════════════════════════════════════════════════
-   MOBILE-ONLY STYLES
-   Injected once via a <style> tag. All rules are inside @media (max-width: 767px)
-   so desktop is completely unaffected.
+   PROJECTS SECTION STYLES
+   Injected once via a <style> tag for carousel behavior and responsive overrides.
    ═══════════════════════════════════════════════════════════════════════ */
 
-const MOBILE_STYLES = `
+const PROJECTS_STYLES = `
+.pss-list {
+  flex: 1 1 0;
+  min-width: 0;
+  display: flex;
+  gap: 1.5rem;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+}
+.pss-list::-webkit-scrollbar {
+  display: none;
+}
+.pss-row {
+  flex: 0 0 100%;
+  min-width: 0;
+  scroll-snap-align: center;
+}
+
 @media (max-width: 767px) {
 
   /* Section wrapper — prevent horizontal bleed */
@@ -723,18 +743,19 @@ const ScrollStackItem = ({
 
 export const ProjectsSection = () => {
   const [activeIndex, setActiveIndex] = useState(0);
+  const carouselRef = useRef<HTMLDivElement>(null);
   const itemRefs = useRef<(HTMLDivElement | null)[]>([]);
 
   /* ── Active project detection ──
-     Keep the highlighted project synced with the card closest to the viewport center.
-     This is throttled to one animation frame so it stays responsive without running
-     expensive DOM measurement on every raw scroll event. */
+     Keep the active project synced with the card nearest the carousel center. */
   useEffect(() => {
     let rafId = 0;
     let lastActive = -1;
 
     const getActive = () => {
-      const viewportCenter = window.innerHeight / 2;
+      const carousel = carouselRef.current;
+      if (!carousel) return 0;
+      const carouselCenter = carousel.getBoundingClientRect().left + carousel.clientWidth / 2;
       let closestIndex = 0;
       let closestDistance = Number.POSITIVE_INFINITY;
 
@@ -742,8 +763,8 @@ export const ProjectsSection = () => {
         if (!el) return;
 
         const rect = el.getBoundingClientRect();
-        const center = rect.top + rect.height / 2;
-        const distance = Math.abs(center - viewportCenter);
+        const center = rect.left + rect.width / 2;
+        const distance = Math.abs(center - carouselCenter);
 
         if (distance < closestDistance) {
           closestDistance = distance;
@@ -762,29 +783,42 @@ export const ProjectsSection = () => {
       }
     };
 
-    updateActive();
-
     const onScroll = () => {
       cancelAnimationFrame(rafId);
       rafId = requestAnimationFrame(updateActive);
     };
 
-    window.addEventListener('scroll', onScroll, { passive: true });
+    const carousel = carouselRef.current;
+    carousel?.addEventListener('scroll', onScroll, { passive: true });
     window.addEventListener('resize', onScroll);
+    updateActive();
 
     return () => {
       cancelAnimationFrame(rafId);
-      window.removeEventListener('scroll', onScroll);
+      carousel?.removeEventListener('scroll', onScroll);
       window.removeEventListener('resize', onScroll);
     };
   }, []);
 
-  /* ── Click timeline item → smooth-scroll to project card ── */
+  /* ── Navigate to a project in the horizontal carousel ── */
   const scrollToProject = useCallback((index: number) => {
-    itemRefs.current[index]?.scrollIntoView({
+    const carousel = carouselRef.current;
+    const item = itemRefs.current[index];
+    if (!carousel || !item) return;
+
+    const carouselRect = carousel.getBoundingClientRect();
+    const itemRect = item.getBoundingClientRect();
+    const left =
+      carousel.scrollLeft +
+      itemRect.left -
+      carouselRect.left -
+      (carousel.clientWidth - item.clientWidth) / 2;
+
+    carousel.scrollTo({
+      left: Math.max(0, Math.min(left, carousel.scrollWidth - carousel.clientWidth)),
       behavior: 'smooth',
-      block: 'center',
     });
+    setActiveIndex(index);
   }, []);
 
   return (
@@ -793,8 +827,8 @@ export const ProjectsSection = () => {
       className="relative w-full"
       style={{ marginTop: '100px' }}
     >
-      {/* ── Inject mobile-only styles once ── */}
-      <style dangerouslySetInnerHTML={{ __html: MOBILE_STYLES }} />
+      {/* ── Inject section styles once ── */}
+      <style dangerouslySetInnerHTML={{ __html: PROJECTS_STYLES }} />
 
       {/* ── Section Header ── */}
       <div
@@ -828,94 +862,139 @@ export const ProjectsSection = () => {
         </motion.div>
       </div>
 
-      {/* ── Two-Column Layout ── */}
-      <div
-        className="container-custom pss-list pb-20"
-      >
-        {projectsData.map((project, index) => (
-          <motion.div
-            key={project.id}
-            ref={(el) => {
-              itemRefs.current[index] = el;
-            }}
-            data-index={index}
-            initial={{ opacity: 0, y: 80 }}
-            animate={{
-              opacity: activeIndex === index ? 1 : 0.1,
-              scale: activeIndex === index ? 1 : 0.95,
-              y: activeIndex === index ? 0 : 20,
-            }}
-            transition={{
-              opacity: { duration: 0.6, ease: EASE },
-              scale:   { duration: 0.6, ease: EASE },
-              y:       { duration: 0.6, ease: EASE },
-            }}
-            className="pss-row flex items-start gap-8 md:items-start items-center flex-col md:flex-row"
-            style={{
-              minHeight: index === projectsData.length - 1 ? '65vh' : '80vh',
-              paddingTop: index === 0 ? '0' : '2rem',
-              paddingBottom: '2rem',
-            }}
-          >
-            {/* Left side — Timeline item */}
-            <div className="pss-timeline-label w-[200px] shrink-0 pt-4 hidden md:block">
-              <motion.button
-                layout
-                onClick={() => scrollToProject(index)}
-                className="relative block text-left w-full py-3 cursor-pointer"
-                whileHover={{ x: 4 }}
-                transition={{
-                  layout: { duration: 0.5, ease: EASE },
-                  default: { duration: 0.3, ease: EASE },
-                }}
-                aria-current={activeIndex === index ? 'true' : undefined}
-              >
-                {/* ── Project number ── */}
-                <motion.span
-                  className="block font-mono text-xs font-semibold tracking-wider mb-1 select-none"
-                  animate={{
-                    color: activeIndex === index ? '#3b82f6' : '#c4c4c8',
-                    opacity: activeIndex === index ? 1 : 0.7,
+      <div className="container-custom mb-5 flex items-center justify-between gap-3 px-4 sm:px-6">
+        <span
+          className="font-mono text-sm text-slate-400"
+          aria-live="polite"
+          aria-atomic="true"
+        >
+          {String(activeIndex + 1).padStart(2, '0')} / {String(projectsData.length).padStart(2, '0')}
+        </span>
+      </div>
+
+      {/* ── Side navigation and swipeable project carousel ── */}
+      <div className="container-custom flex items-center gap-2 px-2 sm:gap-3 sm:px-4">
+        <button
+          type="button"
+          onClick={() => scrollToProject(activeIndex - 1)}
+          disabled={activeIndex === 0}
+          aria-label="Previous project"
+          className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-slate-700 text-slate-200 transition-colors hover:border-blue-500 hover:text-blue-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950 disabled:pointer-events-none disabled:opacity-40"
+        >
+          <ChevronLeft size={20} aria-hidden="true" />
+        </button>
+
+        <div
+          ref={carouselRef}
+          className="pss-list min-w-0 pb-20"
+          role="region"
+          aria-label="Featured projects"
+          aria-roledescription="carousel"
+          tabIndex={0}
+          onKeyDown={(event) => {
+            if (event.target !== event.currentTarget) return;
+            if (event.key === 'ArrowLeft' && activeIndex > 0) {
+              event.preventDefault();
+              scrollToProject(activeIndex - 1);
+            } else if (event.key === 'ArrowRight' && activeIndex < projectsData.length - 1) {
+              event.preventDefault();
+              scrollToProject(activeIndex + 1);
+            }
+          }}
+        >
+          {projectsData.map((project, index) => (
+            <motion.div
+              key={project.id}
+              ref={(el) => {
+                itemRefs.current[index] = el;
+              }}
+              data-index={index}
+              initial={{ opacity: 0, y: 80 }}
+              animate={{
+                opacity: activeIndex === index ? 1 : 0.1,
+                scale: activeIndex === index ? 1 : 0.95,
+                y: activeIndex === index ? 0 : 20,
+              }}
+              transition={{
+                opacity: { duration: 0.6, ease: EASE },
+                scale:   { duration: 0.6, ease: EASE },
+                y:       { duration: 0.6, ease: EASE },
+              }}
+              className="pss-row flex items-start gap-8 md:items-start items-center flex-col md:flex-row"
+              role="group"
+              aria-label={`${project.title}, project ${index + 1} of ${projectsData.length}`}
+              aria-roledescription="slide"
+              style={{
+                minHeight: index === projectsData.length - 1 ? '65vh' : '80vh',
+                paddingTop: index === 0 ? '0' : '2rem',
+                paddingBottom: '2rem',
+              }}
+            >
+              {/* Left side — Timeline item */}
+              <div className="pss-timeline-label w-[200px] shrink-0 pt-4 hidden md:block">
+                <motion.button
+                  layout
+                  onClick={() => scrollToProject(index)}
+                  className="relative block text-left w-full py-3 cursor-pointer"
+                  whileHover={{ x: 4 }}
+                  transition={{
+                    layout: { duration: 0.5, ease: EASE },
+                    default: { duration: 0.3, ease: EASE },
                   }}
-                  transition={{ duration: 0.4 }}
+                  aria-current={activeIndex === index ? 'true' : undefined}
                 >
-                  {String(index + 1).padStart(2, '0')}
-                </motion.span>
+                  <motion.span
+                    className="block font-mono text-xs font-semibold tracking-wider mb-1 select-none"
+                    animate={{
+                      color: activeIndex === index ? '#3b82f6' : '#c4c4c8',
+                      opacity: activeIndex === index ? 1 : 0.7,
+                    }}
+                    transition={{ duration: 0.4 }}
+                  >
+                    {String(index + 1).padStart(2, '0')}
+                  </motion.span>
+                  <motion.h3
+                    className="font-display font-bold leading-snug"
+                    animate={{
+                      fontSize: activeIndex === index ? '1.25rem' : '0.925rem',
+                      lineHeight: activeIndex === index ? '1.5rem' : '1.35rem',
+                      color: '#ffffff',
+                      opacity: activeIndex === index ? 1 : 0.5,
+                    }}
+                    transition={{ duration: 0.5, ease: EASE }}
+                  >
+                    {project.title}
+                  </motion.h3>
+                </motion.button>
+              </div>
 
-                {/* ── Project title ── */}
-                <motion.h3
-                  className="font-display font-bold leading-snug"
-                  animate={{
-                    fontSize: activeIndex === index ? '1.25rem' : '0.925rem',
-                    lineHeight: activeIndex === index ? '1.5rem' : '1.35rem',
-                    color: '#ffffff',
-                    opacity: activeIndex === index ? 1 : 0.5,
-                  }}
-                  transition={{ duration: 0.5, ease: EASE }}
-                >
-                  {project.title}
-                </motion.h3>
-              </motion.button>
-            </div>
+              {/* Right side — Project card */}
+              <div className="pss-card-col flex-1">
+                <MobileLabel
+                  project={project}
+                  index={index}
+                  isActive={activeIndex === index}
+                />
+                <ScrollStackItem
+                  project={project}
+                  index={index}
+                  isActive={activeIndex === index}
+                  visual={projectVisuals[index] || projectVisuals[0]}
+                />
+              </div>
+            </motion.div>
+          ))}
+        </div>
 
-            {/* Right side — Project card */}
-            <div className="pss-card-col flex-1">
-              {/* Mobile-only label (hidden on desktop via CSS) */}
-              <MobileLabel
-                project={project}
-                index={index}
-                isActive={activeIndex === index}
-              />
-
-              <ScrollStackItem
-                project={project}
-                index={index}
-                isActive={activeIndex === index}
-                visual={projectVisuals[index] || projectVisuals[0]}
-              />
-            </div>
-          </motion.div>
-        ))}
+        <button
+          type="button"
+          onClick={() => scrollToProject(activeIndex + 1)}
+          disabled={activeIndex >= projectsData.length - 1}
+          aria-label="Next project"
+          className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-slate-700 text-slate-200 transition-colors hover:border-blue-500 hover:text-blue-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950 disabled:pointer-events-none disabled:opacity-40"
+        >
+          <ChevronRight size={20} aria-hidden="true" />
+        </button>
       </div>
 
       <div

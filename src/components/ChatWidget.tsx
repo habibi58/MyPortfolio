@@ -85,7 +85,6 @@ export function ChatWidget({ className }: CopilotChatProps = {}) {
   const [isMounted, setIsMounted] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
-  const [isLauncherObstructed, setIsLauncherObstructed] = useState(false);
   const [isChatHovering, setIsChatHovering] = useState(false);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -97,10 +96,12 @@ export function ChatWidget({ className }: CopilotChatProps = {}) {
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    const frameId = window.requestAnimationFrame(() => setIsMounted(true));
-    // Randomly select 4 prompts from allQuickPrompts
-    const shuffled = [...allQuickPrompts].sort(() => 0.5 - Math.random());
-    setQuickPrompts(shuffled.slice(0, 4));
+    const frameId = window.requestAnimationFrame(() => {
+      setIsMounted(true);
+      // Randomly select 4 prompts from allQuickPrompts.
+      const shuffled = [...allQuickPrompts].sort(() => 0.5 - Math.random());
+      setQuickPrompts(shuffled.slice(0, 4));
+    });
     return () => {
       window.cancelAnimationFrame(frameId);
       if (typingIntervalRef.current) {
@@ -108,67 +109,6 @@ export function ChatWidget({ className }: CopilotChatProps = {}) {
       }
     };
   }, []);
-
-  useEffect(() => {
-    let frameId = 0;
-    const contentSelector = [
-      'section h1',
-      'section h2',
-      'section h3',
-      'section p',
-      'section a',
-      'section button',
-      'section input',
-      'section textarea',
-      'section li',
-      'section [class*="rounded"]',
-      'footer h1',
-      'footer h2',
-      'footer h3',
-      'footer p',
-      'footer a',
-      'footer button',
-      'footer li',
-    ].join(', ');
-
-    const updateVisibility = () => {
-      frameId = 0;
-      const launcher = document.querySelector<HTMLButtonElement>('[aria-label="Open chat assistant"]');
-      if (!launcher) return;
-
-      const bounds = launcher.getBoundingClientRect();
-      const isObstructed = [...document.querySelectorAll<HTMLElement>(contentSelector)].some((element) => {
-        const style = window.getComputedStyle(element);
-        if (style.display === 'none' || style.visibility === 'hidden' || Number(style.opacity) < 0.05) {
-          return false;
-        }
-
-        const contentBounds = element.getBoundingClientRect();
-        return contentBounds.width > 0
-          && contentBounds.height > 0
-          && contentBounds.left < bounds.right
-          && contentBounds.right > bounds.left
-          && contentBounds.top < bounds.bottom
-          && contentBounds.bottom > bounds.top;
-      });
-
-      setIsLauncherObstructed((previous) => previous === isObstructed ? previous : isObstructed);
-    };
-
-    const scheduleUpdate = () => {
-      if (!frameId) frameId = window.requestAnimationFrame(updateVisibility);
-    };
-
-    window.addEventListener('scroll', scheduleUpdate, { passive: true });
-    window.addEventListener('resize', scheduleUpdate);
-    scheduleUpdate();
-
-    return () => {
-      if (frameId) window.cancelAnimationFrame(frameId);
-      window.removeEventListener('scroll', scheduleUpdate);
-      window.removeEventListener('resize', scheduleUpdate);
-    };
-  }, [isMounted, isOpen]);
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
@@ -601,15 +541,13 @@ export function ChatWidget({ className }: CopilotChatProps = {}) {
 
       {!isOpen && !isClosing && (
         <button
-          className={`group relative grid h-14 w-14 place-items-center rounded-full border border-white/20 bg-black/30 text-white shadow-[0_18px_35px_-12px_rgba(0,0,0,0.55)] backdrop-blur-md transition-transform duration-300 hover:scale-105 active:scale-95${isLauncherObstructed ? ' invisible pointer-events-none' : ''}`}
+          className="group relative grid h-14 w-14 place-items-center rounded-full border border-white/20 bg-black/30 text-white shadow-[0_18px_35px_-12px_rgba(0,0,0,0.55)] backdrop-blur-md transition-transform duration-300 hover:scale-105 active:scale-95"
           type="button"
           onClick={() => {
             setIsClosing(false);
             setIsOpen(true);
           }}
           aria-label="Open chat assistant"
-          aria-hidden={isLauncherObstructed}
-          tabIndex={isLauncherObstructed ? -1 : 0}
         >
           <span className="absolute inset-0 rounded-full bg-white/10 opacity-0 blur-md transition-opacity group-hover:opacity-100" />
           <MessageSquare className="relative" size={22} />
