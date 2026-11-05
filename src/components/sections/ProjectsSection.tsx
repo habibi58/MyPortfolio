@@ -617,6 +617,7 @@ export const ProjectsSection = () => {
         </motion.div>
       </div>
 
+<<<<<<< Updated upstream
       {/* ── Two-Column Layout ── */}
       <div
         className="pss-list px-3 sm:px-4 sm:px-6 lg:px-8 pb-20"
@@ -666,6 +667,86 @@ export const ProjectsSection = () => {
                   animate={{
                     color: activeIndex === index ? '#3b82f6' : '#c4c4c8',
                     opacity: activeIndex === index ? 1 : 0.7,
+=======
+      <div className="container-custom mb-5 flex items-center justify-between gap-3 px-4 sm:px-6">
+        <span
+          className="font-mono text-sm text-slate-400"
+          aria-live="polite"
+          aria-atomic="true"
+        >
+          {String(activeIndex + 1).padStart(2, '0')} / {String(projectsData.length).padStart(2, '0')}
+        </span>
+      </div>
+
+      {/* ── Side navigation and swipeable project carousel ── */}
+      <div className="container-custom flex items-center gap-2 px-2 sm:gap-3 sm:px-4">
+        <button
+          type="button"
+          onClick={() => scrollToProject(activeIndex - 1)}
+          disabled={activeIndex === 0}
+          aria-label="Previous project"
+          className="hidden h-11 w-11 shrink-0 items-center justify-center rounded-full border border-slate-700 text-slate-200 transition-colors hover:border-blue-500 hover:text-blue-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950 disabled:pointer-events-none disabled:opacity-40 md:inline-flex"
+        >
+          <ChevronLeft size={20} aria-hidden="true" />
+        </button>
+
+        <div
+          ref={carouselRef}
+          className="pss-list min-w-0 pb-20"
+          role="region"
+          aria-label="Featured projects"
+          aria-roledescription="carousel"
+          tabIndex={0}
+          onKeyDown={(event) => {
+            if (event.target !== event.currentTarget) return;
+            if (event.key === 'ArrowLeft' && activeIndex > 0) {
+              event.preventDefault();
+              scrollToProject(activeIndex - 1);
+            } else if (event.key === 'ArrowRight' && activeIndex < projectsData.length - 1) {
+              event.preventDefault();
+              scrollToProject(activeIndex + 1);
+            }
+          }}
+        >
+          {projectsData.map((project, index) => (
+            <motion.div
+              key={project.id}
+              ref={(el) => {
+                itemRefs.current[index] = el;
+              }}
+              data-index={index}
+              initial={{ opacity: 0, y: 80 }}
+              animate={{
+                opacity: activeIndex === index ? 1 : 0.1,
+                scale: activeIndex === index ? 1 : 0.95,
+                y: activeIndex === index ? 0 : 20,
+              }}
+              transition={{
+                opacity: { duration: 0.6, ease: EASE },
+                scale:   { duration: 0.6, ease: EASE },
+                y:       { duration: 0.6, ease: EASE },
+              }}
+              className="pss-row flex items-start gap-8 md:items-start items-center flex-col md:flex-row"
+              role="group"
+              aria-label={`${project.title}, project ${index + 1} of ${projectsData.length}`}
+              aria-roledescription="slide"
+              style={{
+                minHeight: index === projectsData.length - 1 ? '65vh' : '80vh',
+                paddingTop: index === 0 ? '0' : '2rem',
+                paddingBottom: '2rem',
+              }}
+            >
+              {/* Left side — Timeline item */}
+              <div className="pss-timeline-label w-[200px] shrink-0 pt-4 hidden md:block">
+                <motion.button
+                  layout
+                  onClick={() => scrollToProject(index)}
+                  className="relative block text-left w-full py-3 cursor-pointer"
+                  whileHover={{ x: 4 }}
+                  transition={{
+                    layout: { duration: 0.5, ease: EASE },
+                    default: { duration: 0.3, ease: EASE },
+>>>>>>> Stashed changes
                   }}
                   transition={{ duration: 0.4 }}
                 >
@@ -688,6 +769,7 @@ export const ProjectsSection = () => {
               </motion.button>
             </div>
 
+<<<<<<< Updated upstream
             {/* Right side — Project card */}
             <div className="pss-card-col flex-1">
               {/* Mobile-only label (hidden on desktop via CSS) */}
@@ -706,6 +788,17 @@ export const ProjectsSection = () => {
             </div>
           </motion.div>
         ))}
+=======
+        <button
+          type="button"
+          onClick={() => scrollToProject(activeIndex + 1)}
+          disabled={activeIndex >= projectsData.length - 1}
+          aria-label="Next project"
+          className="hidden h-11 w-11 shrink-0 items-center justify-center rounded-full border border-slate-700 text-slate-200 transition-colors hover:border-blue-500 hover:text-blue-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950 disabled:pointer-events-none disabled:opacity-40 md:inline-flex"
+        >
+          <ChevronRight size={20} aria-hidden="true" />
+        </button>
+>>>>>>> Stashed changes
       </div>
 
       <div

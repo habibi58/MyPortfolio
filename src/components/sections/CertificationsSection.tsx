@@ -95,7 +95,7 @@ const CertificationCard = ({ cert, index }: CertificationCardProps) => {
           {cert.image ? (
             <motion.div
               className="relative w-full rounded-xl overflow-hidden"
-              style={{ height: '280px' }}
+              style={{ height: '280px', background: 'transparent' }}
               whileHover={{ scale: 1.02 }}
               transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
             >
@@ -118,15 +118,9 @@ const CertificationCard = ({ cert, index }: CertificationCardProps) => {
                 <img
                   src={cert.image}
                   alt={`${cert.title} certificate`}
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-contain"
                 />
               )}
-              <div
-                className="absolute inset-0 rounded-xl"
-                style={{
-                  background: 'linear-gradient(to bottom, transparent 50%, rgba(0,0,0,0.45) 100%)',
-                }}
-              />
             </motion.div>
           ) : (
             <div
