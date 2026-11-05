@@ -523,6 +523,18 @@ export const ExperienceSection = () => {
           transition: transform .35s cubic-bezier(.22,1,.36,1),
                       border-color .3s ease, box-shadow .3s ease;
         }
+        @media (min-width: 768px) and (max-width: 1023px) {
+          .exp-row {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+          }
+          .exp-card-cell {
+            width: 100%;
+            max-width: 720px;
+            margin-inline: auto;
+          }
+        }
       `}</style>
 
       {/* grid bg */}
@@ -541,7 +553,7 @@ export const ExperienceSection = () => {
         </div>
 
         <div className="relative">
-          <div className="hidden md:block absolute left-1/2 -translate-x-1/2 w-px h-full pointer-events-none"
+          <div className="hidden lg:block absolute left-1/2 -translate-x-1/2 w-px h-full pointer-events-none"
             style={{ background: 'linear-gradient(180deg,transparent,rgba(59,130,246,0.15) 12%,rgba(59,130,246,0.15) 88%,transparent)' }} />
 
           <div className="space-y-20">
@@ -561,7 +573,7 @@ export const ExperienceSection = () => {
                 <div
                   key={exp.id}
                   ref={(el) => { rowRefs.current[index] = el; }}
-                  className="grid grid-cols-1 md:grid-cols-[1fr_80px_1fr]"
+                  className="exp-row grid grid-cols-1 md:grid-cols-[1fr_80px_1fr]"
                   style={{
                     opacity: 0, transform: 'translateY(48px)',
                     transition: `opacity .75s cubic-bezier(.22,1,.36,1) ${index * 0.12}s,
@@ -573,7 +585,7 @@ export const ExperienceSection = () => {
                     : <div />}
 
                   {/* node */}
-                  <div className="hidden md:flex flex-col items-center">
+                  <div className="hidden lg:flex flex-col items-center">
                     <motion.div className="relative flex-shrink-0 mt-6"
                       initial={{ scale:0, opacity:0 }}
                       whileInView={{ scale:1, opacity:1 }}
@@ -632,7 +644,7 @@ interface ExperienceCardProps {
 }
 
 const ExperienceCard: React.FC<ExperienceCardProps> = ({ exp, t, gallery, stats, bars, skills, openLightbox, col }) => (
-  <div style={{ gridColumn: col, padding: '4px' }}>
+  <div className="exp-card-cell" style={{ gridColumn: col, padding: '4px' }}>
     <div className="exp-inner-card" style={{
       background: 'rgba(255,255,255,0.028)', border: '1px solid rgba(255,255,255,0.07)',
       borderRadius: '22px', padding: '26px 24px', position: 'relative', overflow: 'hidden',

@@ -220,6 +220,26 @@ const MOBILE_STYLES = `
     display: none !important;
   }
 }
+
+@media (min-width: 768px) and (max-width: 1279px) {
+  .pss-row {
+    flex-direction: column !important;
+    gap: 12px !important;
+  }
+
+  .pss-timeline-label {
+    display: none !important;
+  }
+
+  .pss-mobile-label {
+    display: flex !important;
+  }
+
+  .pss-card-col {
+    width: 100%;
+    min-width: 0;
+  }
+}
 `;
 
 /* ═══════════════════════════════════════════════════════════════════════
@@ -648,7 +668,7 @@ export const ProjectsSection = () => {
             }}
           >
             {/* Left side — Timeline item */}
-            <div className="w-[200px] shrink-0 pt-4 hidden md:block">
+            <div className="pss-timeline-label w-[200px] shrink-0 pt-4 hidden md:block">
               <motion.button
                 layout
                 onClick={() => scrollToProject(index)}

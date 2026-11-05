@@ -18,7 +18,7 @@ export const Home = () => {
   }, []);
 
   return (
-    <main className="relative overflow-hidden space-y-32">
+    <main className="relative w-full min-w-0 overflow-hidden space-y-32">
 
       {/* Hero Section */}
       <HeroSection />

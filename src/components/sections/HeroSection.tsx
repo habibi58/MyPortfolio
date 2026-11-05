@@ -196,6 +196,52 @@ const HERO_MOBILE_STYLES = `
     display: none !important;
   }
 }
+
+/* Tablet portrait — keep the avatar above the intro with balanced side gutters. */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .hero-grid {
+    padding-inline: 24px;
+  }
+
+  .hero-left {
+    align-items: center !important;
+    padding-left: 0 !important;
+    text-align: center !important;
+  }
+
+  .hero-name {
+    justify-content: center !important;
+    text-align: center !important;
+  }
+
+  .hero-role-container,
+  .hero-cta {
+    justify-content: center !important;
+  }
+
+  .hero-role-stage > span {
+    justify-content: center !important;
+  }
+
+  .hero-description {
+    justify-content: center !important;
+    text-align: center !important;
+  }
+
+  .hero-social {
+    display: flex !important;
+    justify-content: center !important;
+  }
+
+  .hero-grid > div:nth-child(2) {
+    order: -1;
+    width: 100%;
+  }
+
+  .hero-grid > div:nth-child(2) > div {
+    margin: 0 !important;
+  }
+}
 `;
 
 export const HeroSection = () => {
@@ -307,6 +353,7 @@ export const HeroSection = () => {
                     initial={{ opacity: 0, y: 30 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 3, duration: 0.6 }}
+                    className="hero-role-container"
                     style={{
                       marginTop: '24px',
                       marginBottom: '24px',
