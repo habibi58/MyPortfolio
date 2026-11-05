@@ -1,0 +1,139 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" fill="none">
+  <defs>
+    <linearGradient id="background" x1="84" y1="58" x2="1508" y2="882" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#131927"/>
+      <stop offset=".55" stop-color="#090D16"/>
+      <stop offset="1" stop-color="#07090E"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="180" y1="145" x2="730" y2="730" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#A78BFA"/>
+      <stop offset="1" stop-color="#60A5FA"/>
+    </linearGradient>
+    <linearGradient id="phone" x1="1115" y1="116" x2="1419" y2="800" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#1D2636"/>
+      <stop offset="1" stop-color="#10151F"/>
+    </linearGradient>
+    <linearGradient id="chart" x1="1018" y1="454" x2="1407" y2="454" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#A78BFA"/>
+      <stop offset="1" stop-color="#60A5FA"/>
+    </linearGradient>
+    <filter id="glow" x="85" y="46" width="862" height="828" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse">
+      <feGaussianBlur stdDeviation="76"/>
+    </filter>
+    <filter id="phoneShadow" x="1008" y="62" width="506" height="828" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse">
+      <feGaussianBlur stdDeviation="22"/>
+    </filter>
+  </defs>
+
+  <rect width="1600" height="900" rx="38" fill="url(#background)"/>
+  <circle cx="516" cy="454" r="323" fill="#6651C9" fill-opacity=".12" filter="url(#glow)"/>
+  <circle cx="1350" cy="162" r="220" fill="#4387DB" fill-opacity=".08"/>
+
+  <g opacity=".18" stroke="#71809A">
+    <path d="M0 690.5h1600"/>
+    <path d="M0 780.5h1600"/>
+    <path d="M80.5 0v900"/>
+    <path d="M1518.5 0v900"/>
+  </g>
+  <g fill="#AEBAD0" fill-opacity=".32">
+    <circle cx="971" cy="147" r="3"/>
+    <circle cx="899" cy="748" r="2.5"/>
+    <circle cx="1513" cy="702" r="3"/>
+    <circle cx="104" cy="808" r="2"/>
+    <circle cx="875" cy="307" r="2"/>
+  </g>
+
+  <g transform="translate(116 106)">
+    <rect width="82" height="82" rx="23" fill="#171C28" stroke="#FFFFFF" stroke-opacity=".14" stroke-width="2"/>
+    <image href="/projectimages/fintra.svg" x="7" y="7" width="68" height="68"/>
+    <text x="104" y="55" fill="#F8FAFC" font-family="Inter, Arial, sans-serif" font-size="46" font-weight="750" letter-spacing="-1.5">Fintra</text>
+    <rect x="261" y="19" width="156" height="34" rx="17" fill="#FFFFFF" fill-opacity=".06" stroke="#FFFFFF" stroke-opacity=".12"/>
+    <circle cx="280" cy="36" r="5" fill="#8BDBB0"/>
+    <text x="294" y="41" fill="#C5D0E0" font-family="Inter, Arial, sans-serif" font-size="14" font-weight="600" letter-spacing="1.1">OFFLINE-FIRST</text>
+  </g>
+
+  <g transform="translate(122 304)">
+    <text fill="#F8FAFC" font-family="Inter, Arial, sans-serif" font-size="66" font-weight="760" letter-spacing="-2.6">
+      <tspan x="0" y="0">Your money.</tspan>
+      <tspan x="0" y="79">Your privacy.</tspan>
+    </text>
+    <text x="2" y="143" fill="#AEB8C9" font-family="Inter, Arial, sans-serif" font-size="24" font-weight="450">
+      <tspan x="2" dy="0">A personal finance tracker that keeps your</tspan>
+      <tspan x="2" dy="36">budget close and your data on your device.</tspan>
+    </text>
+
+    <g transform="translate(2 249)">
+      <rect width="183" height="51" rx="16" fill="#FFFFFF" fill-opacity=".055" stroke="#FFFFFF" stroke-opacity=".12"/>
+      <circle cx="26" cy="25.5" r="11" fill="#8E7DF2" fill-opacity=".22"/>
+      <path d="M26 19v13M21 25.5h10" stroke="#C1B5FF" stroke-width="2" stroke-linecap="round"/>
+      <text x="47" y="31" fill="#E4EAF4" font-family="Inter, Arial, sans-serif" font-size="16" font-weight="600">Smart budgets</text>
+
+      <rect x="198" width="191" height="51" rx="16" fill="#FFFFFF" fill-opacity=".055" stroke="#FFFFFF" stroke-opacity=".12"/>
+      <path d="M220 20l5 5 10-11" stroke="#8EDEB1" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+      <text x="246" y="31" fill="#E4EAF4" font-family="Inter, Arial, sans-serif" font-size="16" font-weight="600">Private by design</text>
+    </g>
+
+    <g transform="translate(2 329)">
+      <circle cx="8" cy="8" r="7" fill="#8BDBB0" fill-opacity=".22"/>
+      <path d="M8 4v8M4 8h8" stroke="#A8E8C3" stroke-width="1.7" stroke-linecap="round"/>
+      <text x="26" y="13" fill="#AEB8C9" font-family="Inter, Arial, sans-serif" font-size="16" font-weight="500">Accounts</text>
+      <circle cx="145" cy="8" r="7" fill="#A78BFA" fill-opacity=".22"/>
+      <path d="M141 8h8M145 4v8" stroke="#C4B5FD" stroke-width="1.7" stroke-linecap="round"/>
+      <text x="163" y="13" fill="#AEB8C9" font-family="Inter, Arial, sans-serif" font-size="16" font-weight="500">Spending</text>
+      <circle cx="290" cy="8" r="7" fill="#60A5FA" fill-opacity=".22"/>
+      <path d="M286 8l3 3 5-6" stroke="#93C5FD" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+      <text x="308" y="13" fill="#AEB8C9" font-family="Inter, Arial, sans-serif" font-size="16" font-weight="500">Savings</text>
+    </g>
+  </g>
+
+  <g opacity=".45" filter="url(#phoneShadow)">
+    <rect x="1092" y="98" width="344" height="714" rx="48" fill="#000"/>
+  </g>
+  <g>
+    <rect x="1104" y="90" width="344" height="714" rx="48" fill="url(#phone)" stroke="#FFFFFF" stroke-opacity=".24" stroke-width="2"/>
+    <rect x="1116" y="103" width="320" height="688" rx="39" fill="#0B1019"/>
+    <rect x="1219" y="111" width="115" height="21" rx="10.5" fill="#05070B"/>
+
+    <text x="1140" y="168" fill="#E8EDF6" font-family="Inter, Arial, sans-serif" font-size="18" font-weight="700">Overview</text>
+    <circle cx="1401" cy="159" r="17" fill="#FFFFFF" fill-opacity=".06"/>
+    <circle cx="1401" cy="159" r="6" stroke="#BAC4D5" stroke-width="1.7"/>
+    <path d="M1401 148v3M1401 167v3M1390 159h3M1409 159h3" stroke="#BAC4D5" stroke-width="1.5" stroke-linecap="round"/>
+
+    <rect x="1136" y="195" width="280" height="137" rx="23" fill="#141B28" stroke="#FFFFFF" stroke-opacity=".08"/>
+    <text x="1157" y="226" fill="#9BA8BB" font-family="Inter, Arial, sans-serif" font-size="13" font-weight="550">TOTAL BALANCE</text>
+    <text x="1157" y="270" fill="#F2F5FB" font-family="Inter, Arial, sans-serif" font-size="34" font-weight="730" letter-spacing="-1">$12,480.00</text>
+    <rect x="1157" y="292" width="111" height="23" rx="11.5" fill="#8BDBB0" fill-opacity=".12"/>
+    <path d="M1170 304l4-4 4 4M1174 300v9" stroke="#8BDBB0" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+    <text x="1184" y="308" fill="#8BDBB0" font-family="Inter, Arial, sans-serif" font-size="11" font-weight="650">THIS MONTH</text>
+
+    <text x="1140" y="372" fill="#E8EDF6" font-family="Inter, Arial, sans-serif" font-size="16" font-weight="680">Monthly spending</text>
+    <text x="1386" y="372" fill="#A78BFA" font-family="Inter, Arial, sans-serif" font-size="12" font-weight="600">Details</text>
+    <rect x="1136" y="391" width="280" height="168" rx="22" fill="#141B28" stroke="#FFFFFF" stroke-opacity=".08"/>
+    <path d="M1161 511H1391" stroke="#FFFFFF" stroke-opacity=".09"/>
+    <path d="M1161 471H1391" stroke="#FFFFFF" stroke-opacity=".07"/>
+    <path d="M1161 431H1391" stroke="#FFFFFF" stroke-opacity=".07"/>
+    <path d="M1165 495C1190 483 1203 488 1224 457C1244 428 1261 467 1284 449C1307 432 1322 461 1340 438C1360 414 1375 435 1390 419" stroke="url(#chart)" stroke-width="4" stroke-linecap="round"/>
+    <path d="M1165 495C1190 483 1203 488 1224 457C1244 428 1261 467 1284 449C1307 432 1322 461 1340 438C1360 414 1375 435 1390 419V512H1165V495Z" fill="url(#chart)" fill-opacity=".09"/>
+    <g fill="#8996A9" font-family="Inter, Arial, sans-serif" font-size="10" font-weight="500">
+      <text x="1160" y="542">W1</text><text x="1213" y="542">W2</text><text x="1266" y="542">W3</text><text x="1319" y="542">W4</text><text x="1371" y="542">W5</text>
+    </g>
+
+    <text x="1140" y="604" fill="#E8EDF6" font-family="Inter, Arial, sans-serif" font-size="16" font-weight="680">Budget progress</text>
+    <rect x="1136" y="621" width="280" height="114" rx="22" fill="#141B28" stroke="#FFFFFF" stroke-opacity=".08"/>
+    <g font-family="Inter, Arial, sans-serif">
+      <circle cx="1169" cy="659" r="13" fill="#A78BFA" fill-opacity=".17"/>
+      <path d="M1164 659h10M1169 654v10" stroke="#C4B5FD" stroke-width="1.7" stroke-linecap="round"/>
+      <text x="1193" y="655" fill="#E3E9F3" font-size="13" font-weight="600">Monthly budget</text>
+      <text x="1193" y="675" fill="#8E9AAF" font-size="11" font-weight="500">$1,840 of $2,500</text>
+      <text x="1372" y="664" fill="#C4B5FD" font-size="12" font-weight="650">74%</text>
+    </g>
+    <rect x="1157" y="698" width="238" height="7" rx="3.5" fill="#FFFFFF" fill-opacity=".08"/>
+    <rect x="1157" y="698" width="176" height="7" rx="3.5" fill="url(#accent)"/>
+
+    <path d="M1167 765h232" stroke="#FFFFFF" stroke-opacity=".08"/>
+    <g fill="#8996A9">
+      <circle cx="1184" cy="778" r="4"/><circle cx="1256" cy="778" r="4"/><circle cx="1328" cy="778" r="4"/><circle cx="1400" cy="778" r="4"/>
+    </g>
+    <circle cx="1256" cy="778" r="5" fill="#A78BFA"/>
+  </g>
+</svg>
