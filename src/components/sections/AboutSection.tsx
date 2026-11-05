@@ -44,7 +44,7 @@ export const AboutSection = () => {
       <div className="absolute top-0 right-0 w-96 h-96 rounded-full bg-blue-500/[0.02] blur-[100px]" />
       <div className="absolute bottom-0 left-0 w-80 h-80 rounded-full bg-blue-400/[0.02] blur-[100px]" />
 
-      <div className="relative max-w-6xl mx-auto px-3 sm:px-4 sm:px-6 lg:px-8">
+      <div className="about-container container-custom relative">
         <SectionHeading
           subtitle="ABOUT ME"
           title=""
@@ -54,7 +54,7 @@ export const AboutSection = () => {
         <div style={{ height: '30px' }} aria-hidden="true" />
 
         {/* Two-column layout: Text left, Lanyard right */}
-        <div className="mx-auto w-full max-w-6xl grid grid-cols-1 lg:grid-cols-2 gap-16 mb-0 items-center overflow-visible">
+        <div className="grid w-full grid-cols-1 items-center gap-16 overflow-visible lg:grid-cols-2">
           {/* Left Content */}
           <motion.div
             variants={containerVariants}

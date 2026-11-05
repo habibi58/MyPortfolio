@@ -547,7 +547,7 @@ export const ExperienceSection = () => {
       <Lightbox state={lightbox} onClose={closeLightbox} />
 
       {/* body */}
-      <div className="relative max-w-6xl mx-auto px-3 sm:px-6 lg:px-8">
+      <div className="container-custom relative">
         <div style={{ marginBottom: '60px' }}>
           <SectionHeading title="Experience" description="My professional journey" />
         </div>

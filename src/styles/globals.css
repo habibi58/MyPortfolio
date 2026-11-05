@@ -27,9 +27,9 @@
   --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
 }
 
-* {
-  margin: 0;
-  padding: 0;
+*,
+*::before,
+*::after {
   box-sizing: border-box;
 }
 
@@ -46,55 +46,11 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Mobile-specific styles for 360px viewport and below */
-@media (max-width: 360px) {
-  body {
-    overflow-x: hidden;
-  }
-
-  * {
-    max-width: 100%;
-    box-sizing: border-box;
-  }
-
-  .container-custom {
-    padding-left: 12px;
-    padding-right: 12px;
-  }
-}
-
-/* Mobile styles for small screens (up to 640px) */
 @media (max-width: 640px) {
-  body {
-    overflow-x: hidden;
-  }
-
-  * {
-    max-width: 100%;
-    box-sizing: border-box;
-  }
-
-  /* Ensure images and media scale properly */
   img,
   video,
   iframe {
     max-width: 100%;
-    height: auto;
-  }
-
-  /* Prevent text overflow */
-  p,
-  h1,
-  h2,
-  h3,
-  h4,
-  h5,
-  h6,
-  span,
-  div {
-    overflow-wrap: break-word;
-    word-wrap: break-word;
-    word-break: break-word;
   }
 }
 
@@ -130,9 +86,29 @@ body {
 
 /* Custom Classes */
 .container-custom {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 20px;
+  width: 100%;
+  max-width: 1264px;
+  margin-inline: auto;
+  padding-inline: clamp(16px, 4vw, 32px);
+}
+
+.site-navbar {
+  padding-top: env(safe-area-inset-top);
+}
+
+section[id] {
+  scroll-margin-top: 6rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
 }
 
 .text-gradient {

@@ -25,6 +25,46 @@ export const Navbar = () => {
   }, [activeSection]);
 
   useEffect(() => {
+    if (!isOpen) return;
+
+    const scrollY = window.scrollY;
+    const body = document.body;
+    const previousPosition = body.style.position;
+    const previousTop = body.style.top;
+    const previousWidth = body.style.width;
+    const lenis = getLenisInstance();
+
+    lenis?.stop();
+    body.style.position = 'fixed';
+    body.style.top = `-${scrollY}px`;
+    body.style.width = '100%';
+
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setIsOpen(false);
+    };
+
+    window.addEventListener('keydown', closeOnEscape);
+
+    return () => {
+      window.removeEventListener('keydown', closeOnEscape);
+      body.style.position = previousPosition;
+      body.style.top = previousTop;
+      body.style.width = previousWidth;
+      window.scrollTo(0, scrollY);
+      lenis?.start();
+    };
+  }, [isOpen]);
+
+  useEffect(() => {
+    const closeOnDesktop = () => {
+      if (window.matchMedia('(min-width: 1024px)').matches) setIsOpen(false);
+    };
+
+    window.addEventListener('resize', closeOnDesktop);
+    return () => window.removeEventListener('resize', closeOnDesktop);
+  }, []);
+
+  useEffect(() => {
     let frameId = 0;
 
     const handleScroll = () => {
@@ -65,16 +105,23 @@ export const Navbar = () => {
     setActiveSection(id);
     const element = document.getElementById(id);
     if (element) {
-      const lenis = getLenisInstance();
-      if (lenis) {
-        lenis.scrollTo(element.offsetTop - 80);
-      } else {
-        const offset = element.offsetTop - 80;
-        window.scrollTo({
-          top: offset,
-          behavior: 'smooth'
-        });
-      }
+      const scrollToSection = () => {
+        const navHeight = document.querySelector('.site-navbar')?.getBoundingClientRect().height ?? 64;
+        const offset = element.getBoundingClientRect().top + window.scrollY - navHeight - 16;
+        const lenis = getLenisInstance();
+
+        if (lenis) {
+          lenis.scrollTo(offset);
+        } else {
+          window.scrollTo({
+            top: offset,
+            behavior: 'smooth',
+          });
+        }
+      };
+
+      if (isOpen) window.requestAnimationFrame(scrollToSection);
+      else scrollToSection();
     }
   };
 
@@ -83,19 +130,19 @@ export const Navbar = () => {
       initial={{ y: -100, opacity: 1 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ delay: 2, duration: 3.5, ease: [0.22, 1, 0.36, 1] }}
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${hasScrolled
+      className={`site-navbar fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${hasScrolled
         ? 'bg-slate-900/10 backdrop-blur-md'
         : 'bg-transparent'
         }`}
     >
-      <div className="grid w-full grid-cols-2 lg:grid-cols-[1fr_auto_1fr] items-center py-3 pl-4 pr-4 sm:pl-6 sm:pr-6 lg:pl-12 lg:pr-12">
+      <div className="container-custom grid grid-cols-2 items-center py-3 lg:grid-cols-[1fr_auto_1fr]">
 
         {/* Logo */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 1, duration: 1.2, ease: 'linear' }}
-          className="justify-self-start translate-x-6"
+          className="justify-self-start"
         >
           <a
             href="#home"
@@ -132,8 +179,10 @@ export const Navbar = () => {
         <motion.div className="flex items-center gap-2 justify-self-end sm:gap-3">
           <button
             onClick={() => setIsOpen(!isOpen)}
-            className="rounded-xl p-2.5 hover:bg-slate-800 lg:hidden transition-colors pointer-events-auto touch-manipulation"
+            className="min-h-11 min-w-11 rounded-xl p-2.5 transition-colors hover:bg-slate-800 lg:hidden pointer-events-auto touch-manipulation"
             aria-label={isOpen ? 'Close menu' : 'Open menu'}
+            aria-expanded={isOpen}
+            aria-controls="mobile-navigation"
             style={{ zIndex: 100 }}
           >
             {isOpen ? <X size={22} /> : <Menu size={22} />}
@@ -145,13 +194,14 @@ export const Navbar = () => {
       <AnimatePresence>
         {isOpen && (
           <motion.div
+            id="mobile-navigation"
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
-            className="border-t border-white/10 bg-black/60 lg:hidden pointer-events-auto"
-            style={{ zIndex: 100 }}
+            className="pointer-events-auto max-h-[calc(100dvh-5rem)] overflow-y-auto overscroll-contain border-t border-white/10 bg-black/60 lg:hidden"
+            style={{ zIndex: 100, maxHeight: 'calc(100dvh - 5rem - env(safe-area-inset-top))' }}
           >
-            <div className="space-y-1 px-4 py-4">
+            <div className="container-custom space-y-1 py-4">
               {navItems.map((item) => (
                 <button
                   key={item.id}

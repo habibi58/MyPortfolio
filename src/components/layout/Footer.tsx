@@ -31,7 +31,7 @@ export const Footer = () => {
   };
 
   return (
-    <footer className="relative bg-transparent/30 backdrop-blur-[2px] text-white overflow-hidden py-16 sm:py-24">
+    <footer className="relative w-full bg-transparent/30 backdrop-blur-[2px] text-white overflow-hidden py-16 sm:py-24">
       {/* Ambient glow */}
       <div className="absolute top-0 left-1/2 w-[600px] h-[600px] rounded-full bg-blue-400/[0.02] blur-[120px] -translate-x-1/2 pointer-events-none" />
       <div className="absolute bottom-0 right-0 w-[400px] h-[400px] rounded-full bg-purple-500/[0.02] blur-[100px] pointer-events-none" />
@@ -39,7 +39,7 @@ export const Footer = () => {
       {/* Top gradient border */}
       <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-blue-600/20 to-transparent" />
 
-      <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="container-custom relative">
         <motion.div
           variants={containerVariants}
           initial="hidden"
@@ -68,7 +68,7 @@ export const Footer = () => {
                 <li key={link}>
                   <a
                     href={`#${link.toLowerCase()}`}
-                    className="text-slate-400 hover:text-blue-400 transition-colors duration-300 text-sm"
+                    className="inline-flex min-h-11 items-center text-slate-400 hover:text-blue-400 transition-colors duration-300 text-sm"
                     style={{
                       color: '#94a3b8',
                       transition: 'color 0.3s ease',

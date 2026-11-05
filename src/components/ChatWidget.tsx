@@ -348,7 +348,7 @@ export function ChatWidget({ className }: CopilotChatProps = {}) {
       <div
         className={`fixed bottom-6 right-6 z-[999999] flex flex-col items-end${className ? ` ${className}` : ''}`}
         data-lenis-prevent
-        style={{ position: 'fixed', bottom: 24, right: 24, zIndex: 999999, pointerEvents: 'auto', width: 'max-content', maxWidth: 'calc(100vw - 32px)', boxSizing: 'border-box' }}
+        style={{ position: 'fixed', bottom: 'calc(24px + env(safe-area-inset-bottom))', right: 'calc(24px + env(safe-area-inset-right))', zIndex: 999999, pointerEvents: 'auto', width: 'max-content', maxWidth: 'calc(100vw - 48px - env(safe-area-inset-left) - env(safe-area-inset-right))', boxSizing: 'border-box' }}
       >
       {shouldRenderPanel && (
         <section
@@ -359,10 +359,10 @@ export function ChatWidget({ className }: CopilotChatProps = {}) {
           onMouseLeave={() => setIsChatHovering(false)}
           style={{
             position: 'static',
-            width: 'min(360px, calc(100vw - 32px))',
-            height: 'min(620px, calc(100dvh - 32px))',
-            maxWidth: 'calc(100vw - 32px)',
-            maxHeight: 'calc(100dvh - 32px)',
+            width: 'min(360px, calc(100vw - 48px - env(safe-area-inset-left) - env(safe-area-inset-right)))',
+            height: 'min(620px, calc(100dvh - 40px - env(safe-area-inset-top) - env(safe-area-inset-bottom)))',
+            maxWidth: 'calc(100vw - 48px - env(safe-area-inset-left) - env(safe-area-inset-right))',
+            maxHeight: 'calc(100dvh - 40px - env(safe-area-inset-top) - env(safe-area-inset-bottom))',
             display: 'flex',
             flexDirection: 'column',
             overflow: 'hidden',
@@ -384,11 +384,11 @@ export function ChatWidget({ className }: CopilotChatProps = {}) {
                 Jason's AI Assistant
                 <Sparkles size={13} className="shrink-0 text-white" />
               </h2>
-              <p className="mt-0.5 flex items-center gap-1.5 text-xs text-green-400"><span className="h-1.5 w-1.5 rounded-full bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.8)]" />Online - replies in seconds</p>
+              <p className="mt-0.5 flex items-center gap-1.5 text-sm text-green-400"><span className="h-1.5 w-1.5 rounded-full bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.8)]" />Online - replies in seconds</p>
             </div>
             <div className="flex shrink-0 items-center gap-1">
               <button
-                className="rounded-xl p-2 text-gray-400 transition-colors hover:bg-gray-800 hover:text-white"
+                className="min-h-11 min-w-11 rounded-xl p-2 text-gray-400 transition-colors hover:bg-gray-800 hover:text-white"
                 type="button"
                 onClick={clearChat}
                 aria-label="Clear chat history"
@@ -397,7 +397,7 @@ export function ChatWidget({ className }: CopilotChatProps = {}) {
                 <RefreshCw size={16} />
               </button>
               <button
-                className="rounded-xl p-2 text-gray-400 transition-colors hover:bg-gray-800 hover:text-white"
+                className="min-h-11 min-w-11 rounded-xl p-2 text-gray-400 transition-colors hover:bg-gray-800 hover:text-white"
                 type="button"
                 onClick={closeChat}
                 aria-label="Close chat"
@@ -419,7 +419,7 @@ export function ChatWidget({ className }: CopilotChatProps = {}) {
                     </div>
                   )}
                       <div className={`flex min-w-0 flex-col ${isAssistant ? 'items-start' : 'items-end'}`} style={{ minWidth: 0, maxWidth: isAssistant ? 'calc(100% - 0px)' : '80%' }}>
-                        <div className={`inline-block w-fit min-w-[48px] max-w-full break-words text-[13px] leading-relaxed ${message.isError ? 'my-1 rounded-xl border border-gray-700 bg-gray-900 text-xs text-gray-300' : isAssistant ? 'rounded-2xl rounded-tl-sm border border-gray-800 bg-gray-900 text-gray-100' : 'rounded-2xl rounded-tr-sm bg-white text-black shadow-sm'}`} style={{ display: 'inline-block', width: 'fit-content', minWidth: 48, maxWidth: '100%', overflowWrap: 'anywhere', whiteSpace: 'pre-wrap', boxSizing: 'border-box', padding: message.isError ? 12 : '10px 14px' }}>
+                        <div className={`inline-block w-fit min-w-[48px] max-w-full break-words text-sm leading-relaxed ${message.isError ? 'my-1 rounded-xl border border-gray-700 bg-gray-900 text-sm text-gray-300' : isAssistant ? 'rounded-2xl rounded-tl-sm border border-gray-800 bg-gray-900 text-gray-100' : 'rounded-2xl rounded-tr-sm bg-white text-black shadow-sm'}`} style={{ display: 'inline-block', width: 'fit-content', minWidth: 48, maxWidth: '100%', overflowWrap: 'anywhere', whiteSpace: 'pre-wrap', boxSizing: 'border-box', padding: message.isError ? 12 : '10px 14px' }}>
                           {isAssistant ? (
                             <ReactMarkdown
                               components={{
@@ -435,7 +435,7 @@ export function ChatWidget({ className }: CopilotChatProps = {}) {
                             message.text
                           )}
                     </div>
-                        <span className="text-[10px] text-gray-500" style={{ padding: '4px 4px 0' }}>{message.time}</span>
+                        <span className="text-sm text-gray-500" style={{ padding: '4px 4px 0' }}>{message.time}</span>
                   </div>
                 </div>
               );
@@ -459,7 +459,7 @@ export function ChatWidget({ className }: CopilotChatProps = {}) {
 
           {/* Footer */}
           <footer className="shrink-0 border-t border-gray-800 bg-black" style={{ flexShrink: 0, boxSizing: 'border-box', overflow: 'hidden', padding: '12px 16px', width: '100%' }}>
-            <div className="mb-2 flex justify-center text-center text-[10px] font-medium uppercase tracking-[0.18em] text-gray-400">
+            <div className="mb-2 flex justify-center text-center text-sm font-medium uppercase tracking-[0.18em] text-gray-400">
               Developed by Jason
             </div>
             {messages.length === 1 && !isLoading && !isTyping && (
@@ -473,7 +473,8 @@ export function ChatWidget({ className }: CopilotChatProps = {}) {
                     className="rounded-lg border border-gray-700 bg-gray-900 text-left text-gray-200 transition-colors hover:border-white hover:text-white disabled:pointer-events-none disabled:opacity-40 animate-fade-in"
                     style={{
                       padding: '8px 10px',
-                      fontSize: 11,
+                      minHeight: 44,
+                      fontSize: 14,
                       lineHeight: 1.25,
                       whiteSpace: 'normal',
                       overflowWrap: 'anywhere',
@@ -520,14 +521,14 @@ export function ChatWidget({ className }: CopilotChatProps = {}) {
                   type="submit"
                   aria-label="Send message"
                   disabled={!input.trim() || isLoading || isTyping}
-                  className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-white text-black transition-all hover:bg-gray-300 active:scale-95 disabled:pointer-events-none disabled:opacity-30"
+                  className="grid min-h-11 min-w-11 shrink-0 place-items-center rounded-xl bg-white text-black transition-all hover:bg-gray-300 active:scale-95 disabled:pointer-events-none disabled:opacity-30"
                 >
                   <Send size={15} />
                 </button>
               </form>
             </div>
             <p
-              className="px-4 text-center text-[11px] leading-relaxed text-gray-500"
+              className="px-4 text-center text-sm leading-relaxed text-gray-500"
               style={{ marginTop: 6, paddingBottom: 1, paddingTop: 0 }}
             >
               Conversations are not saved after the session.

@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Toaster } from 'react-hot-toast';
+import { MotionConfig } from 'framer-motion';
 import { ChatWidget, Navbar, Footer, LoadingScreen } from './components';
 import { Home } from './pages';
 import { useLenis } from './hooks';
@@ -19,7 +20,7 @@ function App() {
   }, []);
 
   return (
-    <>
+    <MotionConfig reducedMotion="user">
       {loading && <LoadingScreen onFinished={() => setLoading(false)} />}
 
       {/* Only mount the page after the loading screen is fully gone.
@@ -27,7 +28,7 @@ function App() {
           time after onFinished, so no animation has already "played out"
           while hidden behind the loading screen. */}
       {!loading && (
-        <div className="min-h-screen bg-black text-white antialiased flex flex-col items-center w-full">
+        <div className="min-h-screen bg-black text-white antialiased flex w-full flex-col">
           <Navbar />
           <Home />
           <Footer />
@@ -52,7 +53,7 @@ function App() {
           />
         </div>
       )}
-    </>
+    </MotionConfig>
   );
 }
 

@@ -8,6 +8,8 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import {
+  Code2,
+  ExternalLink,
   Ticket,
   Package,
   LayoutDashboard,
@@ -132,8 +134,8 @@ const MOBILE_STYLES = `
 
   /* Outer list container */
   .pss-list {
-    padding-left: 14px !important;
-    padding-right: 14px !important;
+    padding-left: 16px !important;
+    padding-right: 16px !important;
     padding-bottom: 48px !important;
   }
 
@@ -200,14 +202,16 @@ const MOBILE_STYLES = `
     padding: 10px 12px !important;
   }
 
-  /* Mobile project label strip (shown only on mobile) */
+  /* The project title is displayed inside the card on smaller screens. */
   .pss-mobile-label {
-    display: flex !important;
+    display: none !important;
   }
 
   /* Progress dots (shown only on mobile) */
   .pss-dots {
     display: flex !important;
+    flex-wrap: wrap;
+    max-width: 100%;
   }
 }
 
@@ -232,12 +236,126 @@ const MOBILE_STYLES = `
   }
 
   .pss-mobile-label {
-    display: flex !important;
+    display: none !important;
   }
 
   .pss-card-col {
     width: 100%;
     min-width: 0;
+  }
+}
+
+@media (max-width: 1279px) {
+  .pss-card-heading {
+    display: flex !important;
+  }
+
+  .pss-card-article {
+    background-color: #090b11 !important;
+    border-color: rgba(148, 163, 184, 0.18) !important;
+  }
+
+  .pss-img-wrap {
+    padding: 0 !important;
+  }
+
+  .pss-card-body {
+    padding: 4px 24px 24px !important;
+  }
+
+  .pss-description,
+  .pss-feature {
+    color: #a7b0c0 !important;
+  }
+}
+
+/* Fintra uses a compact, product-focused card at every viewport size. */
+.pss-fintra-card {
+  display: flex;
+  flex-direction: column;
+  max-width: 90% !important;
+  background-color: #080b12 !important;
+  border-color: rgba(59, 130, 246, 0.55) !important;
+}
+
+.pss-fintra-card .pss-card-body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  padding: 2px 14px 14px !important;
+}
+
+.pss-fintra-card .pss-card-heading {
+  display: flex !important;
+  align-items: baseline;
+  gap: 8px !important;
+  margin-bottom: 7px !important;
+}
+
+.pss-fintra-card .pss-card-heading > span {
+  font-size: 0.75rem !important;
+}
+
+.pss-fintra-card .pss-card-heading h3 {
+  font-size: 0.9rem !important;
+  line-height: 1.35 !important;
+}
+
+.pss-fintra-card .pss-description {
+  margin-bottom: 9px !important;
+  font-size: 0.75rem !important;
+  line-height: 1.5 !important;
+}
+
+.pss-fintra-card ul {
+  gap: 4px !important;
+  margin-bottom: 10px !important;
+}
+
+.pss-fintra-card .pss-feature {
+  gap: 7px !important;
+  font-size: 0.72rem !important;
+  line-height: 1.45 !important;
+}
+
+.pss-fintra-card .pss-feature > span:first-child {
+  width: 4px !important;
+  height: 4px !important;
+  margin-top: 6px !important;
+}
+
+.pss-fintra-card .pss-badges {
+  gap: 5px !important;
+  margin: 0 0 11px !important;
+}
+
+.pss-fintra-card .pss-badge {
+  gap: 4px !important;
+  padding: 4px 8px !important;
+  font-size: 0.65rem !important;
+}
+
+.pss-fintra-card .pss-badge img {
+  width: 13px !important;
+  height: 13px !important;
+}
+
+.pss-fintra-actions {
+  display: flex;
+  width: 100%;
+}
+
+.pss-fintra-app-link {
+  display: flex !important;
+  width: 100%;
+  min-height: 38px;
+  align-items: center;
+  justify-content: center;
+}
+
+@media (max-width: 767px) {
+  .pss-fintra-card {
+    max-width: 100% !important;
   }
 }
 `;
@@ -325,10 +443,10 @@ const ScrollStackItem = ({
   return (
     <motion.div className="w-full flex justify-end md:justify-end justify-center flex-col items-center">
       <motion.article
-        className="pss-card-article rounded-[20px] overflow-hidden relative"
+        className={`pss-card-article rounded-[20px] overflow-hidden relative${project.id === 'fintra-personal-finance' ? ' pss-fintra-card' : ''}`}
         style={{
-          backgroundColor: '#000000',
-          border: '1px solid #3b82f635',
+          backgroundColor: '#090b11',
+          border: '1px solid rgba(148, 163, 184, 0.18)',
           maxWidth: '90%',
         }}
         animate={{
@@ -432,11 +550,43 @@ const ScrollStackItem = ({
         </div>
 
         {/* ── Content ── */}
-        <div className="pss-card-body" style={{ padding: '0px 16px 20px 16px' }}>
+        <div className="pss-card-body" style={{ padding: '4px 24px 24px' }}>
+          <div
+            className="pss-card-heading"
+            style={{
+              display: 'none',
+              alignItems: 'baseline',
+              gap: '14px',
+              marginBottom: '18px',
+            }}
+          >
+            <span
+              style={{
+                color: '#3b82f6',
+                fontFamily: 'monospace',
+                fontSize: '1.125rem',
+                fontWeight: 700,
+                flexShrink: 0,
+              }}
+            >
+              {String(index + 1).padStart(2, '0')}
+            </span>
+            <h3
+              style={{
+                color: '#f8fafc',
+                fontSize: '1.25rem',
+                fontWeight: 700,
+                lineHeight: 1.35,
+              }}
+            >
+              {project.title}
+            </h3>
+          </div>
+
           {/* Short intro sentence */}
           <p
             className="pss-description text-[0.935rem] leading-[1.75]"
-            style={{ color: '#636363', marginBottom: '10px' }}
+            style={{ color: '#a7b0c0', marginBottom: '14px' }}
           >
             {project.fullDescription}
           </p>
@@ -462,8 +612,9 @@ const ScrollStackItem = ({
                     gap: '8px',
                     fontSize: '0.875rem',
                     lineHeight: '1.6',
-                    color: '#636363',
+                    color: '#a7b0c0',
                   }}
+                  className="pss-feature"
                 >
                   <span style={{
                     flexShrink: 0,
@@ -518,6 +669,47 @@ const ScrollStackItem = ({
               );
             })}
           </motion.div>
+
+          {((project.liveLink && project.liveLink !== '#') ||
+            (project.githubLink && project.githubLink !== '#')) && (
+            <div
+              className={
+                project.id === 'fintra-personal-finance'
+                  ? 'pss-fintra-actions'
+                  : 'flex flex-wrap gap-3'
+              }
+            >
+              {project.liveLink && project.liveLink !== '#' && (
+                <a
+                  href={project.liveLink}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={
+                    project.id === 'fintra-personal-finance'
+                      ? 'pss-fintra-app-link inline-flex items-center gap-2 rounded-full border border-blue-300/80 bg-gradient-to-r from-blue-500 via-blue-600 to-indigo-600 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-blue-500/25 ring-1 ring-inset ring-white/20 transition-all hover:-translate-y-0.5 hover:from-blue-400 hover:via-blue-500 hover:to-indigo-500 hover:shadow-blue-500/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-200 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950 active:translate-y-0'
+                      : 'inline-flex items-center gap-2 rounded-lg border border-blue-500/60 bg-blue-500/10 px-4 py-2 text-sm font-medium text-blue-200 transition-colors hover:border-blue-400 hover:bg-blue-500/20 hover:text-white'
+                  }
+                >
+                  Get app
+                  <ExternalLink size={14} aria-hidden="true" />
+                </a>
+              )}
+              {project.id !== 'fintra-personal-finance' &&
+                project.githubLink &&
+                project.githubLink !== '#' && (
+                <a
+                  href={project.githubLink}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 rounded-lg border border-slate-700 px-4 py-2 text-sm font-medium text-slate-200 transition-colors hover:border-blue-500 hover:text-blue-300"
+                >
+                  <Code2 size={16} aria-hidden="true" />
+                  View source
+                  <ExternalLink size={14} aria-hidden="true" />
+                </a>
+              )}
+            </div>
+          )}
         </div>
       </motion.article>
     </motion.div>
@@ -606,8 +798,7 @@ export const ProjectsSection = () => {
 
       {/* ── Section Header ── */}
       <div
-        className="pss-header px-3 sm:px-4 sm:px-6 lg:px-8 pb-16 flex flex-col items-center text-center"
-        style={{ maxWidth: '64rem', marginLeft: 'auto', marginRight: 'auto' }}
+        className="container-custom pss-header flex flex-col items-center pb-16 text-center"
       >
         <motion.div
           initial={{ opacity: 0, y: 40, scale: 0.95 }}
@@ -639,8 +830,7 @@ export const ProjectsSection = () => {
 
       {/* ── Two-Column Layout ── */}
       <div
-        className="pss-list px-3 sm:px-4 sm:px-6 lg:px-8 pb-20"
-        style={{ maxWidth: '64rem', marginLeft: 'auto', marginRight: 'auto' }}
+        className="container-custom pss-list pb-20"
       >
         {projectsData.map((project, index) => (
           <motion.div
@@ -729,8 +919,8 @@ export const ProjectsSection = () => {
       </div>
 
       <div
-        className="px-3 pb-8 sm:px-4 sm:px-6 lg:px-8"
-        style={{ maxWidth: '64rem', margin: '5.5rem auto 0' }}
+        className="container-custom pb-8"
+        style={{ marginTop: '5.5rem' }}
       >
         <GithubContributions username="habibi58" />
       </div>
@@ -741,6 +931,8 @@ export const ProjectsSection = () => {
         style={{
           display: 'none', /* shown at ≤767px via CSS */
           gap: '8px',
+          flexWrap: 'wrap',
+          maxWidth: '100%',
           paddingBottom: '32px',
           paddingTop: '4px',
         }}
@@ -753,19 +945,31 @@ export const ProjectsSection = () => {
               onClick={() => scrollToProject(i)}
               aria-label={`Go to project ${i + 1}`}
               style={{
-                height: '6px',
+                display: 'grid',
+                width: '44px',
+                height: '44px',
+                placeItems: 'center',
                 borderRadius: '9999px',
                 border: 'none',
                 cursor: 'pointer',
                 padding: 0,
-                backgroundColor: activeIndex === i ? visual.color : 'rgba(255,255,255,0.2)',
+                backgroundColor: 'transparent',
               }}
-              animate={{
-                width: activeIndex === i ? 20 : 6,
-                backgroundColor: activeIndex === i ? visual.color : 'rgba(255,255,255,0.2)',
-              }}
-              transition={{ duration: 0.35, ease: EASE }}
-            />
+            >
+              <motion.span
+                aria-hidden="true"
+                animate={{
+                  width: activeIndex === i ? 20 : 6,
+                  backgroundColor: activeIndex === i ? visual.color : 'rgba(255,255,255,0.2)',
+                }}
+                transition={{ duration: 0.35, ease: EASE }}
+                style={{
+                  height: '6px',
+                  borderRadius: '9999px',
+                  backgroundColor: activeIndex === i ? visual.color : 'rgba(255,255,255,0.2)',
+                }}
+              />
+            </motion.button>
           );
         })}
       </div>

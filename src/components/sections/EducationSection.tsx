@@ -340,7 +340,7 @@ export const EducationSection = () => {
         style={{ background: 'radial-gradient(circle,rgba(59,130,246,0.04),transparent 70%)' }}
       />
 
-      <div className="relative max-w-6xl mx-auto px-3 sm:px-4 sm:px-6 lg:px-8">
+      <div className="container-custom relative">
 
         <div style={{ marginBottom: '52px' }}>
           <SectionHeading
