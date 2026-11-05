@@ -56,19 +56,32 @@ const HERO_MOBILE_STYLES = `
     text-align: center !important;
     padding-left: 0 !important;
     padding-right: 0 !important;
+    min-width: 0 !important;
+  }
+
+  .hero-grid > * {
+    min-width: 0;
   }
 
   /* Name (BlurText wrapper) */
   .hero-name {
     text-align: center !important;
-    font-size: 1.8rem !important;
+    font-size: clamp(1.35rem, 7vw, 1.8rem) !important;
     line-height: 1.2 !important;
     margin-bottom: 16px !important;
     display: flex !important;
     flex-wrap: wrap !important;
     justify-content: center !important;
     width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    overflow-wrap: anywhere !important;
     margin-top:20px;
+  }
+
+  .hero-name > span {
+    max-width: 100%;
+    overflow-wrap: anywhere;
   }
 
   /* "Aspiring + role" row — keep side by side, centered */
@@ -91,7 +104,7 @@ const HERO_MOBILE_STYLES = `
   .hero-role-stage {
     min-width: 0 !important;
     max-width: 260px !important;
-    width: 260px !important;
+    width: 100% !important;
     height: 34px !important;
     margin: 0 !important;
     flex-shrink: 1 !important;
@@ -122,7 +135,7 @@ const HERO_MOBILE_STYLES = `
     grid-template-columns: 1fr 1fr !important;
     gap: 12px !important;
     width: 100% !important;
-    height: 40px;
+    height: auto;
     margin-top: 12px !important;
     margin-bottom: 5px !important;
   }
@@ -130,15 +143,16 @@ const HERO_MOBILE_STYLES = `
   /* Each button fills its grid cell equally, smaller text */
   .hero-cta > * {
     width: 100% !important;
+    min-height: 44px !important;
     justify-content: center !important;
-    font-size: 11px !important;
-    padding: 6px 8px !important;
+    font-size: 14px !important;
+    padding: 8px 10px !important;
   }
 
   /* Target inner label spans too */
   .hero-cta .vw-label,
   .hero-cta .btn-premium-resume {
-    font-size: 11px !important;
+    font-size: 14px !important;
   }
 
   /* Shrink icons inside buttons */
@@ -196,6 +210,72 @@ const HERO_MOBILE_STYLES = `
     display: none !important;
   }
 }
+
+@media (max-width: 430px) {
+  .hero-cta {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* Keep the animated name inside its column as the available width changes. */
+@media (min-width: 768px) {
+  .hero-name {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    font-size: clamp(2rem, 5vw, 3.75rem) !important;
+    line-height: 1.15 !important;
+    overflow-wrap: anywhere !important;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1279px) {
+  .hero-name {
+    font-size: clamp(2rem, 4vw, 3rem) !important;
+  }
+}
+
+/* Tablet portrait — keep the avatar above the intro. */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .hero-left {
+    align-items: center !important;
+    padding-left: 0 !important;
+    text-align: center !important;
+  }
+
+  .hero-name {
+    justify-content: center !important;
+    text-align: center !important;
+  }
+
+  .hero-role-container,
+  .hero-cta {
+    justify-content: center !important;
+  }
+
+  .hero-role-stage > span {
+    justify-content: center !important;
+  }
+
+  .hero-description {
+    justify-content: center !important;
+    text-align: center !important;
+  }
+
+  .hero-social {
+    display: flex !important;
+    justify-content: center !important;
+  }
+
+  .hero-grid > div:nth-child(2) {
+    order: -1;
+    width: 100%;
+  }
+
+  .hero-grid > div:nth-child(2) > div {
+    margin: 0 !important;
+  }
+}
 `;
 
 export const HeroSection = () => {
@@ -238,7 +318,7 @@ export const HeroSection = () => {
         id="home"
         className="relative flex min-h-screen w-full items-center justify-center overflow-visible pt-16 sm:pt-20"
       >
-        <div className="relative z-10 mx-auto max-w-6xl w-full px-3 sm:px-4 sm:px-6 lg:px-8">
+        <div className="container-custom relative z-10">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-12 items-center min-h-full hero-grid">
 
             {/* Left Column */}
@@ -246,8 +326,7 @@ export const HeroSection = () => {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.6 }}
-              style={{ paddingLeft: '20px' }}
-              className="hero-left sm:pl-6"
+              className="hero-left min-w-0"
             >
               {/* Profile Picture — mobile only, hidden on desktop via CSS */}
               <motion.div
@@ -307,6 +386,7 @@ export const HeroSection = () => {
                     initial={{ opacity: 0, y: 30 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 3, duration: 0.6 }}
+                    className="hero-role-container"
                     style={{
                       marginTop: '24px',
                       marginBottom: '24px',

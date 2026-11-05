@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
+<defs>
+  <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#101010"/><stop offset="1" stop-color="#000"/>
+  </linearGradient>
+  <radialGradient id="glow" cx="0.5" cy="0.5" r="0.5">
+    <stop offset="0" stop-color="#fff" stop-opacity="0.20"/>
+    <stop offset="0.6" stop-color="#fff" stop-opacity="0.05"/>
+    <stop offset="1" stop-color="#fff" stop-opacity="0"/>
+  </radialGradient>
+  <linearGradient id="sheen" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#fff" stop-opacity="0.05"/><stop offset="1" stop-color="#fff" stop-opacity="0"/>
+  </linearGradient>
+  <linearGradient id="wg" gradientUnits="userSpaceOnUse" x1="200" y1="150" x2="820" y2="880">
+    <stop offset="0" stop-color="#ffffff"/><stop offset="0.5" stop-color="#e8e8e8"/><stop offset="1" stop-color="#b4b4b4"/>
+  </linearGradient>
+  <linearGradient id="glass" gradientUnits="userSpaceOnUse" x1="200" y1="150" x2="820" y2="880">
+    <stop offset="0" stop-color="#fff" stop-opacity="0.20"/><stop offset="1" stop-color="#fff" stop-opacity="0.03"/>
+  </linearGradient>
+  <linearGradient id="edge" gradientUnits="userSpaceOnUse" x1="200" y1="150" x2="820" y2="880">
+    <stop offset="0" stop-color="#fff" stop-opacity="0.60"/><stop offset="0.55" stop-color="#fff" stop-opacity="0.07"/><stop offset="1" stop-color="#fff" stop-opacity="0.28"/>
+  </linearGradient>
+  <filter id="shadow" x="-30%" y="-30%" width="160%" height="170%"><feGaussianBlur stdDeviation="22"/></filter>
+  <clipPath id="round"><rect width="1024" height="1024" rx="228"/></clipPath>
+  <mask id="cut" maskUnits="userSpaceOnUse" x="0" y="0" width="1024" height="1024">
+    <rect width="1024" height="1024" fill="#fff"/>
+    <rect x="300" y="367" width="440" height="50" rx="25" fill="#000"/>
+    <rect x="300" y="437" width="440" height="50" rx="25" fill="#000"/>
+  </mask>
+</defs>
+<g clip-path="url(#round)"><rect width="1024" height="1024" fill="url(#bg)"/><circle cx="512" cy="540" r="470" fill="url(#glow)"/><rect width="1024" height="420" fill="url(#sheen)"/>
+<g transform="translate(0 -40) rotate(-14 512 512)">
+  <rect x="230" y="270" width="570" height="360" rx="56" fill="#fff" fill-opacity="0.10" stroke="#fff" stroke-opacity="0.40" stroke-width="3"/>
+</g>
+<g transform="translate(0 -22) rotate(-5 512 560)">
+  <rect x="230" y="330" width="570" height="360" rx="56" fill="#fff" fill-opacity="0.16" stroke="#fff" stroke-opacity="0.50" stroke-width="3"/>
+</g>
+<g filter="url(#shadow)" opacity="0.55"><rect x="226" y="420" width="580" height="370" rx="58" fill="#000"/></g>
+<rect x="224" y="390" width="580" height="370" rx="58" fill="url(#glass)" stroke="url(#edge)" stroke-width="4"/>
+<rect x="224" y="390" width="580" height="370" rx="58" fill="#0a0a0a" fill-opacity="0.55"/>
+<rect x="224" y="390" width="580" height="370" rx="58" fill="none" stroke="url(#edge)" stroke-width="4"/>
+<g transform="translate(398 575) scale(0.46) translate(-520 -512)">
+<g fill="none" stroke="url(#wg)" stroke-width="64" stroke-linecap="round" stroke-linejoin="round" mask="url(#cut)">
+  <path d="M432 284 V740"/><path d="M432 284 H548 A128 128 0 0 1 548 540 H432"/>
+</g>
+<g stroke="url(#wg)" stroke-width="24" stroke-linecap="round">
+  <path d="M348 392 H692"/><path d="M348 462 H674"/>
+</g>
+</g>
+<rect x="560" y="640" width="190" height="26" rx="13" fill="#fff" fill-opacity="0.85"/>
+<rect x="560" y="690" width="120" height="18" rx="9" fill="#fff" fill-opacity="0.35"/>
+</g></svg>

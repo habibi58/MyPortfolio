@@ -115,18 +115,18 @@ export const ContactSection = () => {
   };
 
   return (
-    <section id="contact" className="relative py-12 md:py-24 mt-8 md:mt-16 mb-8 md:mb-16 bg-black">
-      <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section id="contact" className="relative mb-12 mt-8 bg-black py-12 md:mb-16 md:mt-16 md:py-24">
+      <div className="container-custom relative">
         <motion.div
           variants={sectionVariants}
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, amount: 0.05 }}
-          className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-10 px-2 md:px-4"
+          className="grid min-w-0 grid-cols-1 items-start gap-8 xl:grid-cols-2 xl:gap-10"
         >
           {/* ── LEFT column ── */}
-          <motion.div variants={leftColVariants} className="flex flex-col gap-10 p-4 md:p-8 lg:p-16">
-            <motion.div variants={colChildrenVariants} className="flex flex-col gap-10">
+          <motion.div variants={leftColVariants} className="flex min-w-0 flex-col gap-8">
+            <motion.div variants={colChildrenVariants} className="flex min-w-0 flex-col gap-8">
 
               {/* Available for work badge */}
               <motion.div variants={fadeUpVariants}>
@@ -148,7 +148,7 @@ export const ContactSection = () => {
                       style={{ background: '#22c55e' }}
                     />
                   </span>
-                  <span className="text-xs font-semibold" style={{ color: '#4ade80' }}>
+                  <span className="text-sm font-semibold" style={{ color: '#4ade80' }}>
                     Available for work
                   </span>
                 </div>
@@ -156,7 +156,7 @@ export const ContactSection = () => {
 
               {/* Headline */}
               <motion.div variants={fadeUpVariants}>
-                <h2 className="text-4xl font-bold text-white leading-tight mb-4">
+                <h2 className="mb-5 text-4xl font-bold leading-tight text-white">
                   Let's work<br />together.
                 </h2>
                 <p className="text-sm leading-relaxed" style={{ color: 'rgba(255,255,255,0.5)' }}>
@@ -190,9 +190,9 @@ export const ContactSection = () => {
                       >
                         <Icon size={17} style={{ color: '#5b8dee' }} />
                       </div>
-                      <div className="flex flex-col gap-0.5">
+                      <div className="flex min-w-0 flex-col gap-0.5">
                         <span
-                          className="text-xs font-medium"
+                          className="text-sm font-medium"
                           style={{ color: 'rgba(255,255,255,0.35)', letterSpacing: '0.1em' }}
                         >
                           {method.label.toUpperCase()}
@@ -200,7 +200,7 @@ export const ContactSection = () => {
                         {href ? (
                           <a
                             href={href}
-                            className="text-sm font-medium hover:underline transition-all"
+                            className="break-all text-sm font-medium transition-all hover:underline"
                             style={{ color: 'rgba(255,255,255,0.75)' }}
                           >
                             {method.value}
@@ -217,7 +217,7 @@ export const ContactSection = () => {
               </motion.div>
 
               {/* Quick facts */}
-              <motion.div variants={fadeUpVariants} className="grid grid-cols-3 gap-3">
+              <motion.div variants={fadeUpVariants} className="grid grid-cols-1 gap-3 min-[400px]:grid-cols-3">
                 {[
                   { icon: Clock,        text: '24h response'   },
                   { icon: CheckCircle2, text: 'Professional'   },
@@ -229,7 +229,7 @@ export const ContactSection = () => {
                     style={cardSurface}
                   >
                     <Icon size={16} style={{ color: '#5b8dee' }} />
-                    <span className="text-xs font-medium" style={{ color: 'rgba(255,255,255,0.5)' }}>
+                    <span className="text-sm font-medium" style={{ color: 'rgba(255,255,255,0.5)' }}>
                       {text}
                     </span>
                   </div>
@@ -240,12 +240,12 @@ export const ContactSection = () => {
           </motion.div>
 
           {/* ── RIGHT column ── */}
-          <div className="flex flex-col gap-8 w-full !block">
-            <div className="flex flex-col gap-8 w-full !block">
+          <div className="flex min-w-0 w-full flex-col gap-8">
+            <div className="flex min-w-0 w-full flex-col gap-8">
 
               {/* Form card */}
               <div
-                className="rounded-lg flex flex-col w-full !block"
+                className="flex w-full min-w-0 flex-col rounded-lg"
                 style={{ ...cardSurface, padding: '20px', position: 'relative', zIndex: 10, display: 'block' }}
               >
                 <h3 className="text-3xl font-bold text-white mb-10">Send a message</h3>
@@ -258,7 +258,7 @@ export const ContactSection = () => {
                     ].map((field) => (
                       <div key={field.name}>
                         <label
-                          className="block text-xs font-medium mb-2"
+                          className="mb-2 block text-sm font-medium"
                           style={{ color: 'rgba(255,255,255,0.4)', letterSpacing: '0.08em' }}
                         >
                           {field.label}
@@ -270,7 +270,7 @@ export const ContactSection = () => {
                           onChange={handleChange}
                           placeholder={field.placeholder}
                           required
-                          className="w-full rounded-md text-sm outline-none text-white placeholder:text-slate-500 transition-all duration-200"
+                          className="w-full rounded-md text-base text-white outline-none placeholder:text-slate-500 transition-all duration-200 sm:text-sm"
                           style={{ ...inputSurface, paddingLeft: '12px', paddingRight: '16px', paddingTop: '14px', paddingBottom: '14px', minHeight: '48px' }}
                           onFocus={(e) => { e.currentTarget.style.borderColor = 'rgba(91,141,238,0.6)'; }}
                           onBlur={(e)  => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.14)'; }}
@@ -281,7 +281,7 @@ export const ContactSection = () => {
 
                   <div>
                     <label
-                      className="block text-xs font-medium mb-2"
+                      className="mb-2 block text-sm font-medium"
                       style={{ color: 'rgba(255,255,255,0.4)', letterSpacing: '0.08em' }}
                     >
                       MESSAGE
@@ -293,14 +293,14 @@ export const ContactSection = () => {
                       placeholder="Tell me about your project or opportunity..."
                       required
                       rows={5}
-                      className="w-full rounded-md text-sm outline-none resize-none text-white placeholder:text-slate-500 transition-all duration-200"
+                      className="w-full resize-none rounded-md text-base text-white outline-none placeholder:text-slate-500 transition-all duration-200 sm:text-sm"
                       style={{ ...inputSurface, paddingLeft: '12px', paddingRight: '16px', paddingTop: '14px', paddingBottom: '14px', minHeight: '120px' }}
                       onFocus={(e) => { e.currentTarget.style.borderColor = 'rgba(91,141,238,0.6)'; }}
                       onBlur={(e)  => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.14)'; }}
                     />
                   </div>
 
-                  <p className="text-xs" style={{ color: 'rgba(255,255,255,0.3)' }}>
+                  <p className="text-sm" style={{ color: 'rgba(255,255,255,0.3)' }}>
                     Mon–Fri 9am–6pm · Sat 10am–4pm · Sun urgent only
                   </p>
 

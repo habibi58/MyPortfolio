@@ -15,6 +15,25 @@ export interface Project {
 
 export const projectsData: Project[] = [
   {
+    id: 'fintra-personal-finance',
+    title: 'Fintra Personal Finance Tracker',
+    description: 'An offline-first personal finance and budgeting app',
+    fullDescription:
+      'A privacy-focused personal finance tracker that works offline and stores financial data locally on the device. It brings accounts, budgets, cash flow, and savings goals together in one app.',
+    features: [
+      'Track accounts, balances, and net worth',
+      'Create budgets and monitor spending progress',
+      'Review cash flow and transaction history',
+      'Set savings goals and track progress',
+      'Keep data local with backup and import tools',
+    ],
+    image: '/projectimages/fintra-promo.png',
+    technologies: ['React', 'TypeScript', 'Dexie.js', 'IndexedDB', 'Recharts', 'Capacitor', 'PWA'],
+    liveLink: 'https://getyourfintra.vercel.app/',
+    githubLink: 'https://github.com/habibi58/AppBudget',
+    featured: true,
+  },
+  {
     id: 'student-record-management',
     title: 'Student Record Management System',
     description: 'A web-based application for efficient student information management',

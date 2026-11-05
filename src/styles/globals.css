@@ -27,9 +27,9 @@
   --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
 }
 
-* {
-  margin: 0;
-  padding: 0;
+*,
+*::before,
+*::after {
   box-sizing: border-box;
 }
 
@@ -46,55 +46,11 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Mobile-specific styles for 360px viewport and below */
-@media (max-width: 360px) {
-  body {
-    overflow-x: hidden;
-  }
-
-  * {
-    max-width: 100%;
-    box-sizing: border-box;
-  }
-
-  .container-custom {
-    padding-left: 12px;
-    padding-right: 12px;
-  }
-}
-
-/* Mobile styles for small screens (up to 640px) */
 @media (max-width: 640px) {
-  body {
-    overflow-x: hidden;
-  }
-
-  * {
-    max-width: 100%;
-    box-sizing: border-box;
-  }
-
-  /* Ensure images and media scale properly */
   img,
   video,
   iframe {
     max-width: 100%;
-    height: auto;
-  }
-
-  /* Prevent text overflow */
-  p,
-  h1,
-  h2,
-  h3,
-  h4,
-  h5,
-  h6,
-  span,
-  div {
-    overflow-wrap: break-word;
-    word-wrap: break-word;
-    word-break: break-word;
   }
 }
 
@@ -130,9 +86,46 @@ body {
 
 /* Custom Classes */
 .container-custom {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 20px;
+  width: 100%;
+  max-width: 1264px;
+  margin-inline: auto;
+  padding-inline: clamp(16px, 4vw, 32px);
+}
+
+[class~="text-[8px]"],
+[class~="text-[9px]"],
+[class~="text-[10px]"],
+[class~="text-[11px]"],
+[class~="text-[12px]"],
+[class~="text-[13px]"],
+.text-xs,
+[style*="font-size: 8px"],
+[style*="font-size: 9px"],
+[style*="font-size: 10px"],
+[style*="font-size: 11px"],
+[style*="font-size: 12px"],
+[style*="font-size: 13px"] {
+  font-size: 14px !important;
+}
+
+.site-navbar {
+  padding-top: env(safe-area-inset-top);
+}
+
+section[id] {
+  scroll-margin-top: 6rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-delay: 0ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
 }
 
 .text-gradient {
@@ -485,7 +478,7 @@ body {
 /* ── View My Work Button (blue-400 → blue-500 sweep) ── */
 .btn-view-work {
   font-family: 'Space Grotesk', sans-serif;
-  font-size: 12.5px;
+  font-size: 14px;
   font-weight: 600;
   letter-spacing: 0.1em;
   text-transform: uppercase;
@@ -553,7 +546,7 @@ body {
 
 @media (max-width: 360px) {
   .btn-view-work {
-    font-size: 10px;
+    font-size: 14px;
     padding: 8px 14px;
     gap: 5px;
     max-width: 100%;
@@ -563,7 +556,7 @@ body {
 /* ── Download CV Button (drum-roll, white flip) ── */
 .btn-premium-resume {
   font-family: 'Space Grotesk', sans-serif;
-  font-size: 12.5px;
+  font-size: 14px;
   font-weight: 600;
   letter-spacing: 0.14em;
   text-transform: uppercase;
@@ -693,7 +686,7 @@ body {
 
 @media (max-width: 360px) {
   .btn-premium-resume {
-    font-size: 10px;
+    font-size: 14px;
     padding: 8px 14px;
     gap: 6px;
     max-width: 100%;

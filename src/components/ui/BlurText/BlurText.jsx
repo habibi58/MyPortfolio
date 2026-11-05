@@ -64,6 +64,10 @@ const BlurText = ({
 
   const fromSnapshot = animationFrom ?? defaultFrom;
   const toSnapshots = animationTo ?? defaultTo;
+  const prefersReducedMotion =
+    typeof window !== 'undefined' &&
+    window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const finalState = { filter: 'blur(0px)', opacity: 1, y: 0 };
 
   const stepCount = toSnapshots.length + 1;
   const totalDuration = stepDuration * (stepCount - 1);
@@ -85,9 +89,9 @@ const BlurText = ({
           <motion.span
             className="inline-block will-change-[transform,filter,opacity]"
             key={index}
-            initial={fromSnapshot}
-            animate={inView ? animateKeyframes : fromSnapshot}
-            transition={spanTransition}
+            initial={prefersReducedMotion ? finalState : fromSnapshot}
+            animate={prefersReducedMotion ? finalState : inView ? animateKeyframes : fromSnapshot}
+            transition={prefersReducedMotion ? { duration: 0 } : spanTransition}
             onAnimationComplete={index === elements.length - 1 ? onAnimationComplete : undefined}
           >
             {segment === ' ' ? '\u00A0' : segment}

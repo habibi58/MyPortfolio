@@ -13,7 +13,7 @@ const STYLES = `
   .mss-outer {
     display: none;
   }
-  @media (max-width: 1023px) {
+  @media (max-width: 767px) {
     .mss-outer {
       display: block;
       overflow: hidden;
@@ -83,7 +83,7 @@ const STYLES = `
     }
 
     .mss-label {
-      font-size: 10px;
+      font-size: 14px;
       font-weight: 700;
       color: #cbd5e1;
       text-align: center;

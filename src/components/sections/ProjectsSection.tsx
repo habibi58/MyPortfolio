@@ -8,12 +8,16 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import {
+  Code2,
+  ExternalLink,
   Ticket,
   Package,
   LayoutDashboard,
   Monitor,
   Wifi,
   Bot,
+  ChevronLeft,
+  ChevronRight,
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import { projectsData, type Project } from '../../data';
@@ -91,12 +95,30 @@ const badgeVariants = {
 };
 
 /* ═══════════════════════════════════════════════════════════════════════
-   MOBILE-ONLY STYLES
-   Injected once via a <style> tag. All rules are inside @media (max-width: 767px)
-   so desktop is completely unaffected.
+   PROJECTS SECTION STYLES
+   Injected once via a <style> tag for carousel behavior and responsive overrides.
    ═══════════════════════════════════════════════════════════════════════ */
 
-const MOBILE_STYLES = `
+const PROJECTS_STYLES = `
+.pss-list {
+  flex: 1 1 0;
+  min-width: 0;
+  display: flex;
+  gap: 1.5rem;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+}
+.pss-list::-webkit-scrollbar {
+  display: none;
+}
+.pss-row {
+  flex: 0 0 100%;
+  min-width: 0;
+  scroll-snap-align: center;
+}
+
 @media (max-width: 767px) {
 
   /* Section wrapper — prevent horizontal bleed */
@@ -114,7 +136,7 @@ const MOBILE_STYLES = `
 
   /* "Portfolio" eyebrow */
   .pss-eyebrow {
-    font-size: 10px !important;
+    font-size: 14px !important;
     margin-bottom: 10px !important;
   }
 
@@ -126,14 +148,14 @@ const MOBILE_STYLES = `
 
   /* Subtitle paragraph */
   .pss-subtitle {
-    font-size: 13px !important;
+    font-size: 14px !important;
     margin-bottom: 20px !important;
   }
 
   /* Outer list container */
   .pss-list {
-    padding-left: 14px !important;
-    padding-right: 14px !important;
+    padding-left: 16px !important;
+    padding-right: 16px !important;
     padding-bottom: 48px !important;
   }
 
@@ -185,7 +207,7 @@ const MOBILE_STYLES = `
 
   /* Individual badges */
   .pss-badge {
-    font-size: 11px !important;
+    font-size: 14px !important;
     padding: 5px 10px !important;
     gap: 5px !important;
   }
@@ -200,14 +222,16 @@ const MOBILE_STYLES = `
     padding: 10px 12px !important;
   }
 
-  /* Mobile project label strip (shown only on mobile) */
+  /* The project title is displayed inside the card on smaller screens. */
   .pss-mobile-label {
-    display: flex !important;
+    display: none !important;
   }
 
   /* Progress dots (shown only on mobile) */
   .pss-dots {
     display: flex !important;
+    flex-wrap: wrap;
+    max-width: 100%;
   }
 }
 
@@ -218,6 +242,140 @@ const MOBILE_STYLES = `
   }
   .pss-dots {
     display: none !important;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1279px) {
+  .pss-row {
+    flex-direction: column !important;
+    gap: 12px !important;
+  }
+
+  .pss-timeline-label {
+    display: none !important;
+  }
+
+  .pss-mobile-label {
+    display: none !important;
+  }
+
+  .pss-card-col {
+    width: 100%;
+    min-width: 0;
+  }
+}
+
+@media (max-width: 1279px) {
+  .pss-card-heading {
+    display: flex !important;
+  }
+
+  .pss-card-article {
+    background-color: #090b11 !important;
+    border-color: rgba(148, 163, 184, 0.18) !important;
+  }
+
+  .pss-img-wrap {
+    padding: 0 !important;
+  }
+
+  .pss-card-body {
+    padding: 4px 24px 24px !important;
+  }
+
+  .pss-description,
+  .pss-feature {
+    color: #a7b0c0 !important;
+  }
+}
+
+/* Fintra uses a compact, product-focused card at every viewport size. */
+.pss-fintra-card {
+  display: flex;
+  flex-direction: column;
+  max-width: 90% !important;
+  background-color: #080b12 !important;
+  border-color: rgba(59, 130, 246, 0.55) !important;
+}
+
+.pss-fintra-card .pss-card-body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  padding: 2px 14px 14px !important;
+}
+
+.pss-fintra-card .pss-card-heading {
+  display: flex !important;
+  align-items: baseline;
+  gap: 8px !important;
+  margin-bottom: 7px !important;
+}
+
+.pss-fintra-card .pss-card-heading > span {
+  font-size: 14px !important;
+}
+
+.pss-fintra-card .pss-card-heading h3 {
+  font-size: 0.9rem !important;
+  line-height: 1.35 !important;
+}
+
+.pss-fintra-card .pss-description {
+  margin-bottom: 9px !important;
+  font-size: 14px !important;
+  line-height: 1.5 !important;
+}
+
+.pss-fintra-card ul {
+  gap: 4px !important;
+  margin-bottom: 10px !important;
+}
+
+.pss-fintra-card .pss-feature {
+  gap: 7px !important;
+  font-size: 14px !important;
+  line-height: 1.45 !important;
+}
+
+.pss-fintra-card .pss-feature > span:first-child {
+  width: 4px !important;
+  height: 4px !important;
+  margin-top: 6px !important;
+}
+
+.pss-fintra-card .pss-badges {
+  gap: 5px !important;
+  margin: 0 0 11px !important;
+}
+
+.pss-fintra-card .pss-badge {
+  gap: 4px !important;
+  padding: 4px 8px !important;
+  font-size: 14px !important;
+}
+
+.pss-fintra-card .pss-badge img {
+  width: 13px !important;
+  height: 13px !important;
+}
+
+.pss-fintra-actions {
+  display: flex;
+  width: 100%;
+}
+
+.pss-fintra-app-link {
+  display: flex !important;
+  width: 100%;
+  min-height: 38px;
+  align-items: center;
+  justify-content: center;
+}
+
+@media (max-width: 767px) {
+  .pss-fintra-card {
+    max-width: 100% !important;
   }
 }
 `;
@@ -305,10 +463,10 @@ const ScrollStackItem = ({
   return (
     <motion.div className="w-full flex justify-end md:justify-end justify-center flex-col items-center">
       <motion.article
-        className="pss-card-article rounded-[20px] overflow-hidden relative"
+        className={`pss-card-article rounded-[20px] overflow-hidden relative${project.id === 'fintra-personal-finance' ? ' pss-fintra-card' : ''}`}
         style={{
-          backgroundColor: '#000000',
-          border: '1px solid #3b82f635',
+          backgroundColor: '#090b11',
+          border: '1px solid rgba(148, 163, 184, 0.18)',
           maxWidth: '90%',
         }}
         animate={{
@@ -350,7 +508,7 @@ const ScrollStackItem = ({
                 style={{
                   width: '100%',
                   height: '100%',
-                  objectFit: 'cover',
+                  objectFit: 'contain',
                   borderRadius: '12px',
                   display: 'block',
                 }}
@@ -412,11 +570,43 @@ const ScrollStackItem = ({
         </div>
 
         {/* ── Content ── */}
-        <div className="pss-card-body" style={{ padding: '0px 16px 20px 16px' }}>
+        <div className="pss-card-body" style={{ padding: '4px 24px 24px' }}>
+          <div
+            className="pss-card-heading"
+            style={{
+              display: 'none',
+              alignItems: 'baseline',
+              gap: '14px',
+              marginBottom: '18px',
+            }}
+          >
+            <span
+              style={{
+                color: '#3b82f6',
+                fontFamily: 'monospace',
+                fontSize: '1.125rem',
+                fontWeight: 700,
+                flexShrink: 0,
+              }}
+            >
+              {String(index + 1).padStart(2, '0')}
+            </span>
+            <h3
+              style={{
+                color: '#f8fafc',
+                fontSize: '1.25rem',
+                fontWeight: 700,
+                lineHeight: 1.35,
+              }}
+            >
+              {project.title}
+            </h3>
+          </div>
+
           {/* Short intro sentence */}
           <p
             className="pss-description text-[0.935rem] leading-[1.75]"
-            style={{ color: '#636363', marginBottom: '10px' }}
+            style={{ color: '#a7b0c0', marginBottom: '14px' }}
           >
             {project.fullDescription}
           </p>
@@ -442,8 +632,9 @@ const ScrollStackItem = ({
                     gap: '8px',
                     fontSize: '0.875rem',
                     lineHeight: '1.6',
-                    color: '#636363',
+                    color: '#a7b0c0',
                   }}
+                  className="pss-feature"
                 >
                   <span style={{
                     flexShrink: 0,
@@ -498,6 +689,47 @@ const ScrollStackItem = ({
               );
             })}
           </motion.div>
+
+          {((project.liveLink && project.liveLink !== '#') ||
+            (project.githubLink && project.githubLink !== '#')) && (
+            <div
+              className={
+                project.id === 'fintra-personal-finance'
+                  ? 'pss-fintra-actions'
+                  : 'flex flex-wrap gap-3'
+              }
+            >
+              {project.liveLink && project.liveLink !== '#' && (
+                <a
+                  href={project.liveLink}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={
+                    project.id === 'fintra-personal-finance'
+                      ? 'pss-fintra-app-link inline-flex items-center gap-2 rounded-full border border-blue-300/80 bg-gradient-to-r from-blue-500 via-blue-600 to-indigo-600 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-blue-500/25 ring-1 ring-inset ring-white/20 transition-all hover:-translate-y-0.5 hover:from-blue-400 hover:via-blue-500 hover:to-indigo-500 hover:shadow-blue-500/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-200 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950 active:translate-y-0'
+                      : 'inline-flex items-center gap-2 rounded-lg border border-blue-500/60 bg-blue-500/10 px-4 py-2 text-sm font-medium text-blue-200 transition-colors hover:border-blue-400 hover:bg-blue-500/20 hover:text-white'
+                  }
+                >
+                  Get app
+                  <ExternalLink size={14} aria-hidden="true" />
+                </a>
+              )}
+              {project.id !== 'fintra-personal-finance' &&
+                project.githubLink &&
+                project.githubLink !== '#' && (
+                <a
+                  href={project.githubLink}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 rounded-lg border border-slate-700 px-4 py-2 text-sm font-medium text-slate-200 transition-colors hover:border-blue-500 hover:text-blue-300"
+                >
+                  <Code2 size={16} aria-hidden="true" />
+                  View source
+                  <ExternalLink size={14} aria-hidden="true" />
+                </a>
+              )}
+            </div>
+          )}
         </div>
       </motion.article>
     </motion.div>
@@ -511,18 +743,19 @@ const ScrollStackItem = ({
 
 export const ProjectsSection = () => {
   const [activeIndex, setActiveIndex] = useState(0);
+  const carouselRef = useRef<HTMLDivElement>(null);
   const itemRefs = useRef<(HTMLDivElement | null)[]>([]);
 
   /* ── Active project detection ──
-     Keep the highlighted project synced with the card closest to the viewport center.
-     This is throttled to one animation frame so it stays responsive without running
-     expensive DOM measurement on every raw scroll event. */
+     Keep the active project synced with the card nearest the carousel center. */
   useEffect(() => {
     let rafId = 0;
     let lastActive = -1;
 
     const getActive = () => {
-      const viewportCenter = window.innerHeight / 2;
+      const carousel = carouselRef.current;
+      if (!carousel) return 0;
+      const carouselCenter = carousel.getBoundingClientRect().left + carousel.clientWidth / 2;
       let closestIndex = 0;
       let closestDistance = Number.POSITIVE_INFINITY;
 
@@ -530,8 +763,8 @@ export const ProjectsSection = () => {
         if (!el) return;
 
         const rect = el.getBoundingClientRect();
-        const center = rect.top + rect.height / 2;
-        const distance = Math.abs(center - viewportCenter);
+        const center = rect.left + rect.width / 2;
+        const distance = Math.abs(center - carouselCenter);
 
         if (distance < closestDistance) {
           closestDistance = distance;
@@ -550,29 +783,42 @@ export const ProjectsSection = () => {
       }
     };
 
-    updateActive();
-
     const onScroll = () => {
       cancelAnimationFrame(rafId);
       rafId = requestAnimationFrame(updateActive);
     };
 
-    window.addEventListener('scroll', onScroll, { passive: true });
+    const carousel = carouselRef.current;
+    carousel?.addEventListener('scroll', onScroll, { passive: true });
     window.addEventListener('resize', onScroll);
+    updateActive();
 
     return () => {
       cancelAnimationFrame(rafId);
-      window.removeEventListener('scroll', onScroll);
+      carousel?.removeEventListener('scroll', onScroll);
       window.removeEventListener('resize', onScroll);
     };
   }, []);
 
-  /* ── Click timeline item → smooth-scroll to project card ── */
+  /* ── Navigate to a project in the horizontal carousel ── */
   const scrollToProject = useCallback((index: number) => {
-    itemRefs.current[index]?.scrollIntoView({
+    const carousel = carouselRef.current;
+    const item = itemRefs.current[index];
+    if (!carousel || !item) return;
+
+    const carouselRect = carousel.getBoundingClientRect();
+    const itemRect = item.getBoundingClientRect();
+    const left =
+      carousel.scrollLeft +
+      itemRect.left -
+      carouselRect.left -
+      (carousel.clientWidth - item.clientWidth) / 2;
+
+    carousel.scrollTo({
+      left: Math.max(0, Math.min(left, carousel.scrollWidth - carousel.clientWidth)),
       behavior: 'smooth',
-      block: 'center',
     });
+    setActiveIndex(index);
   }, []);
 
   return (
@@ -581,13 +827,12 @@ export const ProjectsSection = () => {
       className="relative w-full"
       style={{ marginTop: '100px' }}
     >
-      {/* ── Inject mobile-only styles once ── */}
-      <style dangerouslySetInnerHTML={{ __html: MOBILE_STYLES }} />
+      {/* ── Inject section styles once ── */}
+      <style dangerouslySetInnerHTML={{ __html: PROJECTS_STYLES }} />
 
       {/* ── Section Header ── */}
       <div
-        className="pss-header px-3 sm:px-4 sm:px-6 lg:px-8 pb-16 flex flex-col items-center text-center"
-        style={{ maxWidth: '64rem', marginLeft: 'auto', marginRight: 'auto' }}
+        className="container-custom pss-header flex flex-col items-center pb-16 text-center"
       >
         <motion.div
           initial={{ opacity: 0, y: 40, scale: 0.95 }}
@@ -617,57 +862,6 @@ export const ProjectsSection = () => {
         </motion.div>
       </div>
 
-<<<<<<< Updated upstream
-      {/* ── Two-Column Layout ── */}
-      <div
-        className="pss-list px-3 sm:px-4 sm:px-6 lg:px-8 pb-20"
-        style={{ maxWidth: '64rem', marginLeft: 'auto', marginRight: 'auto' }}
-      >
-        {projectsData.map((project, index) => (
-          <motion.div
-            key={project.id}
-            ref={(el) => {
-              itemRefs.current[index] = el;
-            }}
-            data-index={index}
-            initial={{ opacity: 0, y: 80 }}
-            animate={{
-              opacity: activeIndex === index ? 1 : 0.1,
-              scale: activeIndex === index ? 1 : 0.95,
-              y: activeIndex === index ? 0 : 20,
-            }}
-            transition={{
-              opacity: { duration: 0.6, ease: EASE },
-              scale:   { duration: 0.6, ease: EASE },
-              y:       { duration: 0.6, ease: EASE },
-            }}
-            className="pss-row flex items-start gap-8 md:items-start items-center flex-col md:flex-row"
-            style={{
-              minHeight: index === projectsData.length - 1 ? '65vh' : '80vh',
-              paddingTop: index === 0 ? '0' : '2rem',
-              paddingBottom: '2rem',
-            }}
-          >
-            {/* Left side — Timeline item */}
-            <div className="w-[200px] shrink-0 pt-4 hidden md:block">
-              <motion.button
-                layout
-                onClick={() => scrollToProject(index)}
-                className="relative block text-left w-full py-3 cursor-pointer"
-                whileHover={{ x: 4 }}
-                transition={{
-                  layout: { duration: 0.5, ease: EASE },
-                  default: { duration: 0.3, ease: EASE },
-                }}
-                aria-current={activeIndex === index ? 'true' : undefined}
-              >
-                {/* ── Project number ── */}
-                <motion.span
-                  className="block font-mono text-xs font-semibold tracking-wider mb-1 select-none"
-                  animate={{
-                    color: activeIndex === index ? '#3b82f6' : '#c4c4c8',
-                    opacity: activeIndex === index ? 1 : 0.7,
-=======
       <div className="container-custom mb-5 flex items-center justify-between gap-3 px-4 sm:px-6">
         <span
           className="font-mono text-sm text-slate-400"
@@ -746,49 +940,52 @@ export const ProjectsSection = () => {
                   transition={{
                     layout: { duration: 0.5, ease: EASE },
                     default: { duration: 0.3, ease: EASE },
->>>>>>> Stashed changes
                   }}
-                  transition={{ duration: 0.4 }}
+                  aria-current={activeIndex === index ? 'true' : undefined}
                 >
-                  {String(index + 1).padStart(2, '0')}
-                </motion.span>
+                  <motion.span
+                    className="block font-mono text-xs font-semibold tracking-wider mb-1 select-none"
+                    animate={{
+                      color: activeIndex === index ? '#3b82f6' : '#c4c4c8',
+                      opacity: activeIndex === index ? 1 : 0.7,
+                    }}
+                    transition={{ duration: 0.4 }}
+                  >
+                    {String(index + 1).padStart(2, '0')}
+                  </motion.span>
+                  <motion.h3
+                    className="font-display font-bold leading-snug"
+                    animate={{
+                      fontSize: activeIndex === index ? '1.25rem' : '0.925rem',
+                      lineHeight: activeIndex === index ? '1.5rem' : '1.35rem',
+                      color: '#ffffff',
+                      opacity: activeIndex === index ? 1 : 0.5,
+                    }}
+                    transition={{ duration: 0.5, ease: EASE }}
+                  >
+                    {project.title}
+                  </motion.h3>
+                </motion.button>
+              </div>
 
-                {/* ── Project title ── */}
-                <motion.h3
-                  className="font-display font-bold leading-snug"
-                  animate={{
-                    fontSize: activeIndex === index ? '1.25rem' : '0.925rem',
-                    lineHeight: activeIndex === index ? '1.5rem' : '1.35rem',
-                    color: '#ffffff',
-                    opacity: activeIndex === index ? 1 : 0.5,
-                  }}
-                  transition={{ duration: 0.5, ease: EASE }}
-                >
-                  {project.title}
-                </motion.h3>
-              </motion.button>
-            </div>
+              {/* Right side — Project card */}
+              <div className="pss-card-col flex-1">
+                <MobileLabel
+                  project={project}
+                  index={index}
+                  isActive={activeIndex === index}
+                />
+                <ScrollStackItem
+                  project={project}
+                  index={index}
+                  isActive={activeIndex === index}
+                  visual={projectVisuals[index] || projectVisuals[0]}
+                />
+              </div>
+            </motion.div>
+          ))}
+        </div>
 
-<<<<<<< Updated upstream
-            {/* Right side — Project card */}
-            <div className="pss-card-col flex-1">
-              {/* Mobile-only label (hidden on desktop via CSS) */}
-              <MobileLabel
-                project={project}
-                index={index}
-                isActive={activeIndex === index}
-              />
-
-              <ScrollStackItem
-                project={project}
-                index={index}
-                isActive={activeIndex === index}
-                visual={projectVisuals[index] || projectVisuals[0]}
-              />
-            </div>
-          </motion.div>
-        ))}
-=======
         <button
           type="button"
           onClick={() => scrollToProject(activeIndex + 1)}
@@ -798,12 +995,11 @@ export const ProjectsSection = () => {
         >
           <ChevronRight size={20} aria-hidden="true" />
         </button>
->>>>>>> Stashed changes
       </div>
 
       <div
-        className="px-3 pb-8 sm:px-4 sm:px-6 lg:px-8"
-        style={{ maxWidth: '64rem', margin: '5.5rem auto 0' }}
+        className="container-custom pb-8"
+        style={{ marginTop: '5.5rem' }}
       >
         <GithubContributions username="habibi58" />
       </div>
@@ -814,6 +1010,8 @@ export const ProjectsSection = () => {
         style={{
           display: 'none', /* shown at ≤767px via CSS */
           gap: '8px',
+          flexWrap: 'wrap',
+          maxWidth: '100%',
           paddingBottom: '32px',
           paddingTop: '4px',
         }}
@@ -826,19 +1024,31 @@ export const ProjectsSection = () => {
               onClick={() => scrollToProject(i)}
               aria-label={`Go to project ${i + 1}`}
               style={{
-                height: '6px',
+                display: 'grid',
+                width: '44px',
+                height: '44px',
+                placeItems: 'center',
                 borderRadius: '9999px',
                 border: 'none',
                 cursor: 'pointer',
                 padding: 0,
-                backgroundColor: activeIndex === i ? visual.color : 'rgba(255,255,255,0.2)',
+                backgroundColor: 'transparent',
               }}
-              animate={{
-                width: activeIndex === i ? 20 : 6,
-                backgroundColor: activeIndex === i ? visual.color : 'rgba(255,255,255,0.2)',
-              }}
-              transition={{ duration: 0.35, ease: EASE }}
-            />
+            >
+              <motion.span
+                aria-hidden="true"
+                animate={{
+                  width: activeIndex === i ? 20 : 6,
+                  backgroundColor: activeIndex === i ? visual.color : 'rgba(255,255,255,0.2)',
+                }}
+                transition={{ duration: 0.35, ease: EASE }}
+                style={{
+                  height: '6px',
+                  borderRadius: '9999px',
+                  backgroundColor: activeIndex === i ? visual.color : 'rgba(255,255,255,0.2)',
+                }}
+              />
+            </motion.button>
           );
         })}
       </div>

@@ -1,7 +1,7 @@
 // Certifications Section Component
 import { motion } from 'framer-motion';
-import { Award, ExternalLink, Calendar, BadgeCheck } from 'lucide-react';
-import { certificationsData } from '../../data';
+import { Award, ExternalLink, Calendar, BadgeCheck, Info } from 'lucide-react';
+import { certificationNotice, certificationsData } from '../../data';
 import { SectionHeading } from '../ui/SectionHeading/SectionHeading';
 import { Button } from '../ui/Button/Button';
 import { containerVariants, itemVariants } from '../../animations/variants';
@@ -22,12 +22,38 @@ export const CertificationsSection = () => {
       <div className="absolute top-0 right-0 w-[500px] h-[500px] rounded-full bg-blue-400/[0.02] blur-[120px]" />
       <div className="absolute bottom-0 left-0 w-[400px] h-[400px] rounded-full bg-blue-500/[0.02] blur-[100px]" />
 
-      <div className="relative max-w-6xl mx-auto px-3 sm:px-4 sm:px-6 lg:px-8">
+      <div className="container-custom relative">
         <SectionHeading
           subtitle="CREDENTIALS"
           title="Certifications & Achievements"
           description="Professional certifications demonstrating expertise and commitment to learning"
         />
+
+        <div className="mb-8 rounded-2xl border border-blue-400/20 bg-blue-500/5 p-4 text-sm text-slate-300 shadow-[0_0_30px_rgba(59,130,246,0.08)] backdrop-blur-sm">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex items-start gap-3">
+              <div className="mt-0.5 rounded-full bg-blue-500/10 p-2 text-blue-300">
+                <Info size={16} />
+              </div>
+              <p className="leading-relaxed">{certificationNotice.message}</p>
+            </div>
+
+            <div className="flex flex-wrap gap-2">
+              {certificationNotice.links.map((link) => (
+                <Button
+                  key={link.label}
+                  variant="outline"
+                  size="sm"
+                  onClick={() => window.open(link.url, '_blank', 'noopener,noreferrer')}
+                  className="!px-3 !py-2 text-xs"
+                >
+                  {link.label}
+                  <ExternalLink size={12} />
+                </Button>
+              ))}
+            </div>
+          </div>
+        </div>
 
         <motion.div
           variants={containerVariants}
@@ -166,10 +192,12 @@ const CertificationCard = ({ cert, index }: CertificationCardProps) => {
           )}
 
           {/* ── Date ── */}
-          <div className="flex items-center gap-2 text-sm text-slate-500">
-            <Calendar size={14} />
-            {cert.date}
-          </div>
+          {cert.date && (
+            <div className="flex items-center gap-2 text-sm text-slate-500">
+              <Calendar size={14} />
+              {cert.date}
+            </div>
+          )}
 
           {/* ── Credential ID ── */}
           {cert.credentialId && (
@@ -184,7 +212,7 @@ const CertificationCard = ({ cert, index }: CertificationCardProps) => {
               variant="outline"
               size="sm"
               className="w-full"
-              onClick={() => window.open(cert.image, '_blank')}
+              onClick={() => window.open(cert.credentialUrl ?? cert.image, '_blank', 'noopener,noreferrer')}
             >
               <ExternalLink size={14} />
               View Credential
